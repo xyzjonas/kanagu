@@ -60,6 +60,7 @@ export const useApi = () => {
       id: 'P241149',
       supplier: 'FISCHER',
       received: new Date(),
+      rackId: "A3552-22-ax",
       items: [
         {
           item: items.bolt14,
