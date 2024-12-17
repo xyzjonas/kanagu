@@ -6,7 +6,7 @@
           <q-avatar class="mr-2">
             <img alt="Vue logo" class="logo bg-primary p-2" src="/logo.svg" />
           </q-avatar>
-          <span class="text-primary font-bold ml-1">Application</span>
+          <span class="text-primary font-bold ml-1">{{ title }}</span>
         </q-toolbar-title>
 
         <!-- <q-btn
@@ -16,54 +16,43 @@
           @click="toggle"
           class="mr-3"
         /> -->
-        <q-btn dense flat :icon="rightDrawerOpen ? 'i-hugeicons-cancel-01' : 'i-hugeicons-menu-07'" @click="toggleRightDrawer" />
+        <q-btn
+          dense
+          flat
+          :icon="rightDrawerOpen ? 'i-hugeicons-cancel-01' : 'i-hugeicons-menu-07'"
+          @click="toggleRightDrawer"
+        />
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="left" overlay bordered>
       <q-scroll-area class="fit">
-          <q-list padding class="menu-list">
-            <q-item clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="inbox" />
-              </q-item-section>
+        <q-list padding class="menu-list">
+          <q-item :to="{ name: 'ro-list' }" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="i-hugeicons-package-receive" />
+            </q-item-section>
 
-              <q-item-section>
-                Inbox
-              </q-item-section>
-            </q-item>
+            <q-item-section> Příjemky </q-item-section>
+          </q-item>
 
-            <q-item active clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="star" />
-              </q-item-section>
+          <q-item :to="{ name: 'po-list' }" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="i-hugeicons-share-03" />
+            </q-item-section>
 
-              <q-item-section>
-                Star
-              </q-item-section>
-            </q-item>
+            <q-item-section> Výdejky </q-item-section>
+          </q-item>
 
-            <q-item clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="send" />
-              </q-item-section>
+          <q-item :to="{ name: 'quicksell' }" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="i-hugeicons-wallet-03" />
+            </q-item-section>
 
-              <q-item-section>
-                Send
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="drafts" />
-              </q-item-section>
-
-              <q-item-section>
-                Drafts
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
+            <q-item-section> Prodej </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
     <q-page-container class="app-page">
       <router-view />
@@ -72,8 +61,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterView } from 'vue-router'
+import { computed, ref } from 'vue'
+import { RouterView, useRouter } from 'vue-router'
 
 import { useQuasar } from 'quasar'
 import { useDark } from '@/composables/dark'
@@ -82,10 +71,33 @@ const { isDark, toggle } = useDark()
 
 const $q = useQuasar()
 $q.iconMapFn = (iconName) => {
-  return {
-    cls: iconName
+  if (iconName.startsWith('i-hugeicons')) {
+    return {
+      cls: iconName
+    }
   }
 }
+
+const { currentRoute } = useRouter()
+const title = computed(() => {
+  if (currentRoute.value.name == 'po-list') {
+    return 'Výdejky'
+  }
+
+  if (currentRoute.value.name == 'po-detail') {
+    return 'Výdejka'
+  }
+
+  if (currentRoute.value.name == 'ro-list') {
+    return 'Příjemky'
+  }
+
+  if (currentRoute.value.name == 'ro-detail') {
+    return 'Příjemka'
+  }
+  
+  return "Sklad"
+})
 
 const rightDrawerOpen = ref(false)
 const toggleRightDrawer = () => {

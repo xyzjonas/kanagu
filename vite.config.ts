@@ -23,9 +23,9 @@ export default defineConfig({
     UnoCSS(),
     VitePWA({
       manifest: {
-        name: 'THE Template',
-        short_name: 'Template',
-        description: 'THE best template of all time',
+        name: 'Skaldová Appka',
+        short_name: 'Sklad',
+        description: 'Appka pro příjemky a výdejky',
         theme_color: '#e03a3c',
         background_color: '#e03a3c',
         icons: [
