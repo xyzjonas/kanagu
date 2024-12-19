@@ -7,25 +7,24 @@
     </div>
     <div class="flex justify-end gap-1">
       <q-btn
-        label="tisk štítků"
+        label="tisk"
         unelevated
         color="secondary"
         icon="print"
-        :to="{ name: 'ro-detail', params: { id: item.item.id } }"
+        :to="{ name: 'ro-printout', params: { orderId, id: item.id } }"
       />
       <q-btn
         label="přijmout"
         unelevated
         color="secondary"
         icon="get_app"
-        :to="{ name: 'ro-detail', params: { id: item.item.id } }"
+        :to="{ name: 'ro-allocation', params: { orderId, id: item.id } }"
       />
       <q-btn
         :label="`${item.count} MJ`"
         unelevated
         color="dark"
         disable
-        :to="{ name: 'ro-detail', params: { id: item.item.id } }"
       />
     </div>
   </Card>
@@ -35,7 +34,7 @@
 import type { OrderItem } from '@/composables/useApi'
 import Card from './Card.vue'
 
-defineProps<{ item: OrderItem }>()
+defineProps<{ orderId: string, item: OrderItem }>()
 </script>
 
 <style lang="sass" scoped></style>

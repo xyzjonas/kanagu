@@ -23,9 +23,9 @@ export default defineConfig({
     UnoCSS(),
     VitePWA({
       manifest: {
-        name: 'Skaldová Appka',
+        name: 'Sklad',
         short_name: 'Sklad',
-        description: 'Appka pro příjemky a výdejky',
+        description: 'Skladová aplikace pro příjem a výdej zboží.',
         theme_color: '#e03a3c',
         background_color: '#e03a3c',
         icons: [

@@ -3,9 +3,9 @@
     <q-header class="bg-white text-dark shadow-sm">
       <q-toolbar class="app-page">
         <q-toolbar-title>
-          <q-avatar class="mr-2">
+          <!-- <q-avatar class="mr-2">
             <img alt="Vue logo" class="logo bg-primary p-2" src="/logo.svg" />
-          </q-avatar>
+          </q-avatar> -->
           <span class="text-primary font-bold ml-1">{{ title }}</span>
         </q-toolbar-title>
 
@@ -51,6 +51,15 @@
 
             <q-item-section> Prodej </q-item-section>
           </q-item>
+
+          <q-item clickable v-ripple @click="resetDummyData()">
+            <q-item-section avatar>
+              <q-icon name="i-hugeicons-test-tube-01" />
+            </q-item-section>
+
+            <q-item-section> Resetovat Testovací Data </q-item-section>
+          </q-item>
+
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -66,6 +75,7 @@ import { RouterView, useRouter } from 'vue-router'
 
 import { useQuasar } from 'quasar'
 import { useDark } from '@/composables/dark'
+import { useApi } from './composables/useApi';
 
 const { isDark, toggle } = useDark()
 
@@ -103,4 +113,7 @@ const rightDrawerOpen = ref(false)
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value
 }
+
+const { resetDummyData } = useApi()
+
 </script>

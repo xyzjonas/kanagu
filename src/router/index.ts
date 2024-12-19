@@ -1,9 +1,11 @@
 import HomeView from '@/views/HomeView.vue'
-import PurchaseOrderDetail from '@/views/PurchaseOrderDetail.vue'
-import PurchaseOrderList from '@/views/PurchaseOrderList.vue'
+import PurchaseOrderDetailView from '@/views/PurchaseOrderDetailView.vue'
+import PurchaseOrderListView from '@/views/PurchaseOrderListView.vue'
 import QuicksellView from '@/views/QuicksellView.vue'
-import ReceiveOrderDetail from '@/views/ReceiveOrderDetail.vue'
-import ReceiveOrderList from '@/views/ReceiveOrderList.vue'
+import ReceiveOrderAllocationView from '@/views/ReceiveOrderAllocationView.vue'
+import ReceiveOrderDetailView from '@/views/ReceiveOrderDetailView.vue'
+import ReceiveOrderListView from '@/views/ReceiveOrderListView.vue'
+import ReceiveOrderPrintoutView from '@/views/ReceiveOrderPrintoutView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -18,22 +20,32 @@ const router = createRouter({
     {
       path: '/purchase-orders',
       name: 'po-list',
-      component: PurchaseOrderList
+      component: PurchaseOrderListView
     },
     {
       path: '/purchase-orders/:id',
       name: 'po-detail',
-      component: PurchaseOrderDetail
+      component: PurchaseOrderDetailView
     },
     {
       path: '/receive-orders',
       name: 'ro-list',
-      component: ReceiveOrderList
+      component: ReceiveOrderListView
     },
     {
       path: '/receive-orders/:id',
       name: 'ro-detail',
-      component: ReceiveOrderDetail
+      component: ReceiveOrderDetailView
+    },
+    {
+      path: '/receive-orders/:orderId/items/:id/allocate',
+      name: 'ro-allocation',
+      component: ReceiveOrderAllocationView
+    },
+    {
+      path: '/receive-orders/:orderId/items/:id/printout',
+      name: 'ro-printout',
+      component: ReceiveOrderPrintoutView
     },
     {
       path: '/quicksell',

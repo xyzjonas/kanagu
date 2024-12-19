@@ -6,7 +6,7 @@
         <span>{{ order.rackId }}</span>
       </div>
       <div class="flex flex-col text-right">
-        <span>{{ order.received.toLocaleDateString() }}</span>
+        <span>{{ received }}</span>
         <span>{{ order.supplier }}</span>
       </div>
     </div>
@@ -25,8 +25,11 @@
 <script setup lang="ts">
 import type { ReceiveOrder } from '@/composables/useApi'
 import Card from './Card.vue'
+import { computed } from 'vue';
 
-defineProps<{ order: ReceiveOrder }>()
+const props = defineProps<{ order: ReceiveOrder }>()
+
+const received = computed(() => new Date(props.order.received).toLocaleDateString())
 </script>
 
 <style lang="sass" scoped></style>
