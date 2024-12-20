@@ -17,13 +17,13 @@ export default defineConfig({
     presetWebFonts({
       provider: 'bunny',
       fonts: {
-        sans: 'Poppins:200,300,400,500,600'
+        sans: 'Roboto:200,300,400,500,600'
       }
     })
   ],
   theme: {
     colors: {
-      primary: "#e03a3c",
+      primary: "#3e608a",
       secondary: "#3e608a",
     }
   },

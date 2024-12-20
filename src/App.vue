@@ -105,6 +105,10 @@ const title = computed(() => {
   if (currentRoute.value.name == 'ro-detail') {
     return 'Příjemka'
   }
+
+  if (currentRoute.value.name == 'ro-allocation') {
+    return 'Příjem'
+  }
   
   return "Sklad"
 })

@@ -12,7 +12,6 @@
     </div>
     <div class="flex justify-end">
       <q-btn
-        size="large"
         label="naskladnit"
         unelevated
         color="secondary"

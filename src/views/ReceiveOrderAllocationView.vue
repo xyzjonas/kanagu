@@ -1,21 +1,20 @@
 <template>
   <q-page padding>
     <main v-if="receiveOrder && orderItem">
-      <h1 class="text-2xl font-semibold m-0">{{ receiveOrder.id }}</h1>
-      <h2 class="text-lg m-0">{{ receiveOrder.supplier }}</h2>
+      <OrderHeader :order="receiveOrder" />
 
       <q-separator class="mb-5"></q-separator>
 
-      <ItemAllocation :item="orderItem"/>
-
+      <ItemAllocation :item="orderItem" />
     </main>
     <NotFound v-else />
   </q-page>
 </template>
 
 <script setup lang="ts">
-import ItemAllocation from '@/components/ItemAllocation.vue';
-import NotFound from '@/components/NotFound.vue';
+import ItemAllocation from '@/components/ItemAllocation.vue'
+import NotFound from '@/components/NotFound.vue'
+import OrderHeader from '@/components/OrderHeader.vue'
 import { useApi } from '@/composables/useApi'
 import { useRoute } from 'vue-router'
 
@@ -26,7 +25,7 @@ const id = useRoute().params.id as string
 
 const receiveOrder = receiveOrders.value.find((val) => val.id === orderId)
 
-const orderItem = receiveOrder?.items.find(item => item.id === id)
+const orderItem = receiveOrder?.items.find((item) => item.id === id)
 </script>
 
 <style lang="sass" scoped></style>

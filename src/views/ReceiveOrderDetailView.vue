@@ -1,10 +1,9 @@
 <template>
   <q-page padding>
     <main v-if="receiveOrder">
-      <h1 class="text-2xl font-semibold m-0">{{ receiveOrder.id }}</h1>
-      <h2 class="text-lg m-0">{{ receiveOrder.supplier }}</h2>
+      <OrderHeader :order="receiveOrder" />
 
-      <q-separator class="mb-5"></q-separator>
+      <q-separator class="mb-5 mt-1"></q-separator>
 
       <div class="flex flex-col gap-2">
         <ReceiveOrderItem
@@ -19,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import OrderHeader from '@/components/OrderHeader.vue';
 import ReceiveOrderItem from '@/components/ReceiveOrderItem.vue'
 import { useApi } from '@/composables/useApi'
 import { useRoute } from 'vue-router'
