@@ -36,7 +36,9 @@
         <span class="text-2xl"
           ><span class="text-gray-5">BUŇKA</span> {{ selectedSlot?.name }}</span
         >
-        <q-input v-model="confirmation" autofocus :rules="[val => val === selectedSlot?.name]" no-error-icon />
+        <!-- <div class="h-[2rem] overflow-hidden"> -->
+        <q-input v-model="confirmation" autofocus :rules="[val => val === selectedSlot?.name]" no-error-icon input-class="text-transparent"/>
+        <!-- </div> -->
         <span>POTVRDIT BUŇKU SCANNEREM</span>
       </div>
     </q-step>
