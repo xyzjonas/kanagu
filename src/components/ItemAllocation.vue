@@ -25,7 +25,7 @@
           </q-item>
         </q-list>
         <div class="flex justify-end mt-auto py-5">
-            <q-btn unelevated color="primary" label="přidat buňku" icon="add"/>
+          <q-btn unelevated color="primary" label="přidat buňku" icon="add" />
         </div>
       </div>
     </q-step>
@@ -37,7 +37,15 @@
           ><span class="text-gray-5">BUŇKA</span> {{ selectedSlot?.name }}</span
         >
         <!-- <div class="h-[2rem] overflow-hidden"> -->
-        <q-input v-model="confirmation" autofocus :rules="[val => val === selectedSlot?.name]" no-error-icon input-class="text-transparent"/>
+        <input placeholder="foobar" inputmode="none" />
+        <q-input
+          v-model="confirmation"
+          autofocus
+          :rules="[(val) => val === selectedSlot?.name]"
+          no-error-icon
+          input-class="text-transparentt text-center"
+          inputmode="none"
+        />
         <!-- </div> -->
         <span>POTVRDIT BUŇKU SCANNEREM</span>
       </div>
@@ -77,7 +85,7 @@ const step = ref(1)
 const stepper = ref<QStepper>()
 
 const selectedSlot = ref<Slot>()
-const confirmation = ref("")
+const confirmation = ref('')
 
 function select(slot: Slot) {
   selectedSlot.value = slot
