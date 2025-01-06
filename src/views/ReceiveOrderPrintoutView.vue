@@ -23,6 +23,7 @@
               label="Počet štítků k tisku"
               hint=""
               :rules="[rules.notEmpty, rules.atLeastOne]"
+              inputmode="numeric"
             ></q-input>
             <q-btn label="tisk" type="submit" class="w-full mt-2" unelevated color="primary" />
           </q-form>
