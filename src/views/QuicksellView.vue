@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import NotFound from '@/components/NotFound.vue';
+
 </script>
 
 <template>
   <q-page padding>
-    QUICKSELL
+    <NotFound />
   </q-page>
 </template>
 

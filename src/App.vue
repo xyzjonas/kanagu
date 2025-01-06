@@ -6,7 +6,7 @@
           <!-- <q-avatar class="mr-2">
             <img alt="Vue logo" class="logo bg-primary p-2" src="/logo.svg" />
           </q-avatar> -->
-          <span class="text-primary font-bold ml-1">{{ title }}</span>
+          <span class="text-primary font-bold ml-1 uppercase">{{ title }}</span>
         </q-toolbar-title>
 
         <!-- <q-btn
@@ -28,6 +28,13 @@
     <q-drawer v-model="rightDrawerOpen" side="left" overlay bordered>
       <q-scroll-area class="fit">
         <q-list padding class="menu-list">
+          <q-item :to="{ name: 'home' }" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="home" />
+            </q-item-section>
+
+            <q-item-section> Domů </q-item-section>
+          </q-item>
           <q-item :to="{ name: 'ro-list' }" clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="i-hugeicons-package-receive" />
@@ -52,14 +59,13 @@
             <q-item-section> Prodej </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple @click="resetDummyData()">
+          <q-item :to="{ name: 'settings' }" clickable v-ripple>
             <q-item-section avatar>
-              <q-icon name="i-hugeicons-test-tube-01" />
+              <q-icon name="i-hugeicons-settings-01" />
             </q-item-section>
 
-            <q-item-section> Resetovat Testovací Data </q-item-section>
+            <q-item-section> Nastavení </q-item-section>
           </q-item>
-
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -74,10 +80,9 @@ import { computed, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 
 import { useQuasar } from 'quasar'
-import { useDark } from '@/composables/dark'
-import { useApi } from './composables/useApi';
 
-const { isDark, toggle } = useDark()
+// import { useDark } from '@/composables/dark'
+// const { isDark, toggle } = useDark()
 
 const $q = useQuasar()
 $q.iconMapFn = (iconName) => {
@@ -90,6 +95,10 @@ $q.iconMapFn = (iconName) => {
 
 const { currentRoute } = useRouter()
 const title = computed(() => {
+  if (currentRoute.value.name === 'ro-printout') {
+    return 'Příjemka - Tisk Štítků'
+  }
+
   if (currentRoute.value.name == 'po-list') {
     return 'Výdejky'
   }
@@ -107,17 +116,22 @@ const title = computed(() => {
   }
 
   if (currentRoute.value.name == 'ro-allocation') {
-    return 'Příjem'
+    return 'Příjemka'
   }
-  
-  return "Sklad"
+
+  if (currentRoute.value.name == 'settings') {
+    return 'Nastavení'
+  }
+
+  if (currentRoute.value.name == 'quicksell') {
+    return 'Prodej'
+  }
+
+  return 'Sklad'
 })
 
 const rightDrawerOpen = ref(false)
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value
 }
-
-const { resetDummyData } = useApi()
-
 </script>

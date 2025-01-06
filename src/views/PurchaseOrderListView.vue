@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import NotFound from '@/components/NotFound.vue';
+
 
 </script>
 
 <template>
     <q-page padding>
-        LIST OF PURCHASE ORDERS
-        <q-btn :to="{ name: 'po-detail', params: { id: 'foobar' } }" label="detail" />
+        <NotFound />
     </q-page>
 </template>
 

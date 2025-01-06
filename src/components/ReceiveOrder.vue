@@ -1,6 +1,6 @@
 <template>
   <Card>
-    <div class="flex justify-between">
+    <div :class="`flex justify-between ${order.resolved ? 'text-green' : ''}`">
       <div class="flex flex-col">
         <span class="font-bold">{{ order.id }}</span>
         <span>{{ order.rackId }}</span>
@@ -12,10 +12,12 @@
     </div>
     <div class="flex justify-end">
       <q-btn
-        label="naskladnit"
+        :label="order.resolved ? 'hotovo' : 'naskladnit'"
         unelevated
-        color="secondary"
+        color="primary"
+        :class="order.resolved ? 'bg-green-4' : ''"
         :to="{ name: 'ro-detail', params: { id: order.id } }"
+        :disable="order.resolved"
       />
     </div>
   </Card>

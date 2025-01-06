@@ -26,8 +26,8 @@ export default defineConfig({
         name: 'Sklad',
         short_name: 'Sklad',
         description: 'Skladová aplikace pro příjem a výdej zboží.',
-        theme_color: '#e03a3c',
-        background_color: '#e03a3c',
+        theme_color: '#3e608a',
+        background_color: '#3e608a',
         icons: [
           {
             src: 'pwa-64x64.png',

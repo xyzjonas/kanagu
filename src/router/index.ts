@@ -6,6 +6,7 @@ import ReceiveOrderAllocationView from '@/views/ReceiveOrderAllocationView.vue'
 import ReceiveOrderDetailView from '@/views/ReceiveOrderDetailView.vue'
 import ReceiveOrderListView from '@/views/ReceiveOrderListView.vue'
 import ReceiveOrderPrintoutView from '@/views/ReceiveOrderPrintoutView.vue'
+import SettingsView from '@/views/SettingsView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -16,6 +17,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView
     },
     {
       path: '/purchase-orders',

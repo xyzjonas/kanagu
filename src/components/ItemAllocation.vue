@@ -95,40 +95,26 @@
         <span class="text-gray-7 mt-2">{{ item.item.id }}</span>
         <span class="text-lg">{{ item.item.name }}</span>
 
-        <span class="mt-10">Zadat počet MJ k naskladnění</span>
+        <span class="mt-6">Zadat počet MJ k naskladnění</span>
         <span class="text-2xl">
           <span class="text-gray-5">BUŇKA</span> {{ selectedSlot?.name }}
         </span>
-        <q-form @submit="console.info('!!!')">
-        <q-input
-          v-model="confirmation"
-          label="Počet MJ"
-          autofocus
-          :rules="[(val) => val === selectedSlot?.name]"
-          no-error-icon
-          input-class="text-transparentt text-center"
-          inputmode="numeric"
-        />
-        <div class="flex justify-end mt-auto py-5 gap-1">
-          <q-btn
-            unelevated
-            color="primary"
-            label="uložit"
-            icon="save"
-            class="flex-1"
+        <q-form @submit="submitAllocation">
+          <q-input
+            v-model="count"
+            label="Počet MJ"
+            autofocus
+            no-error-icon
+            input-class="text-transparentt text-center"
+            :rules="[rules.notEmpty, rules.atLeastOne]"
+            inputmode="numeric"
           />
-        </div>
-    </q-form>
-        <!-- <input @ -->
+          <div class="flex justify-end mt-auto py-5 gap-1">
+            <q-btn unelevated color="primary" label="uložit" class="flex-1" type="submit" />
+          </div>
+        </q-form>
       </div>
     </q-step>
-
-    <!-- <template v-slot:navigation>
-        <q-stepper-navigation>
-          <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 4 ? 'Finish' : 'Continue'" />
-          <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
-        </q-stepper-navigation>
-      </template> -->
   </q-stepper>
 
   <q-dialog v-model="seamless" position="bottom">
@@ -148,7 +134,7 @@
             autofocus
             :rules="[(val) => !!val || 'Pole nesmí být prázdné']"
           />
-          <q-btn submit unelevated color="primary" class="w-full mt-5">Přidat</q-btn>
+          <q-btn type="submit" unelevated color="primary" class="w-full mt-5" label="Přidat"></q-btn>
         </q-form>
       </div>
     </q-card>
@@ -159,7 +145,9 @@
 import type { OrderItem } from '@/composables/useApi'
 import Card from './Card.vue'
 import { ref, watch } from 'vue'
-import { QStepper } from 'quasar'
+import { QStepper, useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+import { rules } from '@/utils'
 
 defineProps<{
   item: OrderItem
@@ -205,6 +193,7 @@ const bunky = ref([
 ])
 
 const selectedSlot = ref<Slot>(bunky.value[0])
+const count = ref<number>()
 
 const seamless = ref(false)
 const newSlot = ref('')
@@ -217,6 +206,20 @@ async function addNewSlot() {
   bunky.value.push(slot)
   selectedSlot.value = slot
   seamless.value = false
+}
+
+const $q = useQuasar()
+const emit = defineEmits<{
+  (e: 'allocated', slot: string, count: number): void
+}>()
+async function submitAllocation() {
+  // todo: API call
+  $q.notify({
+    color: 'positive',
+    message: `${count.value} MJ naskladněno do ${selectedSlot.value.name}`
+  })
+  
+  setTimeout(() => emit('allocated', selectedSlot.value.name, count.value ?? 0), 300)
 }
 </script>
 

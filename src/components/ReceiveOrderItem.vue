@@ -1,29 +1,31 @@
 <template>
   <Card>
-    <div class="flex flex-col">
+    <div :class="`flex flex-col ${item.resolved ? 'text-green' : ''}`">
       <span class="font-bold">{{ item.item.id }}</span>
-      <span class="text-secondary text-lg">{{ item.item.name }}</span>
+      <span :class="`${item.resolved ? 'text-green' : 'text-secondary'} text-lg`">{{ item.item.name }}</span>
       <span class="text-gray-4">MJ = 100ks</span>
     </div>
     <div class="flex justify-end gap-1">
       <q-btn
         label="tisk"
         unelevated
+        class="flex-1"
         color="secondary"
-        icon="print"
         :to="{ name: 'ro-printout', params: { orderId, id: item.id } }"
       />
       <q-btn
-        label="přijmout"
+        :label="item.resolved ? 'hotovo' : 'přijmout'"
         unelevated
-        color="secondary"
-        icon="get_app"
+        color="primary"
+        :class="`flex-1 ${ item.resolved ? 'bg-green-4' : ''}`"
         :to="{ name: 'ro-allocation', params: { orderId, id: item.id } }"
+        :disable="item.resolved"
       />
       <q-btn
-        :label="`${item.count} MJ`"
+        :label="`${item.resolved ? 0 : item.count} MJ`"
         unelevated
         color="dark"
+        class="min-w-[5rem]"
         disable
       />
     </div>
