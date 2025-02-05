@@ -1,15 +1,21 @@
-<script setup lang="ts">
-import NotFound from '@/components/NotFound.vue';
-
-
-</script>
-
 <template>
     <q-page padding>
-        <NotFound />
+      <div class="flex flex-col gap-2">
+        <ReceiveOrderItem v-for="order in receiveOrders" :key="order.id" :order="order" />
+      </div>
     </q-page>
-</template>
-
-<style lang="sass" scoped>
-
-</style>
+  </template>
+  
+  <script setup lang="ts">
+  import ReceiveOrderItem from '@/components/ReceiveOrder.vue';
+  import { useApi } from '@/composables/useApi'
+  
+  const { getStockoutOrders } = useApi()
+  
+  const receiveOrders = await getStockoutOrders()
+  console.info(receiveOrders)
+  // receiveOrders[0].
+  </script>
+  
+  <style lang="sass" scoped></style>
+  

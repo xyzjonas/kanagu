@@ -10,9 +10,9 @@
 import ReceiveOrderItem from '@/components/ReceiveOrder.vue';
 import { useApi } from '@/composables/useApi'
 
-const { receiveOrders } = useApi()
+const { getStockinOrders } = useApi()
 
-// receiveOrders[0].
+const receiveOrders = await getStockinOrders()
 </script>
 
 <style lang="sass" scoped></style>

@@ -12,9 +12,11 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "pb": "pocketbase/pocketbase serve",
-    "pwa-generate": "pwa-assets-generator --preset minimal-2023 public/logo.svg"
+    "pwa-generate": "pwa-assets-generator --preset minimal-2023 public/logo.svg",
+    "openapi-ts": "openapi-ts"
   },
   "dependencies": {
+    "@hey-api/client-fetch": "^0.8.0",
     "@iconify-json/hugeicons": "^1.1.0",
     "@quasar/extras": "^1.16.14",
     "@unocss/preset-icons": "^0.61.9",
@@ -25,6 +27,7 @@
     "vue-router": "^4.3.3"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.64.1",
     "@quasar/vite-plugin": "^1.8.1",
     "@rushstack/eslint-patch": "^1.8.0",
     "@tsconfig/node20": "^20.1.4",
@@ -39,7 +42,7 @@
     "npm-run-all2": "^6.2.0",
     "prettier": "^3.2.5",
     "sass-embedded": "^1.82.0",
-    "typescript": "~5.4.0",
+    "typescript": "^5.7.3",
     "vite": "^5.3.1",
     "vite-plugin-pwa": "^0.21.1",
     "vue-tsc": "^2.0.21"

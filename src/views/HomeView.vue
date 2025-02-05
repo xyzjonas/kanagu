@@ -3,7 +3,6 @@
 
 <template>
   <q-page padding class="flex flex-col gap-2">
-    
     <q-card flat bordered  @click="$router.push({ name: 'ro-list' })" class="p-5 flex items-center justify-center hover:cursor-pointer flex-1 bg-primary text-white">
       <span class="uppercase font-bold">příjemky</span>
     </q-card>

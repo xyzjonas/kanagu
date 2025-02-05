@@ -26,7 +26,19 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="left" overlay bordered>
-      <q-scroll-area class="fit">
+      <div
+        class="absolute-top bg-primary text-white flex justify-between items-center px-5"
+        style="height: 80px"
+      >
+        <div v-if="isLoggedIn" class="bg-transparent flex flex-col">
+          <div class="text-weight-bold">{{ loggedUser }}</div>
+          <span class="opacity-[0.5]">Přihlášení vyprší:</span>
+          <span class="text-xs">{{ expiresAt.toLocaleDateString() }} - {{ expiresAt.toLocaleTimeString() }}</span>
+        </div>
+        <q-btn v-if="isLoggedIn" flat dense icon="logout" @click="clickLogout" />
+        <q-btn v-else flat dense label="přihlásit" icon="login" @click="router.push({ name: 'login' }); rightDrawerOpen = false" />
+      </div>
+      <q-scroll-area style="height: calc(100% - 80px); margin-top: 80px">
         <q-list padding class="menu-list">
           <q-item :to="{ name: 'home' }" clickable v-ripple>
             <q-item-section avatar>
@@ -69,8 +81,12 @@
         </q-list>
       </q-scroll-area>
     </q-drawer>
+    
     <q-page-container class="app-page">
-      <router-view />
+      <suspense>
+        <router-view />
+        <template #fallback>Loading...</template>
+      </suspense>
     </q-page-container>
   </q-layout>
 </template>
@@ -80,9 +96,18 @@ import { computed, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 
 import { useQuasar } from 'quasar'
+import { useAuth } from './composables/useAuth'
 
 // import { useDark } from '@/composables/dark'
 // const { isDark, toggle } = useDark()
+
+const router = useRouter()
+const { logout, loggedUser, expiresAt, isLoggedIn } = useAuth()
+
+const clickLogout = () => {
+  logout()
+  router.push({ name: 'login' })
+}
 
 const $q = useQuasar()
 $q.iconMapFn = (iconName) => {
