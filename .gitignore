@@ -31,3 +31,6 @@ coverage
 *.tsbuildinfo
 
 *.note
+
+# Ansible
+.ansible

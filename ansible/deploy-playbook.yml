@@ -1,0 +1,45 @@
+---
+# Write your playbook below.
+# Replace these contents with the tasks you'd like to complete and the modules you need.
+# For help getting started, check out https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook
+- name: Build & deploy the app
+  hosts: staging
+  become: true
+  vars:
+    archive_path: "/tmp/kanagu-dist.tar.gz"
+    project_path: /home/jonas/Projects/personal/kanagu
+  roles: []
+  pre_tasks:
+    - name: NPM build
+      become: false
+      ansible.builtin.command:
+        cmd: npm run build-only
+        chdir: "{{ project_path }}"
+      delegate_to: localhost
+    - name: "Create archive {{ archive_path  }}"
+      become: false
+      community.general.archive:
+        path: "{{ project_path }}/dist"
+        dest: "{{ archive_path }}"
+        format: gz
+      delegate_to: localhost
+  tasks:
+    - name: Upload archive to target host
+      ansible.builtin.copy:
+        src: "{{ archive_path }}"
+        dest: /tmp/dist.tar.gz
+
+    - name: Extract archive to /var/www/html
+      ansible.builtin.unarchive:
+        src: /tmp/dist.tar.gz
+        dest: /var/www/html
+        remote_src: true
+        owner: www-data
+        group: www-data
+        mode: '0755'
+        extra_opts: ["--strip-components=1", "--overwrite"]
+
+    - name: Restart Nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted

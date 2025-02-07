@@ -1,0 +1,2 @@
+[staging]
+oracle-vm become=true become-user=ubuntu

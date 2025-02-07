@@ -37,36 +37,45 @@ export const useAuth = () => {
     }
 
     async function login(email: string, password: string) {
-        const response = await postLogin({
-            body: {
-                email,
-                password
-            }
-        })
-
-        if (response.error) {
-            $q.notify({
-                color: 'negative',
-                message: `Přihlášení selhalo`
+        try {
+            const response = await postLogin({
+                body: {
+                    email,
+                    password
+                }
             })
-            console.error("Login failed", response.error)
-            return
-        }
 
-        if (!response.data?.accessToken) {
-            console.error("Response does not contain access token")
-            console.error(response.response)
-            console.error(response.data)
-            return
-        }
 
-        loggedUser.value = email
-        token.value = response.data.accessToken
-        expiresAt.value = getNewExpirationDate(response.data.expiresIn)
-        $q.notify({
-            color: "positive",
-            message: "Přihlášení proběhlo úspěšně!"
-        })
+            if (!response.response.ok || response.error) {
+                $q.notify({
+                    type: 'negative',
+                    message: `Přihlášení selhalo`
+                })
+                console.error("Login failed", response.error)
+                return
+            }
+
+            if (!response.data?.accessToken) {
+                console.error("Response does not contain access token")
+                console.error(response.response)
+                console.error(response.data)
+                return
+            }
+
+            loggedUser.value = email
+            token.value = response.data.accessToken
+            expiresAt.value = getNewExpirationDate(response.data.expiresIn)
+            $q.notify({
+                type: "positive",
+                message: "Přihlášení proběhlo úspěšně!"
+            })
+        } catch(err: unknown) {
+            $q.notify({
+                type: 'negative',
+                message: `Nastala chyba při přihlašování, zkontrolujte nastavení připojení.`
+            })
+            throw err
+        }
     }
 
     return {

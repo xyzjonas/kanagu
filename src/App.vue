@@ -33,10 +33,19 @@
         <div v-if="isLoggedIn" class="bg-transparent flex flex-col">
           <div class="text-weight-bold">{{ loggedUser }}</div>
           <span class="opacity-[0.5]">Přihlášení vyprší:</span>
-          <span class="text-xs">{{ expiresAt.toLocaleDateString() }} - {{ expiresAt.toLocaleTimeString() }}</span>
+          <span class="text-xs"
+            >{{ expiresAt.toLocaleDateString() }} - {{ expiresAt.toLocaleTimeString() }}</span
+          >
         </div>
         <q-btn v-if="isLoggedIn" flat dense icon="logout" @click="clickLogout" />
-        <q-btn v-else flat dense label="přihlásit" icon="login" @click="router.push({ name: 'login' }); rightDrawerOpen = false" />
+        <q-btn
+          v-else
+          flat
+          dense
+          label="přihlásit"
+          icon="login"
+          @click="clickLogin"
+        />
       </div>
       <q-scroll-area style="height: calc(100% - 80px); margin-top: 80px">
         <q-list padding class="menu-list">
@@ -49,7 +58,7 @@
           </q-item>
           <q-item :to="{ name: 'ro-list' }" clickable v-ripple>
             <q-item-section avatar>
-              <q-icon name="i-hugeicons-package-receive" />
+              <q-icon name="get_app" />
             </q-item-section>
 
             <q-item-section> Příjemky </q-item-section>
@@ -57,7 +66,7 @@
 
           <q-item :to="{ name: 'po-list' }" clickable v-ripple>
             <q-item-section avatar>
-              <q-icon name="i-hugeicons-share-03" />
+              <q-icon name="upload" />
             </q-item-section>
 
             <q-item-section> Výdejky </q-item-section>
@@ -81,12 +90,24 @@
         </q-list>
       </q-scroll-area>
     </q-drawer>
-    
+
     <q-page-container class="app-page">
-      <suspense>
+      <RouterView v-slot="{ Component }">
+        <template v-if="Component">
+            <KeepAlive>
+              <Suspense>
+                <!-- hlavní obsah -->
+                <component :is="Component"></component>
+                <template #fallback>Načítání...</template>
+              </Suspense>
+            </KeepAlive>
+        </template>
+      </RouterView>
+
+      <!-- <suspense>
         <router-view />
         <template #fallback>Loading...</template>
-      </suspense>
+      </suspense> -->
     </q-page-container>
   </q-layout>
 </template>
@@ -95,11 +116,17 @@
 import { computed, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 
-import { useQuasar } from 'quasar'
+import { useQuasar, Notify } from 'quasar'
 import { useAuth } from './composables/useAuth'
 
 // import { useDark } from '@/composables/dark'
 // const { isDark, toggle } = useDark()
+
+Notify.setDefaults({
+  classes: 'w-full text-md font-bold',
+  progress: true,
+  icon: 'chat_bubble'
+})
 
 const router = useRouter()
 const { logout, loggedUser, expiresAt, isLoggedIn } = useAuth()
@@ -107,6 +134,11 @@ const { logout, loggedUser, expiresAt, isLoggedIn } = useAuth()
 const clickLogout = () => {
   logout()
   router.push({ name: 'login' })
+}
+
+const clickLogin = () => {
+  router.push({ name: 'login' })
+  rightDrawerOpen.value = false
 }
 
 const $q = useQuasar()

@@ -4,8 +4,8 @@ import PurchaseOrderDetailView from '@/views/PurchaseOrderDetailView.vue'
 import PurchaseOrderListView from '@/views/PurchaseOrderListView.vue'
 import QuicksellView from '@/views/QuicksellView.vue'
 import ReceiveOrderAllocationView from '@/views/ReceiveOrderAllocationView.vue'
-import ReceiveOrderDetailView from '@/views/ReceiveOrderDetailView.vue'
-import ReceiveOrderListView from '@/views/ReceiveOrderListView.vue'
+import StockinDetailView from '@/views/stockin/StockinDetailView.vue'
+import StockinListView from '@/views/stockin/StockinListView.vue'
 import ReceiveOrderPrintoutView from '@/views/ReceiveOrderPrintoutView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -39,13 +39,13 @@ const routes = [
   {
     path: '/receive-orders',
     name: 'ro-list',
-    component: ReceiveOrderListView,
+    component: StockinListView,
     meta: { requiresAuth: true }
   },
   {
     path: '/receive-orders/:id',
     name: 'ro-detail',
-    component: ReceiveOrderDetailView,
+    component: StockinDetailView,
     meta: { requiresAuth: true }
   },
   {

@@ -27,6 +27,15 @@ export interface ReceiveOrder {
   resolved: boolean
 }
 
+export type DocumentFilter = "FULLFILED" | "UNFULLFILED"
+export type DocumentType = "STOCKIN" | "STOCKOUT"
+
+export interface StockDocumentArgs {
+  type: DocumentType
+  pageNum?: number
+  filter?: DocumentFilter
+}
+
 const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')
 // const receiveOrders = useLocalStorage<ReceiveOrder[]>('receive-orders', [])
 
@@ -45,112 +54,31 @@ export const useApi = () => {
     return request;
   });
 
-  // const items: { [key: string]: Item } = {
-  //   bolt14: {
-  //     id: '938-016-0800-12',
-  //     name: 'Šr. závit do oceli 8.4 M14'
-  //   },
-  //   bolt12: {
-  //     id: '938-016-0800-12',
-  //     name: 'Šr. závit do oceli 8.4 M12'
-  //   },
-  //   bolt10: {
-  //     id: '938-016-0800-12',
-  //     name: 'Šr. závit do oceli 8.4 M10'
-  //   }
-  // }
-
-  // function getRandomCount(number: number) {
-  //   return Math.ceil((1 + Math.random()) * 10 * Math.pow(number + 1 + 10, 2))
-  // }
-
-  // function randomBool() {
-  //   return Math.random() > 0.5
-  // }
-
-  // function resetDummyData() {
-  //   receiveOrders.value = []
-  //   const now = new Date()
-  //   for (let index = 0; index < 10; index++) {
-  //     receiveOrders.value.push({
-  //       id: `P000490809910428069${index}`,
-  //       supplier: 'FISCHER',
-  //       received: now.toISOString(),
-  //       rackId: 'A3552-22-ax',
-  //       resolved: randomBool(),
-  //       items: [
-  //         {
-  //           id: `order-item-${index}-1`,
-  //           item: items.bolt14,
-  //           count: getRandomCount(index),
-  //           resolved: randomBool(),
-  //         },
-  //         {
-  //           id: `order-item-${index}-2`,
-  //           item: items.bolt12,
-  //           count: getRandomCount(index),
-  //           resolved: randomBool(),
-  //         },
-  //         {
-  //           id: `order-item-${index}-3`,
-  //           item: items.bolt10,
-  //           count: getRandomCount(index),
-  //           resolved: randomBool(),
-  //         }
-  //       ]
-  //     })
-  //   }
-
-  //   $q.notify({
-  //     color: "positive",
-  //     message: "Testovací data úspěšně resetována"
-  //   })
-    
-  // }
-
-  // if (receiveOrders.value.length === 0) {
-  //   resetDummyData()
-  // }
-
   const testConnection = async () => {
     try {
       await postLogin({ body: { email: "", password: "" } })
       $q.notify({
-        color: 'positive',
+        type: 'positive',
         message: 'Test připojení proběhl úspěšně!'
       })
     } catch(err: unknown) {
       console.error(err)
       $q.notify({
-        color: 'negative',
-        message: 'Připojení selhalo, zkus zkontrolovat adresu serveru'
+        type: 'negative',
+        message: 'Připojení selhalo, zkontrolujte nastavení připojení.'
       })
     }
   }
 
-  const getStockinOrders = async () => {
+  const getStockDocuments = async (args: StockDocumentArgs) => {
     const res = await getApiStockDocumentApi({
-      query: {
-        type: 'STOCKIN'
-      }
+      query: {...args}
     })
-    return res.data
-  }
-
-  const getStockoutOrders = async () => {
-    const res = await getApiStockDocumentApi({
-      query: {
-        type: 'STOCKOUT'
-      }
-    })
-    return res.data
+    return res.data ?? []
   }
 
   return {
-    getStockinOrders,
-    getStockoutOrders,
-    // purchaseOrders,
-    // resetDummyData,
+    getStockDocuments,
     testConnection,
     baseUrl,
   }

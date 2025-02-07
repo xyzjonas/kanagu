@@ -17,7 +17,7 @@ export default defineConfig({
     presetWebFonts({
       provider: 'bunny',
       fonts: {
-        sans: 'Barlow:200,300,400,500,600'
+        sans: 'Roboto:200,300,400,500,600'
       }
     })
   ],

@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="grid content-center justify-stretch max-w-md mx-auto">
+  <q-page padding class="grid content-start md:content-center justify-stretch max-w-md mx-auto">
     <q-form @submit="postLogin" autofocus class="text-center">
       <h1 class="uppercase">Přihlášení</h1>
       <h2 class="mb-10">Použíjte lokální účet pro přihlášení.</h2>
