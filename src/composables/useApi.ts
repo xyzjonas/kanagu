@@ -3,7 +3,7 @@ import { useQuasar } from 'quasar'
 import { watch } from 'vue'
 
 import { client } from '@/client/client.gen';
-import { getApiStockDocumentApi, postLogin } from '@/client';
+import { getApiStockDocumentApi, getApiStockDocumentApiByStockDocumentNumber, postLogin } from '@/client';
 import { useAuth } from './useAuth';
 
 export interface Item {
@@ -32,8 +32,8 @@ export type DocumentType = "STOCKIN" | "STOCKOUT"
 
 export interface StockDocumentArgs {
   type: DocumentType
-  pageNum?: number
-  filter?: DocumentFilter
+  page?: number
+  currentFilter?: DocumentFilter
 }
 
 const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')
@@ -77,7 +77,17 @@ export const useApi = () => {
     return res.data ?? []
   }
 
+  const getStockDocument = async (id: string) => {
+    const res = await getApiStockDocumentApiByStockDocumentNumber({
+      path: {
+        stockDocumentNumber: id
+      }
+    })
+    return res.data
+  }
+
   return {
+    getStockDocument,
     getStockDocuments,
     testConnection,
     baseUrl,

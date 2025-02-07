@@ -18,18 +18,11 @@
     <StockDocumentList
       :receive-orders="receiveOrders"
       :loading="current === 1 && loading"
+      is-stock-out
       class="mb-5"
     />
     <div v-if="!thatsIt" class="flex items-center justify-center mt-auto">
-      <q-btn
-        icon="add"
-        dense
-        flat
-        color="primary"
-        label="načíst další"
-        :loading="loading"
-        @click="next"
-      />
+      <q-btn icon="add" dense flat color="primary" label="načíst další" :loading="loading" @click="next" />
     </div>
 
     <BackToTopFab />
@@ -37,15 +30,15 @@
 </template>
 
 <script setup lang="ts">
-import BackToTopFab from '@/components/BackToTopFab.vue';
+import BackToTopFab from '@/components/BackToTopFab.vue'
 import StockDocumentList from '@/components/StockDocumentList.vue'
 import { usePaginatedDocuments } from '@/composables/pagination'
 import { onMounted } from 'vue'
 
-const { receiveOrders, next, reset, filter, current, loading, thatsIt } = usePaginatedDocuments({
-  localStorageFilterId: 'stockin-filter',
-  localStoragePageId: 'stockin-pagenum',
-  type: 'STOCKIN'
+const { receiveOrders, next, reset, thatsIt, current, filter, loading } = usePaginatedDocuments({
+  localStorageFilterId: 'stockout-filter',
+  localStoragePageId: 'stockout-pagenum',
+  type: 'STOCKOUT'
 })
 
 onMounted(reset)

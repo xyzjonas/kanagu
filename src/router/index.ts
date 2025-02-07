@@ -1,7 +1,7 @@
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
-import PurchaseOrderDetailView from '@/views/PurchaseOrderDetailView.vue'
-import PurchaseOrderListView from '@/views/PurchaseOrderListView.vue'
+import StockoutDetailView from '@/views/stockout/StockoutDetailView.vue'
+import StockoutListView from '@/views/stockout/StockoutListView.vue'
 import QuicksellView from '@/views/QuicksellView.vue'
 import ReceiveOrderAllocationView from '@/views/ReceiveOrderAllocationView.vue'
 import StockinDetailView from '@/views/stockin/StockinDetailView.vue'
@@ -27,13 +27,13 @@ const routes = [
   {
     path: '/purchase-orders',
     name: 'po-list',
-    component: PurchaseOrderListView,
+    component: StockoutListView,
     meta: { requiresAuth: true }
   },
   {
     path: '/purchase-orders/:id',
     name: 'po-detail',
-    component: PurchaseOrderDetailView,
+    component: StockoutDetailView,
     meta: { requiresAuth: true }
   },
   {
@@ -46,6 +46,7 @@ const routes = [
     path: '/receive-orders/:id',
     name: 'ro-detail',
     component: StockinDetailView,
+    props: true,
     meta: { requiresAuth: true }
   },
   {
