@@ -34,6 +34,7 @@ export interface StockDocumentArgs {
   type: DocumentType
   page?: number
   currentFilter?: DocumentFilter
+  searchString?: string
 }
 
 const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')

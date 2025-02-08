@@ -1,7 +1,7 @@
 <template>
     <div :class="`flex flex-col border-gray-3 border-solid border-1 border-rounded-md overflow-hidden relative opacity-[0.8] ${dynamicClasses}`">
       <div class="absolute-top pl-2 pt-1 opacity-[0.8]">
-        <q-icon :name="isStockOut ? 'upload' : 'get_app'" size="1.2rem" />
+        <q-icon :name="isStockOut ? 'output' : 'exit_to_app'" size="1.2rem" />
       </div>
       <div class="ml-auto flex items-end flex-col p-2 text-left">
         <span class="font-600">{{ order.stockDocumentNumber }}</span>
@@ -13,8 +13,7 @@
           <span>{{ createdOn }}</span>
         </div>
         <div>
-          <span class="opacity-[0.5] mr-1">provedené pohyby:</span>
-          <span>{{ status.itemsCompleted }} / {{ status.items }}</span>
+          <span class="opacity-[0.5] mr-1 text-xs">{{ status.itemsCompleted }}/{{ status.items }} provedené pohyby</span>
         </div>
         <span class="text-lg font-500">{{ customer }}</span>
       </div>
@@ -23,17 +22,27 @@
           square
           :label="isStockOut ? 'vyskladnit' : 'naskladnit'"
           unelevated
+          class="h-[3rem]"
           color="primary"
           :to="{ name: 'ro-detail', params: { id: order.stockDocumentNumber } }"
           :disable="isStockOut"
         />
         <q-btn
+          v-else-if="cancelled"
+          square
+          label="st"
+          unelevated
+          class="h-[3rem]"
+          color="gray"
+          disable
+        />
+        <q-btn
           v-else
           square
-          label="uzavřeno"
+          :label="isStockOut ? 'výdej uzavřen' : 'příjem uzavřen'"
           unelevated
           color="positive"
-          :class="`${isDone ? 'opacity-[0.5]' : ''}`"
+          :class="`${isDone ? 'opacity-[0.5]' : ''} h-[3rem]`"
           :to="{ name: 'ro-detail', params: { id: order.stockDocumentNumber } }"
           disable
         />
@@ -77,13 +86,7 @@ const dynamicClasses = computed(() => {
   return ""
 })
 
-const closedOn = computed(() => {
-  if (props.order.expeditionDate) {
-    return new Date(props.order.expeditionDate) < new Date()
-  }
-
-  return false
-})
+const cancelled = computed(() => !!props.order.cancelledOn)
 </script>
 
 <style lang="sass" scoped></style>

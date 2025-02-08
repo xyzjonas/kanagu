@@ -21,7 +21,7 @@
           type="password"
           :rules="[rules.notEmpty]"
         />
-        <q-btn unelevated color="primary" type="submit" class="w-full">Přihlásit</q-btn>
+        <q-btn unelevated color="primary" type="submit" class="w-full h-[3.5rem] mt-3">Přihlásit</q-btn>
       </div>
     </q-form>
   </q-page>

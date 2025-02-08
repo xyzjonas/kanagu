@@ -2,7 +2,7 @@
   <q-layout view="lHh LpR fFf" class="font-sans">
     <q-header class="bg-white text-dark shadow-sm">
       <q-toolbar class="app-page">
-        <q-toolbar-title>
+        <q-toolbar-title @click="() => $router.push({ name: 'home' })" class="hover:cursor-pointer">
           <!-- <q-avatar class="mr-2">
             <img alt="Vue logo" class="logo bg-primary p-2" src="/logo.svg" />
           </q-avatar> -->
