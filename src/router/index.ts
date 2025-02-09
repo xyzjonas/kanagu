@@ -8,9 +8,12 @@ import StockinDetailView from '@/views/stockin/StockinDetailView.vue'
 import StockinListView from '@/views/stockin/StockinListView.vue'
 import ReceiveOrderPrintoutView from '@/views/ReceiveOrderPrintoutView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+import StockinBaseView from '@/views/stockin/StockinBaseView.vue'
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuth } from '@/composables/useAuth'
+import path from 'path'
 
 const routes = [
   {
@@ -44,10 +47,16 @@ const routes = [
   },
   {
     path: '/receive-orders/:id',
-    name: 'ro-detail',
-    component: StockinDetailView,
+    component: StockinBaseView,
+    meta: { requiresAuth: true },
     props: true,
-    meta: { requiresAuth: true }
+    children: [
+      {
+        name: 'ro-detail',
+        component: StockinDetailView,
+        path: '',
+      }
+    ]
   },
   {
     path: '/receive-orders/:orderId/items/:id/allocate',

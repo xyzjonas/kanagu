@@ -1,35 +1,31 @@
 <template>
   <q-page padding>
-    <main v-if="stockDocument">
-      <div class="flex items-center gap-1">
-        <q-btn flat dense icon="i-hugeicons-arrow-left-03" :to="{ name: 'ro-list' }"></q-btn>
-        <q-separator vertical class="mr-2" />
-        <!-- <OrderHeader :order="stockDocument" /> -->
-        <div class="flex justify-between items-center">
-          <div>
-            <h1 class="text-2xl font-400 m-0">{{ stockDocument.stockDocumentNumber }}</h1>
-            <h2 class="text-lg m-0">{{ stockDocument.supplierName }}</h2>
-          </div>
-          <!-- <q-btn flat icon="i-hugeicons-arrow-turn-backward" @click="$router.back()" /> -->
-        </div>
+    <div v-if="stockDocument">
+      <div class="flex items-center gap-1 flex-nowrap">
+        <q-btn flat dense icon="arrow_back" :to="{ name: 'ro-list' }"></q-btn>
+        <q-separator vertical class="mx-3" />
+        <OrderHeader :order="stockDocument" />
       </div>
       <router-view></router-view>
-    </main>
+    </div>
     <NotFound v-else />
   </q-page>
 </template>
 
 <script setup lang="ts">
+import type { StockDocument } from '@/client'
 import NotFound from '@/components/NotFound.vue'
 import OrderHeader from '@/components/OrderHeader.vue'
-import ReceiveOrderItem from '@/components/ReceiveOrderItem.vue'
-import { useApi } from '@/composables/useApi'
-import { useRoute } from 'vue-router'
+import { useStockDocumentById } from '@/composables/byId'
+import { provide } from 'vue'
 
-const { getStockDocument } = useApi()
+const props = defineProps<{ id: string }>()
 
-const id = useRoute().params.id as string
+const { stockDocument, reload } = useStockDocumentById({ id: props.id, type: 'STOCKIN' })
+await reload()
 
-const stockDocument = await getStockDocument(id)
+if (stockDocument.value) {
+  provide<StockDocument>('stockinDocument', stockDocument.value)
+}
 </script>
 <style lang="sass" scoped></style>

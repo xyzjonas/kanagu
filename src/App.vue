@@ -94,7 +94,7 @@
     <q-page-container class="app-page">
       <RouterView v-slot="{ Component }">
         <template v-if="Component">
-            <KeepAlive>
+            <KeepAlive exclude="StockinBaseView,StockoutDetailView">
               <Suspense>
                 <!-- hlavní obsah -->
                 <component :is="Component"></component>
