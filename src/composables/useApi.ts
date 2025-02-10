@@ -91,10 +91,10 @@ export const useApi = () => {
         message: 'Test připojení proběhl úspěšně!'
       })
     } catch (err: unknown) {
-      console.error(err)
       $q.notify({
         type: 'negative',
-        message: 'Připojení selhalo, zkontrolujte nastavení připojení.'
+        message: 'Připojení selhalo, zkontrolujte nastavení připojení.',
+        caption: `${err}`,
       })
     }
   }

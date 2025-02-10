@@ -21,7 +21,14 @@
           type="password"
           :rules="[rules.notEmpty]"
         />
-        <q-btn unelevated color="primary" type="submit" class="w-full h-[3.5rem] mt-3">Přihlásit</q-btn>
+        <q-btn
+          unelevated
+          color="primary"
+          type="submit"
+          class="w-full h-[3.5rem] mt-3"
+          :loading="loading"
+          >Přihlásit</q-btn
+        >
       </div>
     </q-form>
   </q-page>
@@ -39,13 +46,18 @@ const route = useRoute()
 
 const email = ref<string>('')
 const password = ref<string>('')
-const postLogin = () =>
-  login(email.value, password.value).then(() => {
-    if (route.query.redirect) {
-      const decodedRoute = JSON.parse(decodeURIComponent(route.query.redirect as string))
-      router.push(decodedRoute)
-    } else {
-      router.push({ name: 'home' })
-    }
-  })
+const loading = ref(false)
+const postLogin = () => {
+  loading.value = true
+  login(email.value, password.value)
+    .then(() => {
+      if (route.query.redirect) {
+        const decodedRoute = JSON.parse(decodeURIComponent(route.query.redirect as string))
+        router.push(decodedRoute)
+      } else {
+        router.push({ name: 'home' })
+      }
+    })
+    .finally(() => (loading.value = false))
+}
 </script>

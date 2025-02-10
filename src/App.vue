@@ -49,14 +49,14 @@
       </div>
       <q-scroll-area style="height: calc(100% - 80px); margin-top: 80px">
         <q-list padding class="menu-list">
-          <q-item :to="{ name: 'home' }" clickable v-ripple>
+          <q-item :to="{ name: 'home' }" clickable v-ripple :disable="!isLoggedIn">
             <q-item-section avatar>
               <q-icon name="home" />
             </q-item-section>
 
             <q-item-section> Domů </q-item-section>
           </q-item>
-          <q-item :to="{ name: 'ro-list' }" clickable v-ripple>
+          <q-item :to="{ name: 'ro-list' }" clickable v-ripple :disable="!isLoggedIn">
             <q-item-section avatar>
               <q-icon name="exit_to_app" />
             </q-item-section>
@@ -64,7 +64,7 @@
             <q-item-section> Příjemky </q-item-section>
           </q-item>
 
-          <q-item :to="{ name: 'po-list' }" clickable v-ripple>
+          <q-item :to="{ name: 'po-list' }" clickable v-ripple :disable="!isLoggedIn">
             <q-item-section avatar>
               <q-icon name="output" />
             </q-item-section>
@@ -72,7 +72,7 @@
             <q-item-section> Výdejky </q-item-section>
           </q-item>
 
-          <q-item :to="{ name: 'quicksell' }" clickable v-ripple>
+          <q-item :to="{ name: 'quicksell' }" clickable v-ripple :disable="!isLoggedIn">
             <q-item-section avatar>
               <q-icon name="paid" />
             </q-item-section>

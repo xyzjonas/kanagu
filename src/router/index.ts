@@ -98,7 +98,6 @@ const router = createRouter({
 // Add navigation guard
 router.beforeEach((to, from, next) => {
   const { isLoggedIn } = useAuth()
-
   if (to.meta.requiresAuth && !isLoggedIn.value) {
     // Redirect to login with the original route as a query parameter
     const encodedRoute = encodeURIComponent(JSON.stringify(to))
