@@ -2,9 +2,14 @@ import { useLocalStorage } from '@vueuse/core'
 import { useQuasar } from 'quasar'
 import { watch } from 'vue'
 
-import { client } from '@/client/client.gen';
-import { getApiStockDocumentApi, getApiStockDocumentApiByStockDocumentNumber, postLogin } from '@/client';
-import { useAuth } from './useAuth';
+import { client } from '@/client/client.gen'
+import {
+  getApiStockDocumentApi,
+  getApiStockDocumentApiByStockDocumentNumber,
+  postLogin
+} from '@/client'
+import { useAuth } from './useAuth'
+import { useRouter } from 'vue-router'
 
 export interface Item {
   id: string
@@ -27,8 +32,8 @@ export interface ReceiveOrder {
   resolved: boolean
 }
 
-export type DocumentFilter = "FULLFILED" | "UNFULLFILED"
-export type DocumentType = "STOCKIN" | "STOCKOUT"
+export type DocumentFilter = 'FULLFILED' | 'UNFULLFILED'
+export type DocumentType = 'STOCKIN' | 'STOCKOUT'
 
 export interface StockDocumentArgs {
   type: DocumentType
@@ -41,28 +46,38 @@ const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:
 // const receiveOrders = useLocalStorage<ReceiveOrder[]>('receive-orders', [])
 
 watch(baseUrl, (baseUrl) => {
-  client.setConfig({ baseUrl });
+  client.setConfig({ baseUrl })
 })
 
 export const useApi = () => {
-
+  const { currentRoute, push } = useRouter()
   const $q = useQuasar()
 
-  const { token } = useAuth()
+  const { token, logout } = useAuth()
 
   client.interceptors.request.use((request) => {
-    request.headers.set('Authorization', `Bearer ${token.value}`); 
-    return request;
-  });
+    request.headers.set('Authorization', `Bearer ${token.value}`)
+    return request
+  })
+
+  const relogin = () => {
+    $q.notify({
+      type: 'negative',
+      message: 'Přihlášení vypršelo. Přihlaste se znovu.'
+    })
+    logout()
+    const encodedRoute = encodeURIComponent(JSON.stringify(currentRoute.value))
+    push({ name: 'login', query: { redirect: encodedRoute } })
+  }
 
   const testConnection = async () => {
     try {
-      await postLogin({ body: { email: "", password: "" } })
+      await postLogin({ body: { email: '', password: '' } })
       $q.notify({
         type: 'positive',
         message: 'Test připojení proběhl úspěšně!'
       })
-    } catch(err: unknown) {
+    } catch (err: unknown) {
       console.error(err)
       $q.notify({
         type: 'negative',
@@ -72,10 +87,14 @@ export const useApi = () => {
   }
 
   const getStockDocuments = async (args: StockDocumentArgs) => {
-    const res = await getApiStockDocumentApi({
-      query: {...args}
-    })
-    return res.data ?? []
+    try {
+      const res = await getApiStockDocumentApi({
+        query: { ...args }
+      })
+      return res.data ?? []
+    } catch (err: unknown) {
+      relogin()
+    }
   }
 
   const getStockDocument = async (id: string) => {
@@ -91,6 +110,6 @@ export const useApi = () => {
     getStockDocument,
     getStockDocuments,
     testConnection,
-    baseUrl,
+    baseUrl
   }
 }

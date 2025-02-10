@@ -33,12 +33,18 @@
 import BackToTopFab from '@/components/BackToTopFab.vue'
 import StockDocumentList from '@/components/StockDocumentList.vue'
 import { usePaginatedDocuments } from '@/composables/pagination'
-import { onMounted } from 'vue'
+import { onActivated, onMounted } from 'vue'
 
 const { receiveOrders, next, reset, thatsIt, current, filter, loading } = usePaginatedDocuments({
   localStorageFilterId: 'stockout-filter',
   localStoragePageId: 'stockout-pagenum',
   type: 'STOCKOUT'
+})
+
+onActivated(() => {
+  if (receiveOrders.value.length === 0) {
+    reset()
+  }
 })
 
 onMounted(reset)

@@ -16,16 +16,6 @@ import type { StockDocument } from '@/client'
 import ReceiveOrderItem from '@/components/ReceiveOrderItem.vue';
 import { inject } from 'vue'
 
-// import NotFound from '@/components/NotFound.vue';
-// import OrderHeader from '@/components/OrderHeader.vue';
-// import ReceiveOrderItem from '@/components/ReceiveOrderItem.vue';
-// import { useStockDocumentById } from '@/composables/byId';
-
-// const props = defineProps<{ id: string }>()
-
-// const { stockDocument, reload } = useStockDocumentById({ id: props.id, type: 'STOCKIN' })
-// await reload()
-
 const stockDocument = inject<StockDocument>('stockinDocument')
 </script>
 <style lang="sass" scoped></style>

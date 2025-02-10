@@ -13,7 +13,6 @@ import StockinBaseView from '@/views/stockin/StockinBaseView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuth } from '@/composables/useAuth'
-import path from 'path'
 
 const routes = [
   {

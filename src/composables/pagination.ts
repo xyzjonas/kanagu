@@ -27,7 +27,7 @@ export const usePaginatedDocuments = (args: PaginatedDocumentsArgs) => {
             type: args.type,
             page: current.value,
             currentFilter: filter.value
-        })
+        }) ?? []
         if (documents.length === 0) {
             thatsIt.value = true
         }
