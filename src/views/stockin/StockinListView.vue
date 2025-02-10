@@ -40,7 +40,7 @@
 import BackToTopFab from '@/components/BackToTopFab.vue';
 import StockDocumentList from '@/components/StockDocumentList.vue'
 import { usePaginatedDocuments } from '@/composables/pagination'
-import { onMounted, onUpdated, onActivated } from 'vue'
+import { onMounted, onActivated } from 'vue'
 
 const { receiveOrders, next, reset, filter, current, loading, thatsIt } = usePaginatedDocuments({
   localStorageFilterId: 'stockin-filter',
@@ -51,7 +51,7 @@ const { receiveOrders, next, reset, filter, current, loading, thatsIt } = usePag
 
 
 onActivated(() => {
-  if (receiveOrders.value.length === 0) {
+  if (!loading.value && receiveOrders.value.length === 0) {
     reset()
   }
 })

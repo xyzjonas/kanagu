@@ -43,7 +43,6 @@ export interface StockDocumentArgs {
 }
 
 const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')
-// const receiveOrders = useLocalStorage<ReceiveOrder[]>('receive-orders', [])
 
 watch(baseUrl, (baseUrl) => {
   client.setConfig({ baseUrl })
@@ -66,7 +65,12 @@ export const useApi = () => {
       message: 'Přihlášení vypršelo. Přihlaste se znovu.'
     })
     logout()
-    const encodedRoute = encodeURIComponent(JSON.stringify(currentRoute.value))
+    const encodedRoute = encodeURIComponent(JSON.stringify({
+      name: currentRoute.value.name,
+      query: currentRoute.value.query,
+      path: currentRoute.value.path,
+      params: currentRoute.value.params,
+    }))
     push({ name: 'login', query: { redirect: encodedRoute } })
   }
 
@@ -86,6 +90,7 @@ export const useApi = () => {
     }
   }
 
+  // API call
   const getStockDocuments = async (args: StockDocumentArgs) => {
     try {
       const res = await getApiStockDocumentApi({
@@ -97,13 +102,19 @@ export const useApi = () => {
     }
   }
 
+  // API call
   const getStockDocument = async (id: string) => {
-    const res = await getApiStockDocumentApiByStockDocumentNumber({
-      path: {
-        stockDocumentNumber: id
-      }
-    })
-    return res.data
+    try {
+
+      const res = await getApiStockDocumentApiByStockDocumentNumber({
+        path: {
+          stockDocumentNumber: id
+        }
+      })
+      return res.data
+    } catch (err: unknown) {
+      relogin()
+    }
   }
 
   return {
