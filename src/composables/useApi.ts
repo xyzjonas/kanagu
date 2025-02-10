@@ -6,7 +6,8 @@ import { client } from '@/client/client.gen'
 import {
   getApiStockDocumentApi,
   getApiStockDocumentApiByStockDocumentNumber,
-  postLogin
+  postLogin,
+  postRefresh
 } from '@/client'
 import { useAuth } from './useAuth'
 import { useRouter } from 'vue-router'
@@ -52,10 +53,18 @@ export const useApi = () => {
   const { currentRoute, push } = useRouter()
   const $q = useQuasar()
 
-  const { token, logout } = useAuth()
+  const { token, expiresAt, logout, refresh } = useAuth()
 
   client.interceptors.request.use((request) => {
     request.headers.set('Authorization', `Bearer ${token.value}`)
+
+    const isForbiddenUrl = request.url.includes("refresh") || request.url.includes("login")
+    const deltaMinutes = (expiresAt.value.getTime() - new Date().getTime()) / 1000 / 60
+    if (!isForbiddenUrl && deltaMinutes < 30) {
+      console.debug(`Refreshing token to be expired at: ${expiresAt.value}`)
+      refresh()
+    }
+
     return request
   })
 
