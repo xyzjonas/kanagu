@@ -34,3 +34,6 @@ coverage
 
 # Ansible
 .ansible
+
+# env
+.env

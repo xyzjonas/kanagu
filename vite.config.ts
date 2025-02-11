@@ -9,6 +9,9 @@ import UnoCSS from 'unocss/vite'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: process.env.BASE_URL,
+  server: {
+    port: process.env.PORT ? parseInt(process.env.PORT as string) : undefined
+  },
   plugins: [
     vue({
       template: { transformAssetUrls }
@@ -16,9 +19,7 @@ export default defineConfig({
     // @quasar/plugin-vite options list:
     // https://github.com/quasarframework/quasar/blob/dev/vite-plugin/index.d.ts
     quasar({
-      sassVariables: fileURLToPath(
-        new URL('./src/quasar-variables.scss', import.meta.url)
-      )
+      sassVariables: fileURLToPath(new URL('./src/quasar-variables.scss', import.meta.url))
     }),
     UnoCSS(),
     VitePWA({
@@ -54,7 +55,7 @@ export default defineConfig({
       },
       registerType: 'autoUpdate',
       devOptions: {
-        enabled: false
+        enabled: true
       }
     })
   ],

@@ -43,6 +43,13 @@ export type LoginRequest = {
     twoFactorRecoveryCode?: string | null;
 };
 
+export type Pagination = {
+    page?: number;
+    pageSize?: number;
+    totalPages?: number;
+    totalItems?: number;
+};
+
 export type Product = {
     id?: number;
     name?: string | null;
@@ -200,6 +207,11 @@ export type StockDocumentItem = {
     orderItemId?: number | null;
 };
 
+export type StockDocumentPagedData = {
+    data?: Array<StockDocument> | null;
+    pagination?: Pagination;
+};
+
 export type StockDocumentType = {
     id?: string;
     code?: string | null;
@@ -343,7 +355,7 @@ export type GetApiStockDocumentApiResponses = {
     /**
      * OK
      */
-    200: Array<StockDocument>;
+    200: StockDocumentPagedData;
 };
 
 export type GetApiStockDocumentApiResponse = GetApiStockDocumentApiResponses[keyof GetApiStockDocumentApiResponses];

@@ -5,14 +5,14 @@
       <q-btn
         color="primary"
         label="neuzavřené"
-        :flat="filter !== 'UNFULLFILED'"
-        @click="filter = 'UNFULLFILED'"
+        :flat="filter !== 'UNFULFILLED'"
+        @click="filter = 'UNFULFILLED'"
       />
       <q-btn
         color="primary"
         label="uzavřené"
-        :flat="filter !== 'FULLFILED'"
-        @click="filter = 'FULLFILED'"
+        :flat="filter !== 'FULFILLED'"
+        @click="filter = 'FULFILLED'"
       />
     </q-btn-group>
     <StockDocumentList
@@ -47,8 +47,6 @@ const { receiveOrders, next, reset, filter, current, loading, thatsIt } = usePag
   localStoragePageId: 'stockin-pagenum',
   type: 'STOCKIN'
 })
-
-
 
 onActivated(() => {
   if (!loading.value && receiveOrders.value.length === 0) {

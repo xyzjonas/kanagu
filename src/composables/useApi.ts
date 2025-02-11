@@ -7,7 +7,8 @@ import {
   getApiStockDocumentApi,
   getApiStockDocumentApiByStockDocumentNumber,
   postLogin,
-  postRefresh
+  postRefresh,
+  type StockDocument
 } from '@/client'
 import { useAuth } from './useAuth'
 import { useRouter } from 'vue-router'
@@ -33,7 +34,7 @@ export interface ReceiveOrder {
   resolved: boolean
 }
 
-export type DocumentFilter = 'FULLFILED' | 'UNFULLFILED'
+export type DocumentFilter = 'FULLFILLED' | 'UNFULLFILLED'
 export type DocumentType = 'STOCKIN' | 'STOCKOUT'
 
 export interface StockDocumentArgs {
@@ -100,15 +101,16 @@ export const useApi = () => {
   }
 
   // API call
-  const getStockDocuments = async (args: StockDocumentArgs) => {
+  const getStockDocuments = async (args: StockDocumentArgs): Promise<StockDocument[]> => {
     try {
       const res = await getApiStockDocumentApi({
         query: { ...args }
       })
-      return res.data ?? []
+      return res.data ? res.data.Data : []
     } catch (err: unknown) {
       relogin()
     }
+    return []
   }
 
   // API call
