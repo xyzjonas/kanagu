@@ -42,9 +42,8 @@
           :label="isStockOut ? 'výdej uzavřen' : 'příjem uzavřen'"
           unelevated
           color="positive"
-          :class="`${isDone ? 'opacity-[0.5]' : ''} h-[3rem]`"
+          :class="`${isDone ? 'opacity-[0.8]' : ''} h-[3rem]`"
           :to="{ name: 'ro-detail', params: { id: order.stockDocumentNumber } }"
-          disable
         />
     </div>
 </template>

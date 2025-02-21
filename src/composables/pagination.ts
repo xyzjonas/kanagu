@@ -13,26 +13,36 @@ export interface PaginatedDocumentsArgs {
 
 export const usePaginatedDocuments = (args: PaginatedDocumentsArgs) => {
 
-    const { getStockDocuments } = useApi()
+    const { getStockDocumentsWithPagination } = useApi()
 
     const loading = ref(true)
     const filter = useLocalStorage<DocumentFilter | undefined>(args.localStorageFilterId, undefined)
     const current = useLocalStorage<number>(args.localStoragePageId, 1)
     const receiveOrders = ref<StockDocument[]>([])
     const thatsIt = ref(false)
+    const totalItems = ref(0)
 
     const fetchDocuments = async () => {
         loading.value = true
-        const documents = await getStockDocuments({
+        const res = await getStockDocumentsWithPagination({
             type: args.type,
             page: current.value,
             currentFilter: filter.value
-        }) ?? []
-        if (documents.length === 0) {
+        })
+
+        if (!res || !res?.pagination) {
+            console.error("Pagination data missing in response!")
+            return []
+        }
+
+        totalItems.value = res.pagination.totalItems ?? 0
+        
+        if (res.pagination.totalPages === current.value) {
             thatsIt.value = true
         }
+
         setTimeout(() => (loading.value = false), 250)
-        return documents
+        return res.data ?? []
     }
 
     const fetchAndSetDocuments = async () => {
@@ -55,6 +65,7 @@ export const usePaginatedDocuments = (args: PaginatedDocumentsArgs) => {
 
     return {
         receiveOrders,
+        totalItems,
         next,
         reset,
         thatsIt,

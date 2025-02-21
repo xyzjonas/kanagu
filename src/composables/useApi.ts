@@ -8,7 +8,8 @@ import {
   getApiStockDocumentApiByStockDocumentNumber,
   postLogin,
   postRefresh,
-  type StockDocument
+  type StockDocument,
+  type StockDocumentPagedData
 } from '@/client'
 import { useAuth } from './useAuth'
 import { useRouter } from 'vue-router'
@@ -101,12 +102,23 @@ export const useApi = () => {
   }
 
   // API call
-  const getStockDocuments = async (args: StockDocumentArgs): Promise<StockDocument[]> => {
+  const getStockDocumentsWithPagination = async (args: StockDocumentArgs): Promise<StockDocumentPagedData | undefined> => {
     try {
       const res = await getApiStockDocumentApi({
         query: { ...args }
       })
-      return res.data ? res.data.Data : []
+      return res.data
+    } catch (err: unknown) {
+      relogin()
+    }
+    return undefined
+  }
+
+  // API call
+  const getStockDocuments = async (args: StockDocumentArgs): Promise<StockDocument[]> => {
+    try {
+      const res = await getStockDocumentsWithPagination(args)
+      return res?.data ?? []
     } catch (err: unknown) {
       relogin()
     }
@@ -131,6 +143,7 @@ export const useApi = () => {
   return {
     getStockDocument,
     getStockDocuments,
+    getStockDocumentsWithPagination,
     testConnection,
     baseUrl
   }

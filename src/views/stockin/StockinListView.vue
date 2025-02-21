@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="flex flex-col gap-5">
+  <q-page padding class="flex flex-col gap-0">
     <q-btn-group spread unelevated class="border-solid border-primary border-[1px]">
       <q-btn color="primary" label="vše" :flat="filter !== undefined" @click="filter = undefined" />
       <q-btn
@@ -15,6 +15,9 @@
         @click="filter = 'FULFILLED'"
       />
     </q-btn-group>
+
+    <h2 class="font-400">{{ totalItems }} <span class="capitalize">{{ polozky }}</span></h2>
+
     <StockDocumentList
       :receive-orders="receiveOrders"
       :loading="current === 1 && loading"
@@ -40,13 +43,16 @@
 import BackToTopFab from '@/components/BackToTopFab.vue';
 import StockDocumentList from '@/components/StockDocumentList.vue'
 import { usePaginatedDocuments } from '@/composables/pagination'
+import { usePolozky } from '@/composables/usePolozky';
 import { onMounted, onActivated } from 'vue'
 
-const { receiveOrders, next, reset, filter, current, loading, thatsIt } = usePaginatedDocuments({
+const { receiveOrders, next, reset, filter, current, loading, thatsIt, totalItems } = usePaginatedDocuments({
   localStorageFilterId: 'stockin-filter',
   localStoragePageId: 'stockin-pagenum',
   type: 'STOCKIN'
 })
+
+const { polozky } = usePolozky(totalItems)
 
 onActivated(() => {
   if (!loading.value && receiveOrders.value.length === 0) {
