@@ -1,28 +1,41 @@
-import type { StockDocument } from "./client"
+import type { StockDocument, StockDocumentItem, StockMovementItemApiModel } from './client'
 
 export const rules = {
-    notEmpty: (val: any) => !!val || 'Pole nesmí být prazdné',
-    atLeastOne: (val: any) => val > 0 || 'Pole musí být číslo větší než 0'
+  notEmpty: (val: any) => !!val || 'Pole nesmí být prazdné',
+  isNumber: (val: any) => !isNaN(val) || 'Pole musí být číslo',
+  atLeastOne: (val: any) => val > 0 || 'Pole musí být číslo větší než 0'
 }
-
 
 export interface StockDocumentStatus {
-    itemsCompleted: number
-    items: number
+  itemsCompleted: number
+  items: number
 }
 
+export const isItemResolved = (item: StockDocumentItem) =>
+  (item.quantity ?? 0) - (item.quantityMoved ?? 0) === 0
+
 export const getDocumentStatus = (document: StockDocument): StockDocumentStatus => {
-    let itemsCompleted = 0
-    const items = document.stockDocumentItems ?? []
+  let itemsCompleted = 0
+  const items = document.stockDocumentItems ?? []
 
-    for (const doc of items) {
-        if ((doc.quantity ?? 0) - (doc.quantityMoved ?? 0) === 0) {
-            itemsCompleted++
-        }
+  for (const item of items) {
+    if (isItemResolved(item)) {
+      itemsCompleted++
     }
+  }
 
-    return {
-        items: items.length,
-        itemsCompleted
-    }
+  return {
+    items: items.length,
+    itemsCompleted
+  }
+}
+
+export const isMovementResolved = (movement: StockMovementItemApiModel) => movement.value === 0
+
+export const isMovementNotResolved = (movement: StockMovementItemApiModel) =>
+  !isMovementResolved(movement)
+
+export function round(value: number, precision: number) {
+  var multiplier = Math.pow(10, precision || 0)
+  return Math.round(value * multiplier) / multiplier
 }

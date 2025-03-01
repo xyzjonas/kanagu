@@ -2,18 +2,12 @@
   <q-page padding class="flex flex-col gap-5">
     <ConnectionSettings />
     <q-separator />
-    <!-- <section>
-            <h2>Testovací data</h2>
-            <q-list bordered>
-                <q-item clickable v-ripple @click="resetDummyData()">
-                    <q-item-section avatar>
-                        <q-icon name="i-hugeicons-reload" />
-                    </q-item-section>
-                    
-                    <q-item-section> Resetovat Testovací Data </q-item-section>
-                </q-item>
-            </q-list>
-        </section> -->
+    <section>
+      <h1>
+        Kopírovat token
+        <q-btn flat round icon="content_copy" @click="copyToken" />
+      </h1>
+    </section>
 
     <div class="mt-auto text-center m-2 text-gray-4">
       Verze aplikace <strong>{{ version }}</strong>
@@ -23,7 +17,23 @@
 
 <script setup lang="ts">
 import ConnectionSettings from '@/components/settings/ConnectionSettings.vue'
+import { useAuth } from '@/composables/useAuth'
 import { version } from '@/version'
+import { useClipboard } from '@vueuse/core'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
+
+const { copy } = useClipboard()
+
+const { token } = useAuth()
+const copyToken = () => {
+  copy(`Bearer ${token.value}`)
+  $q.notify({
+    message: 'Token zkopírován do schránky.',
+    type: 'positive'
+  })
+}
 </script>
 
 <style lang="sass" scoped></style>

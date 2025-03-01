@@ -1,14 +1,13 @@
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
-import StockoutDetailView from '@/views/stockout/StockoutDetailView.vue'
-import StockoutListView from '@/views/stockout/StockoutListView.vue'
 import QuicksellView from '@/views/QuicksellView.vue'
-import ReceiveOrderAllocationView from '@/views/ReceiveOrderAllocationView.vue'
+import SettingsView from '@/views/SettingsView.vue'
+import StockinAllocationView from '@/views/stockin/StockinAllocationView.vue'
+import StockinBaseView from '@/views/stockin/StockinBaseView.vue'
 import StockinDetailView from '@/views/stockin/StockinDetailView.vue'
 import StockinListView from '@/views/stockin/StockinListView.vue'
-import ReceiveOrderPrintoutView from '@/views/ReceiveOrderPrintoutView.vue'
-import SettingsView from '@/views/SettingsView.vue'
-import StockinBaseView from '@/views/stockin/StockinBaseView.vue'
+import StockoutDetailView from '@/views/stockout/StockoutDetailView.vue'
+import StockoutListView from '@/views/stockout/StockoutListView.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -54,21 +53,28 @@ const routes = [
         name: 'ro-detail',
         component: StockinDetailView,
         path: '',
-      }
+      },
+      {
+        name: 'ro-allocation',
+        path: 'allocate/:movementId',
+        component: StockinAllocationView,
+        meta: { requiresAuth: true },
+        props: true,
+      },
     ]
   },
-  {
-    path: '/receive-orders/:orderId/items/:id/allocate',
-    name: 'ro-allocation',
-    component: ReceiveOrderAllocationView,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/receive-orders/:orderId/items/:id/printout',
-    name: 'ro-printout',
-    component: ReceiveOrderPrintoutView,
-    meta: { requiresAuth: true }
-  },
+  // {
+  //   path: '/receive-orders/:orderId//:id/allocate',
+  //   name: 'ro-allocation',
+  //   component: StockinAllocationView,
+  //   meta: { requiresAuth: true }
+  // },
+  // {
+  //   path: '/receive-orders/:orderId/items/:id/printout',
+  //   name: 'ro-printout',
+  //   component: ReceiveOrderPrintoutView,
+  //   meta: { requiresAuth: true }
+  // },
   {
     path: '/quicksell',
     name: 'quicksell',
@@ -97,6 +103,13 @@ const router = createRouter({
 
 // Add navigation guard
 router.beforeEach((to, from, next) => {
+
+  if(to.path.includes("purchase")) {
+    document.body.style.setProperty('--q-primary', '#7156A9')
+  } else if(to.path.includes("receive")) {
+    document.body.style.setProperty('--q-primary', '#3e608a')
+  }
+
   const { isLoggedIn } = useAuth()
   if (to.meta.requiresAuth && !isLoggedIn.value) {
     // Redirect to login with the original route as a query parameter

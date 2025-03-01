@@ -6,6 +6,8 @@ import { client } from '@/client/client.gen'
 import {
   getApiStockDocumentApi,
   getApiStockDocumentApiByStockDocumentNumber,
+  getApiStockMovementApiById,
+  postApiStockMovementApi,
   postLogin,
   postRefresh,
   type StockDocument,
@@ -14,28 +16,16 @@ import {
 import { useAuth } from './useAuth'
 import { useRouter } from 'vue-router'
 
-export interface Item {
-  id: string
-  name: string
+export interface PostStockMovement {
+  // fake interface for post movement body
+  id: number
+  stockProductId: number
+  place?: string
+  value: number
+  lineNumber: number
 }
 
-export interface OrderItem {
-  id: string
-  item: Item
-  count: number
-  resolved: boolean
-}
-
-export interface ReceiveOrder {
-  id: string
-  received: string
-  items: OrderItem[]
-  supplier: string
-  rackId: string
-  resolved: boolean
-}
-
-export type DocumentFilter = 'FULLFILLED' | 'UNFULLFILLED'
+export type DocumentFilter = 'FULFILLED' | 'UNFULFILLED'
 export type DocumentType = 'STOCKIN' | 'STOCKOUT'
 
 export interface StockDocumentArgs {
@@ -60,7 +50,7 @@ export const useApi = () => {
   client.interceptors.request.use((request) => {
     request.headers.set('Authorization', `Bearer ${token.value}`)
 
-    const isForbiddenUrl = request.url.includes("refresh") || request.url.includes("login")
+    const isForbiddenUrl = request.url.includes('refresh') || request.url.includes('login')
     const deltaMinutes = (expiresAt.value.getTime() - new Date().getTime()) / 1000 / 60
     if (!isForbiddenUrl && deltaMinutes < 30) {
       console.debug(`Refreshing token to be expired at: ${expiresAt.value}`)
@@ -76,12 +66,14 @@ export const useApi = () => {
       message: 'Přihlášení vypršelo. Přihlaste se znovu.'
     })
     logout()
-    const encodedRoute = encodeURIComponent(JSON.stringify({
-      name: currentRoute.value.name,
-      query: currentRoute.value.query,
-      path: currentRoute.value.path,
-      params: currentRoute.value.params,
-    }))
+    const encodedRoute = encodeURIComponent(
+      JSON.stringify({
+        name: currentRoute.value.name,
+        query: currentRoute.value.query,
+        path: currentRoute.value.path,
+        params: currentRoute.value.params
+      })
+    )
     push({ name: 'login', query: { redirect: encodedRoute } })
   }
 
@@ -96,13 +88,15 @@ export const useApi = () => {
       $q.notify({
         type: 'negative',
         message: 'Připojení selhalo, zkontrolujte nastavení připojení.',
-        caption: `${err}`,
+        caption: `${err}`
       })
     }
   }
 
   // API call
-  const getStockDocumentsWithPagination = async (args: StockDocumentArgs): Promise<StockDocumentPagedData | undefined> => {
+  const getStockDocumentsWithPagination = async (
+    args: StockDocumentArgs
+  ): Promise<StockDocumentPagedData | undefined> => {
     try {
       const res = await getApiStockDocumentApi({
         query: { ...args }
@@ -125,10 +119,19 @@ export const useApi = () => {
     return []
   }
 
+  const getMovements = async (documentUuid: string) => {
+    try {
+      const res = await getApiStockMovementApiById({ path: { id: documentUuid } })
+      return res.data?.stockMovements ?? []
+    } catch (err: unknown) {
+      relogin()
+    }
+    return []
+  }
+
   // API call
   const getStockDocument = async (id: string) => {
     try {
-
       const res = await getApiStockDocumentApiByStockDocumentNumber({
         path: {
           stockDocumentNumber: id
@@ -140,10 +143,31 @@ export const useApi = () => {
     }
   }
 
+  // API call
+  const postStockMovement = async (documentId: string, movements: PostStockMovement[]) => {
+    const res = await postApiStockMovementApi({
+      body: {
+        stockDocumentId: documentId,
+        stockMovements: movements
+      }
+    })
+    if (res.response.status === 200) {
+      return true
+    }
+    $q.notify({
+      type: 'negative',
+      message: 'Něco se vyj*balo :('
+    })
+
+    return false
+  }
+
   return {
     getStockDocument,
     getStockDocuments,
     getStockDocumentsWithPagination,
+    getMovements,
+    postStockMovement,
     testConnection,
     baseUrl
   }

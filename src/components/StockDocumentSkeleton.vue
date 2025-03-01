@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col border-gray-3 border-solid border-1 border-rounded-md overflow-hidden">
+    <div class="flex flex-col border-gray-3 border-solid border-1 border-rounded-md shadow-md overflow-hidden">
       <div class="ml-auto flex flex-col p-2 gap-1 items-end">
         <q-skeleton width="5rem" />
         <q-skeleton width="7rem" />

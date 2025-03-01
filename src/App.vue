@@ -1,8 +1,8 @@
 <template>
-  <q-layout view="lHh LpR fFf" class="font-sans">
-    <q-header class="bg-white text-dark shadow-sm">
+  <q-layout view="lHh LpR fFf" class="font-sans bg-slate-2">
+    <q-header class="bg-slate-2 text-dark">
       <q-toolbar class="app-page">
-        <q-toolbar-title @click="() => $router.push({ name: 'home' })" class="hover:cursor-pointer">
+        <q-toolbar-title>
           <!-- <q-avatar class="mr-2">
             <img alt="Vue logo" class="logo bg-primary p-2" src="/logo.svg" />
           </q-avatar> -->
@@ -16,16 +16,11 @@
           @click="toggle"
           class="mr-3"
         /> -->
-        <q-btn
-          dense
-          flat
-          :icon="rightDrawerOpen ? 'close' : 'menu'"
-          @click="toggleRightDrawer"
-        />
+        <q-btn dense flat :icon="rightDrawerOpen ? 'close' : 'menu'" @click="toggleRightDrawer" />
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="rightDrawerOpen" side="left" overlay bordered>
+    <q-drawer v-model="rightDrawerOpen" side="left" overlay bordered class="bg-slate-2">
       <div
         class="absolute-top bg-primary text-white flex justify-between items-center px-5"
         style="height: 80px"
@@ -38,14 +33,7 @@
           >
         </div>
         <q-btn v-if="isLoggedIn" flat dense icon="logout" @click="clickLogout" />
-        <q-btn
-          v-else
-          flat
-          dense
-          label="přihlásit"
-          icon="login"
-          @click="clickLogin"
-        />
+        <q-btn v-else flat dense label="přihlásit" icon="login" @click="clickLogin" />
       </div>
       <q-scroll-area style="height: calc(100% - 80px); margin-top: 80px">
         <q-list padding class="menu-list">
@@ -94,20 +82,22 @@
     <q-page-container class="app-page">
       <RouterView v-slot="{ Component }">
         <template v-if="Component">
-            <KeepAlive exclude="StockinBaseView,StockoutDetailView">
-              <Suspense>
-                <!-- hlavní obsah -->
-                <component :is="Component"></component>
-                <template #fallback>Načítání...</template>
-              </Suspense>
-            </KeepAlive>
+          <KeepAlive exclude="StockinBaseView,StockoutDetailView">
+            <Suspense>
+              <!-- hlavní obsah -->
+              <component :is="Component"></component>
+              <template #fallback>
+                <q-page class="grid justify-center items-center">
+                  <div class="flex flex-col items-center gap-2">
+                    <q-spinner color="primary" size="4rem" :thickness="2"></q-spinner>
+                    <h1 class="uppercase text-xl text-primary">Načítám...</h1>
+                  </div>
+                </q-page>
+              </template>
+            </Suspense>
+          </KeepAlive>
         </template>
       </RouterView>
-
-      <!-- <suspense>
-        <router-view />
-        <template #fallback>Loading...</template>
-      </suspense> -->
     </q-page-container>
   </q-layout>
 </template>
@@ -123,6 +113,7 @@ import { useAuth } from './composables/useAuth'
 // const { isDark, toggle } = useDark()
 
 Notify.setDefaults({
+  position: 'top',
   classes: 'w-full text-md font-bold',
   progress: true,
   icon: 'chat_bubble'
@@ -140,15 +131,6 @@ const clickLogin = () => {
   router.push({ name: 'login' })
   rightDrawerOpen.value = false
 }
-
-// const $q = useQuasar()
-// $q.iconMapFn = (iconName) => {
-//   if (iconName.startsWith('i-hugeicons')) {
-//     return {
-//       cls: iconName
-//     }
-//   }
-// }
 
 const { currentRoute } = useRouter()
 const title = computed(() => {
@@ -192,3 +174,23 @@ const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value
 }
 </script>
+
+<style lang="css">
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+</style>

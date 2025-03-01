@@ -1,4 +1,4 @@
-import type { StockDocument } from '@/client'
+import { type StockMovementItemApiModel, type StockDocument } from '@/client'
 import { useApi, type DocumentType } from './useApi'
 import { ref } from 'vue'
 
@@ -8,9 +8,10 @@ interface Args {
 }
 
 export const useStockDocumentById = (args: Args) => {
-  const { getStockDocuments } = useApi()
+  const { getStockDocuments, getMovements } = useApi()
 
   const stockDocument = ref<StockDocument>()
+  const movements = ref<StockMovementItemApiModel[]>([])
   const loading = ref(false)
 
   const getById = async () => {
@@ -24,6 +25,12 @@ export const useStockDocumentById = (args: Args) => {
         return
     }
 
+    const foundDocument = searchResult[0]
+
+    if (!foundDocument.id) {
+      throw Error("Invalid response or document data, missing 'id'")
+    }
+    movements.value = await getMovements(foundDocument.id)
     stockDocument.value = searchResult[0]
   }
 
@@ -38,6 +45,7 @@ export const useStockDocumentById = (args: Args) => {
 
   return {
     stockDocument,
+    movements,
     loading,
     reload,
   }

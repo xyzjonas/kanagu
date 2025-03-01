@@ -1,0 +1,371 @@
+{
+    "stockDocumentId": "01945f5a-1797-7d16-b478-8ef827a338b8",
+    "stockMovements": [
+      {
+        "id": 40427,
+        "stockProductId": 269688,
+        "place": null, // "warehousePlaceCode": "AG-01-00",
+        "value": 1, // "value": 0.07
+        "lineNumber": 3
+      },
+      {
+        "id": 40428,
+        "stockProductId": 269686,
+        "stockProduct": {
+          "id": 269686,
+          "name": "Šr 6H ČZ 8,8 HDG M30x260",
+          "partNumber": null,
+          "code": "931-0804-30-260",
+          "width": null,
+          "height": null,
+          "depth": null,
+          "weight": 167.8,
+          "stockItems": null,
+          "stockMovements": null,
+          "stockBarCodes": [
+            {
+              "id": "570f2312-886f-4a3e-8565-348e26dcfc11",
+              "stockProductId": 269686,
+              "amount": null,
+              "barCode": "4441100050360"
+            }
+          ],
+          "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+          "note": "DIN 931",
+          "stockDocumentItems": null,
+          "productId": 269686,
+          "product": {
+            "id": 269686,
+            "name": "Šr 6H ČZ 8,8 HDG M30x260",
+            "productCode": "931-0804-30-260",
+            "productGroupId": 16,
+            "productGroup": null,
+            "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+            "supplierId": null,
+            "productGroupProductMaps": [],
+            "productTypeId": 3,
+            "productType": null,
+            "note": null,
+            "productMetas": [],
+            "productPrices": [],
+            "buyPrice": 9418.38596491228,
+            "unitTypeId": 12,
+            "unitType": {
+              "id": 12,
+              "code": "100KS",
+              "name": "100KS"
+            }
+          }
+        },
+        "stockItems": [
+          {
+            "id": 72165,
+            "warehousePlaceCode": "AG-01-00",
+            "warehousePlaceId": 207,
+            "value": 0.07
+          },
+          {
+            "id": 116057,
+            "warehousePlaceCode": "V243999",
+            "warehousePlaceId": 6434,
+            "value": 0
+          }
+        ],
+        "place": null,
+        "value": 0.5,
+        "lineNumber": 4
+      },
+      {
+        "id": 40430,
+        "stockProductId": 293996,
+        "stockProduct": {
+          "id": 293996,
+          "name": "Závitová tyč 4.8 ZN M10x0080",
+          "partNumber": null,
+          "code": "976-0401-10-0080",
+          "width": null,
+          "height": null,
+          "depth": null,
+          "weight": null,
+          "stockItems": null,
+          "stockMovements": null,
+          "stockBarCodes": [
+            {
+              "id": "069a16f6-7f38-4dd5-9c0d-9c8ca17d5711",
+              "stockProductId": 293996,
+              "amount": null,
+              "barCode": "4442500005066"
+            }
+          ],
+          "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+          "note": "DIN 976",
+          "stockDocumentItems": null,
+          "productId": 293982,
+          "product": {
+            "id": 293982,
+            "name": "Závitová tyč 4.8 ZN M10x0080",
+            "productCode": "976-0401-10-0080",
+            "productGroupId": 34,
+            "productGroup": null,
+            "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+            "supplierId": null,
+            "productGroupProductMaps": [],
+            "productTypeId": 3,
+            "productType": null,
+            "note": null,
+            "productMetas": [],
+            "productPrices": [],
+            "buyPrice": 139.1242255231755,
+            "unitTypeId": 12,
+            "unitType": {
+              "id": 12,
+              "code": "100KS",
+              "name": "100KS"
+            }
+          }
+        },
+        "stockItems": [
+          {
+            "id": 102383,
+            "warehousePlaceCode": "EX-03-03",
+            "warehousePlaceId": 1358,
+            "value": 0.06
+          },
+          {
+            "id": 116649,
+            "warehousePlaceCode": "V250006",
+            "warehousePlaceId": 6526,
+            "value": 0
+          },
+          {
+            "id": 116845,
+            "warehousePlaceCode": "P250017",
+            "warehousePlaceId": 6549,
+            "value": 0
+          },
+          {
+            "id": 116882,
+            "warehousePlaceCode": "AO-01-04",
+            "warehousePlaceId": 635,
+            "value": 0
+          }
+        ],
+        "place": null,
+        "value": 17.42,
+        "lineNumber": 2
+      },
+      {
+        "id": 40431,
+        "stockProductId": 269711,
+        "stockProduct": {
+          "id": 269711,
+          "name": "Šr 6H ČZ 8,8 HDG M24x260",
+          "partNumber": null,
+          "code": "931-0804-24-260",
+          "width": null,
+          "height": null,
+          "depth": null,
+          "weight": 98.3,
+          "stockItems": null,
+          "stockMovements": null,
+          "stockBarCodes": [
+            {
+              "id": "a67a2b09-0bad-42c6-a8f9-09c07fb9a631",
+              "stockProductId": 269711,
+              "amount": null,
+              "barCode": "4441100050117"
+            }
+          ],
+          "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+          "note": "DIN 931",
+          "stockDocumentItems": null,
+          "productId": 269711,
+          "product": {
+            "id": 269711,
+            "name": "Šr 6H ČZ 8,8 HDG M24x260",
+            "productCode": "931-0804-24-260",
+            "productGroupId": 16,
+            "productGroup": null,
+            "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+            "supplierId": null,
+            "productGroupProductMaps": [],
+            "productTypeId": 3,
+            "productType": null,
+            "note": null,
+            "productMetas": [],
+            "productPrices": [],
+            "buyPrice": 7708.807692307691,
+            "unitTypeId": 12,
+            "unitType": {
+              "id": 12,
+              "code": "100KS",
+              "name": "100KS"
+            }
+          }
+        },
+        "stockItems": [
+          {
+            "id": 116576,
+            "warehousePlaceCode": "V250001",
+            "warehousePlaceId": 6512,
+            "value": 0
+          },
+          {
+            "id": 116854,
+            "warehousePlaceCode": "P250015",
+            "warehousePlaceId": 6551,
+            "value": 0
+          },
+          {
+            "id": 116856,
+            "warehousePlaceCode": "AO-01-04",
+            "warehousePlaceId": 635,
+            "value": 0
+          },
+          {
+            "id": 117038,
+            "warehousePlaceCode": "AG-03-00",
+            "warehousePlaceId": 223,
+            "value": 0.26
+          }
+        ],
+        "place": null,
+        "value": 0.14,
+        "lineNumber": 1
+      },
+      {
+        "id": 40429,
+        "stockProductId": 269675,
+        "stockProduct": {
+          "id": 269675,
+          "name": "Šr 6H ČZ 8,8 HDG M36x130",
+          "partNumber": null,
+          "code": "931-0804-36-130",
+          "width": null,
+          "height": null,
+          "depth": null,
+          "weight": 136,
+          "stockItems": null,
+          "stockMovements": null,
+          "stockBarCodes": [
+            {
+              "id": "584091b7-d03d-42bc-9dee-2ac6e479c8e6",
+              "stockProductId": 269675,
+              "amount": null,
+              "barCode": "4441100050476"
+            }
+          ],
+          "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+          "note": "DIN 931",
+          "stockDocumentItems": null,
+          "productId": 269675,
+          "product": {
+            "id": 269675,
+            "name": "Šr 6H ČZ 8,8 HDG M36x130",
+            "productCode": "931-0804-36-130",
+            "productGroupId": 16,
+            "productGroup": null,
+            "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+            "supplierId": null,
+            "productGroupProductMaps": [],
+            "productTypeId": 3,
+            "productType": null,
+            "note": null,
+            "productMetas": [],
+            "productPrices": [],
+            "buyPrice": 7331.836620689655,
+            "unitTypeId": 12,
+            "unitType": {
+              "id": 12,
+              "code": "100KS",
+              "name": "100KS"
+            }
+          }
+        },
+        "stockItems": [
+          {
+            "id": 110786,
+            "warehousePlaceCode": "AG-01-00",
+            "warehousePlaceId": 207,
+            "value": 0.28
+          },
+          {
+            "id": 117039,
+            "warehousePlaceCode": "AG-01-02",
+            "warehousePlaceId": 209,
+            "value": 0.3
+          }
+        ],
+        "place": null,
+        "value": 0.5,
+        "lineNumber": 5
+      },
+      {
+        "id": 40432,
+        "stockProductId": 269712,
+        "stockProduct": {
+          "id": 269712,
+          "name": "Šr 6H ČZ 8,8 HDG M24x240",
+          "partNumber": null,
+          "code": "931-0804-24-240",
+          "width": null,
+          "height": null,
+          "depth": null,
+          "weight": 90.7,
+          "stockItems": null,
+          "stockMovements": null,
+          "stockBarCodes": [
+            {
+              "id": "e80effd7-bfe0-4465-912b-205739c80f60",
+              "stockProductId": 269712,
+              "amount": null,
+              "barCode": "4441100050100"
+            }
+          ],
+          "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+          "note": "DIN 931",
+          "stockDocumentItems": null,
+          "productId": 269712,
+          "product": {
+            "id": 269712,
+            "name": "Šr 6H ČZ 8,8 HDG M24x240",
+            "productCode": "931-0804-24-240",
+            "productGroupId": 16,
+            "productGroup": null,
+            "ownerId": "1d8ae056-b266-4e7f-83a3-12d6ca30a5de",
+            "supplierId": null,
+            "productGroupProductMaps": [],
+            "productTypeId": 3,
+            "productType": null,
+            "note": null,
+            "productMetas": [],
+            "productPrices": [],
+            "buyPrice": 5435.25,
+            "unitTypeId": 12,
+            "unitType": {
+              "id": 12,
+              "code": "100KS",
+              "name": "100KS"
+            }
+          }
+        },
+        "stockItems": [
+          {
+            "id": 73668,
+            "warehousePlaceCode": "AG-03-00",
+            "warehousePlaceId": 223,
+            "value": 0.02
+          },
+          {
+            "id": 117040,
+            "warehousePlaceCode": "AG-01-02",
+            "warehousePlaceId": 209,
+            "value": 0.3
+          }
+        ],
+        "place": null,
+        "value": 0.3,
+        "lineNumber": 6
+      }
+    ]
+  }
