@@ -4,7 +4,7 @@
       v-model="step"
       ref="stepper"
       animated
-      class="mt-5 shadow-none bg-transparent flex flex-col"
+      class="shadow-none bg-transparent"
       contracted
       header-nav
     >
@@ -17,13 +17,16 @@
         :done="step > 1"
       >
         <div class="flex flex-col">
+          <div
+            class="font-400 uppercase mb-2 text-lg border-solid border-1 border-rounded-lg border-slate-4 w-fit py-1 px-3"
+          >
+            Výdej <span class="text-green font-bold">{{ movement.value }}&hairsp;MJ</span>
+          </div>
           <span class="text-gray-7 mt-2">{{ movement.stockProduct?.code ?? 'N/A' }}</span>
           <span class="text-lg">{{ movement.stockProduct?.name ?? 'N/A' }}</span>
-          <span class="text-xs text-gray-7"
-            >MJ = {{ movement.stockProduct?.product?.unitType?.code ?? 'N/A' }}</span
-          >
-
-          <q-list class="border-rounded-md mt-5">
+          <span class="text-xs text-gray-7">MJ = 100ks</span>
+          <q-separator class="my-5" />
+          <q-list class="border-rounded-md" v-if="stockItems.length > 0">
             <q-item
               clickable
               v-ripple
@@ -45,6 +48,14 @@
               </q-item-section>
             </q-item>
           </q-list>
+          <div
+            v-else
+            class="my-5 py-10 flex items-start justify-center border-dashed border-gray-4 border-1 border-rounded vo"
+          >
+            <div class="flex flex-col gap-2">
+              <h2 class="uppercase font-400">Není skladem</h2>
+            </div>
+          </div>
         </div>
       </q-step>
 
@@ -56,8 +67,14 @@
         done-icon="qr_code"
         :done="step > 2 && isConfirmed"
         :error="step > 2 && !isConfirmed"
+        :disable="stockItems.length === 0"
       >
-        <div class="flex flex-col justify-center items-center min-h-xs">
+        <div
+          class="font-400 uppercase mb-2 text-lg border-solid border-1 border-rounded-lg border-slate-4 w-fit py-1 px-3"
+        >
+          Výdej <span class="text-green font-bold">{{ movement.value }}&hairsp;MJ</span>
+        </div>
+        <div class="flex flex-col justify-center items-center mt-10">
           <span>VYBRÁNO</span>
           <span class="text-2xl"
             ><span class="text-gray-5">BUŇKA</span> {{ selectedSlot?.place }}</span
@@ -71,7 +88,7 @@
             inputmode="none"
           />
           <span>POTVRDIT BUŇKU SCANNEREM</span>
-          <div class="h-[0rem]">
+          <div class="h-[3rem]">
             <transition mode="out-in" name="slide-fade">
               <q-btn
                 v-if="confirmation.length >= 1 && confirmation !== selectedSlot?.place"
@@ -85,89 +102,50 @@
         </div>
       </q-step>
 
-      <q-step :name="3" title="" icon="plus_one" style="min-height: 200px">
-        <div class="flex flex-col min-h-xs">
-          <span class="uppercase text-lg text-primary font-600">Naskladnit</span>
+      <q-step
+        :name="3"
+        title=""
+        active-icon="done"
+        icon="done"
+        done-icon="done"
+        :disable="stockItems.length === 0"
+      >
+        <div
+          class="font-400 uppercase mb-2 text-lg border-solid border-1 border-rounded-lg border-slate-4 w-fit py-1 px-3"
+        >
+          Výdej <span class="text-green font-bold">{{ movement.value }}&hairsp;MJ</span>
+        </div>
+        <div class="flex flex-col justify-center items-center mt-10 text-center">
           <span class="text-gray-7 mt-2">{{ movement.stockProduct?.code ?? 'N/A' }}</span>
-          <span class="text-lg">{{ movement.stockProduct?.name ?? 'N/A' }}</span>
-
-          <span class="mt-6">Zadat počet MJ k naskladnění</span>
-          <span class="text-2xl mb-6">
-            <span class="text-gray-5">BUŇKA</span> {{ selectedSlot.place }}
-          </span>
-          <q-form @submit="submitAllocation">
-            <q-input
-              v-model="selectedSlot.value"
-              label="Počet MJ"
-              autofocus
-              no-error-icon
-              input-class="text-center text-2xl"
-              :rules="[rules.notEmpty, rules.atLeastOne]"
-              inputmode="numeric"
-            />
-            <div class="flex justify-end mt-auto py-5 gap-1"></div>
-          </q-form>
+          <span class="text-2xl">{{ movement.stockProduct?.name ?? 'N/A' }}</span>
+          <span class="text-gray-5">z buňky</span>
+          <span class="text-xl">{{ selectedSlot?.place }}</span>
+          <q-input
+            v-model="finalConfirmation"
+            autofocus
+            :rules="[(val) => val === selectedSlot?.place]"
+            no-error-icon
+            input-class="text-center"
+            inputmode="none"
+          />
+          <span class="text-center"
+            >POTVRDIT BUŇKU SCANNEREM <br />
+            PRO ODESLÁNÍ</span
+          >
+          <div class="h-[3rem]">
+            <transition mode="out-in" name="slide-fade">
+              <q-btn
+                v-if="finalConfirmation.length >= 1 && finalConfirmation !== selectedSlot?.place"
+                label="reset"
+                @click="finalConfirmation = ''"
+                flat
+                class="mt-5"
+              />
+            </transition>
+          </div>
         </div>
       </q-step>
     </q-stepper>
-
-    <q-dialog v-model="seamless" position="bottom">
-      <q-card style="width: 350px">
-        <div class="p-4 flex flex-col">
-          <div class="w-full flex justify-between items-center">
-            <span class="text-2xl uppercase">Přidat buňku</span>
-            <q-btn flat round icon="close" v-close-popup />
-          </div>
-          <span class="text-gray-7 mt-3">{{ documentItem.stockProductId }}</span>
-          <span class="text-lg">{{ documentItem.name }}</span>
-          <q-form @submit="addNewSlot">
-            <q-input
-              v-model="newSlot"
-              hint="Naskenovat nebo zadat buňku."
-              label="Kód buňky"
-              autofocus
-              :rules="[(val) => !!val || 'Pole nesmí být prázdné']"
-            />
-            <q-btn
-              type="submit"
-              unelevated
-              color="primary"
-              class="w-full mt-5 h-[3rem]"
-              label="Přidat"
-            ></q-btn>
-          </q-form>
-        </div>
-      </q-card>
-    </q-dialog>
-    <transition name="slide-fade" mode="out-in">
-      <div v-if="step === 1" class="flex h-[3rem] gap-2 mt-auto">
-        <q-btn
-          unelevated
-          color="primary"
-          label="přidat buňku"
-          icon="add"
-          class="flex-[2]"
-          @click="seamless = true"
-        />
-        <q-btn
-          color="primary"
-          outline
-          icon-right="arrow_forward"
-          label="dále"
-          @click="step += 1"
-          :disable="!selectedSlot"
-          class="flex-1"
-        />
-      </div>
-      <q-btn
-        v-else-if="step === 3"
-        unelevated
-        @click="submitAllocation"
-        color="primary"
-        label="uložit"
-        class="mt-auto h-[3rem]"
-      />
-    </transition>
   </div>
 </template>
 
@@ -180,7 +158,7 @@ import { computed, ref, watch } from 'vue'
 
 const props = defineProps<{
   stockDocumentId: string
-  documentItem: StockDocumentItem
+  item: StockDocumentItem
   movement: StockMovementItemApiModel
 }>()
 
@@ -214,24 +192,10 @@ const selectedSlot = ref<PostStockMovement>({
   value: props.movement.value ?? 0
 })
 
-const seamless = ref(false) // dialog control
-const newSlot = ref('')
-async function addNewSlot() {
-  stockItems.value.push({
-    warehousePlaceCode: newSlot.value,
-    value: 0,
-    id: 0,
-    warehousePlaceId: 0
-  })
-  selectedSlot.value.place = newSlot.value
-  newSlot.value = ''
-  seamless.value = false
-}
-
 const { postStockMovement } = useApi()
 const $q = useQuasar()
 const emit = defineEmits<{
-  (e: 'allocated', movement: PostStockMovement): void
+  (e: 'extracted', movement: PostStockMovement): void
 }>()
 async function submitAllocation() {
   if (!isConfirmed.value) {
@@ -240,20 +204,30 @@ async function submitAllocation() {
       message: 'Je potřeba buňku potvrdit scannerem!',
       timeout: 1000
     })
+    finalConfirmation.value = ''
     step.value = 2
     return
   }
 
-  const wasPosted = await postStockMovement(props.stockDocumentId, [selectedSlot.value])
-  if (!wasPosted) {
-    return
-  }
+  // todo: "vydej" amount corrected to reflect cell's max current amount?
+  // todo: api call: negative value if items taken away?
+  // const wasPosted = await postStockMovement(props.stockDocumentId, [selectedSlot.value])
+  // if (!wasPosted) {
+  //   return
+  // }
 
   $q.notify({
     color: 'positive',
-    message: `${selectedSlot.value.value} MJ naskladněno do ${selectedSlot.value.place}`
+    message: `${selectedSlot.value.value} MJ vyskladněno z ${selectedSlot.value.place}`
   })
 
-  setTimeout(() => emit('allocated', selectedSlot.value), 300)
+  setTimeout(() => emit('extracted', selectedSlot.value), 300)
 }
+
+const finalConfirmation = ref('')
+watch(finalConfirmation, async () => {
+  if (finalConfirmation.value === selectedSlot.value.place) {
+    await submitAllocation()
+  }
+})
 </script>

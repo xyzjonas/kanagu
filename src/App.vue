@@ -82,7 +82,7 @@
     <q-page-container class="app-page">
       <RouterView v-slot="{ Component }">
         <template v-if="Component">
-          <KeepAlive exclude="StockinBaseView,StockoutDetailView">
+          <KeepAlive exclude="StockinBaseView,StockoutBaseView">
             <Suspense>
               <!-- hlavní obsah -->
               <component :is="Component"></component>
@@ -106,7 +106,7 @@
 import { computed, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 
-import { useQuasar, Notify } from 'quasar'
+import { useQuasar, Notify, LoadingBar } from 'quasar'
 import { useAuth } from './composables/useAuth'
 
 // import { useDark } from '@/composables/dark'
@@ -117,6 +117,13 @@ Notify.setDefaults({
   classes: 'w-full text-md font-bold',
   progress: true,
   icon: 'chat_bubble'
+})
+
+LoadingBar.setDefaults({
+  size: '8px',
+  skipHijack: false,
+  position: 'top',
+  color: 'primary'
 })
 
 const router = useRouter()
@@ -143,6 +150,10 @@ const title = computed(() => {
   }
 
   if (currentRoute.value.name == 'po-detail') {
+    return 'Výdejka'
+  }
+
+  if (currentRoute.value.name == 'po-allocation') {
     return 'Výdejka'
   }
 

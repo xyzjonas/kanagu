@@ -6,6 +6,8 @@ import StockinAllocationView from '@/views/stockin/StockinAllocationView.vue'
 import StockinBaseView from '@/views/stockin/StockinBaseView.vue'
 import StockinDetailView from '@/views/stockin/StockinDetailView.vue'
 import StockinListView from '@/views/stockin/StockinListView.vue'
+import StockoutAllocationView from '@/views/stockout/StockoutAllocationView.vue'
+import StockoutBaseView from '@/views/stockout/StockoutBaseView.vue'
 import StockoutDetailView from '@/views/stockout/StockoutDetailView.vue'
 import StockoutListView from '@/views/stockout/StockoutListView.vue'
 
@@ -52,6 +54,7 @@ const routes = [
       {
         name: 'ro-detail',
         component: StockinDetailView,
+        meta: { requiresAuth: true },
         path: '',
       },
       {
@@ -63,18 +66,28 @@ const routes = [
       },
     ]
   },
-  // {
-  //   path: '/receive-orders/:orderId//:id/allocate',
-  //   name: 'ro-allocation',
-  //   component: StockinAllocationView,
-  //   meta: { requiresAuth: true }
-  // },
-  // {
-  //   path: '/receive-orders/:orderId/items/:id/printout',
-  //   name: 'ro-printout',
-  //   component: ReceiveOrderPrintoutView,
-  //   meta: { requiresAuth: true }
-  // },
+  {
+    path: '/purchase-orders/:id',
+    component: StockoutBaseView,
+    meta: { requiresAuth: true },
+    props: true,
+    children: [
+      {
+        name: 'po-detail',
+        component: StockoutDetailView,
+        path: '',
+        meta: { requiresAuth: true },
+        props: true,
+      },
+      {
+        name: 'po-allocation',
+        path: 'collect/:movementId',
+        component: StockoutAllocationView,
+        meta: { requiresAuth: true },
+        props: true,
+      },
+    ]
+  },
   {
     path: '/quicksell',
     name: 'quicksell',

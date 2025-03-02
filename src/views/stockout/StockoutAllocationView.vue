@@ -1,10 +1,10 @@
 <template>
   <main v-if="stockItem && movement" class="flex flex-col">
-    <ItemAllocation
-      :documentItem="stockItem"
+    <ItemExtraction
+      :item="stockItem"
       :movement="movement"
       :stock-document-id="stockDocument?.id"
-      @allocated="handleAllocated"
+      @extracted="handleExtracted"
     />
   </main>
   <NotFound v-else />
@@ -13,12 +13,12 @@
 <script setup lang="ts">
 import { type StockDocument, type StockMovementItemApiModel } from '@/client'
 import ItemAllocation from '@/components/ItemAllocation.vue'
+import ItemExtraction from '@/components/ItemExtraction.vue'
 import NotFound from '@/components/NotFound.vue'
-import { useStockDocumentById } from '@/composables/byId'
 import { inject, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const stockDocument = inject<Ref<StockDocument>>('stockinDocument')
+const stockDocument = inject<Ref<StockDocument>>('stockoutDocument')
 const movements = inject<Ref<StockMovementItemApiModel[]>>('movements', ref([]))
 const reloadTrigger = inject<Ref<number>>('triggerReload', ref(0))
 
@@ -30,9 +30,9 @@ const stockItem = stockDocument?.value?.stockDocumentItems?.find(
 )
 
 const router = useRouter()
-const handleAllocated = () => {
+const handleExtracted = () => {
   reloadTrigger.value += 1
-  router.push({ name: 'ro-detail', params: { id: props.id } })
+  router.push({ name: 'po-detail', params: { id: props.id } })
 }
 </script>
 

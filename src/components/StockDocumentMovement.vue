@@ -4,7 +4,7 @@
   >
     <div class="flex justify-between gap-2 p-2 items-center">
       <div :class="`flex flex-col flex-1 ${resolved ? 'text-green' : ''}`">
-        <span>{{ movement.stockProductId }}</span>
+        <span>{{ movement.stockProduct?.code ?? 'N/A' }}</span>
         <span :class="`${resolved ? 'text-green' : 'text-secondary'} text-lg font-500`">{{
           movement.stockProduct?.name
         }}</span>
@@ -20,12 +20,15 @@
     <div class="flex mt-3 h-[3rem]">
       <q-btn label="tisk" unelevated square flat class="flex-1" @click="$emit('clickPrint')" />
       <q-btn
-        :label="resolved ? 'hotovo' : 'přijmout'"
+        :label="resolved ? 'hotovo' : isStockOout ? 'vydat' : 'přijmout'"
         unelevated
         square
         color="primary"
         :class="`flex-[2] ${resolved ? 'bg-green-4' : ''}`"
-        :to="{ name: 'ro-allocation', params: { id: orderId, movementId: movement.id } }"
+        :to="{
+          name: isStockOout ? 'po-allocation' : 'ro-allocation',
+          params: { id: orderId, movementId: movement.id }
+        }"
         :disable="resolved"
       />
     </div>
@@ -41,6 +44,7 @@ const props = defineProps<{
   orderId: string
   item: StockDocumentItem | undefined
   movement: StockMovementItemApiModel
+  isStockOout?: boolean
 }>()
 
 const resolved = computed(() => props.item?.quantity === props.item?.quantityMoved)
