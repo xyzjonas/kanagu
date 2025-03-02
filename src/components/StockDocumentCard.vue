@@ -49,7 +49,10 @@
       unelevated
       color="positive"
       :class="`${isDone ? 'opacity-[0.8]' : ''} h-[3rem]`"
-      :to="{ name: 'ro-detail', params: { id: order.stockDocumentNumber } }"
+      :to="{
+        name: isStockOut ? 'po-detail' : 'ro-detail',
+        params: { id: order.stockDocumentNumber }
+      }"
     />
   </div>
 </template>

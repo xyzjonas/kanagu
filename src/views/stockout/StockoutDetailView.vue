@@ -38,8 +38,10 @@
             <span class="text-2xl uppercase">Tisk štítků</span>
             <q-btn flat round icon="close" v-close-popup />
           </div>
-          <span class="text-gray-7 mt-3">{{ movementToBePrinted?.stockProduct?.productId }}</span>
-          <span class="text-lg">{{ movementToBePrinted?.stockProduct?.name }}</span>
+          <span class="text-gray-7 mt-3">{{
+            movementToBePrinted?.stockProduct?.code ?? 'N/A'
+          }}</span>
+          <span class="text-lg">{{ movementToBePrinted?.stockProduct?.name ?? 'N/A' }}</span>
           <q-form @submit="postPrint">
             <q-input
               v-model="printCount"

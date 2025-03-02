@@ -117,8 +117,8 @@
         </div>
         <div class="flex flex-col justify-center items-center mt-10 text-center">
           <span class="text-gray-7 mt-2">{{ movement.stockProduct?.code ?? 'N/A' }}</span>
-          <span class="text-2xl">{{ movement.stockProduct?.name ?? 'N/A' }}</span>
-          <span class="text-gray-5">z buňky</span>
+          <span class="text-2xl font-bold">{{ movement.stockProduct?.name ?? 'N/A' }}</span>
+          <span class="text-gray-5 mt-5">z buňky</span>
           <span class="text-xl">{{ selectedSlot?.place }}</span>
           <q-input
             v-model="finalConfirmation"
