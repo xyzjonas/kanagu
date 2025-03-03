@@ -3,10 +3,16 @@
     :class="`flex flex-col border-slate-3 border-solid border-1 border-rounded-md bg-slate-1 shadow-md overflow-hidden relative ${dynamicClasses}`"
   >
     <div class="absolute-top pl-2 pt-1 opacity-[0.8]">
-      <q-icon :name="isStockOut ? 'output' : 'exit_to_app'" size="1.2rem" />
+      <q-icon
+        :name="isStockOut ? 'output' : 'exit_to_app'"
+        size="1.2rem"
+        :class="isStockOut ? 'text-stockout' : 'text-stockin'"
+      />
     </div>
     <div class="ml-auto flex items-end flex-col p-2 text-left">
-      <span class="font-600">{{ order.stockDocumentNumber }}</span>
+      <span :class="`${isStockOut ? 'text-stockout' : 'text-stockin'} font-600`">{{
+        order.stockDocumentNumber
+      }}</span>
       <span>{{ order.externalNumber }}</span>
     </div>
     <div class="flex flex-col text-left p-2 mt-auto">
@@ -63,6 +69,7 @@ import Card from './Card.vue'
 import { computed } from 'vue'
 import type { StockDocument } from '@/client'
 import { getDocumentStatus } from '@/utils'
+import { colorStockin, colorStockout } from '@/constants'
 
 const props = defineProps<{ order: StockDocument; isStockOut?: boolean }>()
 
@@ -96,5 +103,3 @@ const dynamicClasses = computed(() => {
 
 const cancelled = computed(() => !!props.order.cancelledOn)
 </script>
-
-<style lang="sass" scoped></style>

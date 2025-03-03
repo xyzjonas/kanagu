@@ -5,6 +5,7 @@
     <div class="flex justify-between gap-2 p-2 items-center">
       <div :class="`flex flex-col flex-1 ${resolved ? 'text-green' : ''}`">
         <span>{{ movement.stockProduct?.code ?? 'N/A' }}</span>
+        {{ movement.stockProductId }}
         <span :class="`${resolved ? 'text-green' : 'text-primary'} text-lg font-500`">{{
           movement.stockProduct?.name
         }}</span>
@@ -32,7 +33,7 @@
         >
       </div>
     </div>
-    <div class="flex mt-3 h-[3rem]">
+    <div class="flex mt-3 h-[3rem] border-t-solid border-1 border-slate-3">
       <q-btn label="tisk" unelevated square flat class="flex-1" @click="$emit('clickPrint')" />
       <q-btn
         v-if="resolved"
@@ -59,19 +60,6 @@
         }"
         disable
       />
-      <!-- <q-btn
-        v-else-if="!notEnoughInStock"
-        :label="resolved ? 'hotovo' : isStockOout ? 'vydat' : 'přijmout'"
-        unelevated
-        square
-        color="primary"
-        :class="`flex-[2] ${resolved ? 'bg-green-4' : ''}`"
-        :to="{
-          name: isStockOout ? 'po-allocation' : 'ro-allocation',
-          params: { id: orderId, movementId: movement.id }
-        }"
-        :disable="resolved"
-      /> -->
       <q-btn
         v-else
         :label="resolved ? 'hotovo' : isStockOout ? 'vydat' : 'přijmout'"

@@ -20,15 +20,17 @@
     </q-btn-group>
 
     <div class="flex flex-col gap-2 mt-5" v-if="displayedMovements.length > 0">
-      <StockDocumentMovement
-        v-for="movement in displayedMovements"
-        :key="movement.id"
-        :movement="movement"
-        :item="stockDocumentItems.find((it) => it.lineNumber === movement.lineNumber)"
-        :order-id="stockDocument.stockDocumentNumber"
-        is-stock-oout
-        @clickPrint="() => clickPrint(movement)"
-      />
+      <TransitionGroup name="fade-slide">
+        <StockDocumentMovement
+          v-for="movement in displayedMovements"
+          :key="movement.id"
+          :movement="movement"
+          :item="stockDocumentItems.find((it) => it.lineNumber === movement.lineNumber)"
+          :order-id="stockDocument.stockDocumentNumber"
+          is-stock-oout
+          @clickPrint="() => clickPrint(movement)"
+        />
+      </TransitionGroup>
     </div>
     <EmptyBox v-else>
       <div class="text-center min-h-xs sm:min-h-md flex flex-col items-center justify-center">
@@ -40,59 +42,29 @@
       
     </section> -->
 
-    <q-dialog v-model="dialogToggle" position="bottom">
-      <q-card style="width: 350px">
-        <div class="p-4 flex flex-col">
-          <div class="w-full flex justify-between items-center">
-            <span class="text-2xl uppercase">Tisk štítků</span>
-            <q-btn flat round icon="close" v-close-popup />
-          </div>
-          <span class="text-gray-7 mt-3">{{
-            movementToBePrinted?.stockProduct?.code ?? 'N/A'
-          }}</span>
-          <span class="text-lg">{{ movementToBePrinted?.stockProduct?.name ?? 'N/A' }}</span>
-          <q-form @submit="postPrint">
-            <q-input
-              v-model="printCount"
-              label="Počet štítků k tisku"
-              autofocus
-              :rules="[
-                rules.notEmpty,
-                rules.isNumber,
-                (val: number) => val <= 200 || 'Víc jak 200 je možná trochu moc, ne?'
-              ]"
-              input-class=""
-            >
-              <template #append>
-                <span class="text-sm">ks</span>
-              </template>
-            </q-input>
-            <q-btn
-              type="submit"
-              unelevated
-              color="primary"
-              class="w-full mt-5 h-[3rem]"
-              label="Tisknout"
-            ></q-btn>
-          </q-form>
-        </div>
-      </q-card>
-    </q-dialog>
+    <PrintDialog
+      v-model="dialogToggle"
+      :product-code="movementToBePrinted?.stockProduct?.code"
+      :product-name="movementToBePrinted?.stockProduct?.name"
+      @print="postPrint"
+    />
   </main>
 </template>
 
 <script setup lang="ts">
 import { type StockDocument, type StockMovementItemApiModel } from '@/client'
+import EmptyBox from '@/components/EmptyBox.vue'
 import StockDocumentMovement from '@/components/StockDocumentMovement.vue'
+import PrintDialog from '@/components/dialogs/PrintDialog.vue'
 import { isItemResolved, isMovementResolved } from '@/utils'
 import { useQuasar } from 'quasar'
-import { rules } from '@/utils'
-import { computed, inject, ref, type Ref } from 'vue'
-import EmptyBox from '@/components/EmptyBox.vue'
+import { computed, inject, ref, watch, type Ref } from 'vue'
 
-const showResolved = ref(false)
 const stockDocument = inject<Ref<StockDocument>>('stockoutDocument')
 const movements = inject<Ref<StockMovementItemApiModel[]>>('movements', ref([]))
+const showResolved = ref(
+  (stockDocument?.value.stockDocumentItems ?? []).filter((it) => !isItemResolved(it)).length === 0
+)
 
 const stockDocumentItems = computed(() => stockDocument?.value?.stockDocumentItems ?? [])
 

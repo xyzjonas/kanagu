@@ -60,7 +60,7 @@
             <q-item-section> Výdejky </q-item-section>
           </q-item>
 
-          <q-item :to="{ name: 'quicksell' }" clickable v-ripple :disable="!isLoggedIn">
+          <q-item :to="{ name: 'quicksell' }" clickable v-ripple disable>
             <q-item-section avatar>
               <q-icon name="paid" />
             </q-item-section>

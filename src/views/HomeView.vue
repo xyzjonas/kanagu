@@ -74,7 +74,6 @@ watch(search, async () => {
   }
 
   loading.value = true
-  console.info('FOO')
   try {
     stockDocumentsIn.value = await getStockDocuments({
       searchString: search.value,

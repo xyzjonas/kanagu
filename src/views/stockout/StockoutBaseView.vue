@@ -6,7 +6,7 @@
         <q-separator vertical class="mx-3" />
         <OrderHeader :order="stockDocument" is-stock-out />
       </div>
-      <router-view class="flex-1" @allocated=""></router-view>
+      <router-view class="flex-1"></router-view>
     </div>
     <NotFound v-else />
   </q-page>
@@ -17,7 +17,6 @@ import type { StockDocument, StockMovementItemApiModel } from '@/client'
 import NotFound from '@/components/NotFound.vue'
 import OrderHeader from '@/components/OrderHeader.vue'
 import { useStockDocumentById } from '@/composables/byId'
-import { useQuasar } from 'quasar'
 import { computed, provide, ref, watch, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -29,8 +28,6 @@ const { stockDocument, movements, reload } = useStockDocumentById({
 })
 
 await reload()
-
-console.info('GOOFOOAFOWFO')
 
 // two-way communication channel
 const reloadTrigger = ref(0)
@@ -50,11 +47,5 @@ const to = computed(() => {
 
   return { name: 'po-detail', id: props.id }
 })
-
-const router = useRouter()
-const handleAllocated = () => {
-  router.push({ name: 'po-detail', params: { id: props.id } })
-  reload()
-}
 </script>
 <style lang="sass" scoped></style>

@@ -47,16 +47,18 @@
 
 <script setup lang="ts">
 import { type StockDocument, type StockMovementItemApiModel } from '@/client'
+import PrintDialog from '@/components/dialogs/PrintDialog.vue'
+import EmptyBox from '@/components/EmptyBox.vue'
 import StockDocumentMovement from '@/components/StockDocumentMovement.vue'
 import { isItemResolved, isMovementResolved } from '@/utils'
 import { useQuasar } from 'quasar'
-import { rules } from '@/utils'
 import { computed, inject, ref, type Ref } from 'vue'
-import PrintDialog from '@/components/dialogs/PrintDialog.vue'
 
-const showResolved = ref(false)
 const stockDocument = inject<Ref<StockDocument>>('stockinDocument')
 const movements = inject<Ref<StockMovementItemApiModel[]>>('movements', ref([]))
+const showResolved = ref(
+  (stockDocument?.value.stockDocumentItems ?? []).filter((it) => !isItemResolved(it)).length === 0
+)
 
 const stockDocumentItems = computed(() => stockDocument?.value?.stockDocumentItems ?? [])
 

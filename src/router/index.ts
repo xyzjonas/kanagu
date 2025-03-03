@@ -121,6 +121,8 @@ router.beforeEach((to, from, next) => {
     document.body.style.setProperty('--q-primary', '#7156A9')
   } else if(to.path.includes("receive")) {
     document.body.style.setProperty('--q-primary', '#3e608a')
+  } else {
+    document.body.style.removeProperty('--q-primary')
   }
 
   const { isLoggedIn } = useAuth()
