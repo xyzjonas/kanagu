@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`flex flex-col ${isOutOfStock && isStockOout ? 'border-negative' : 'border-slate-3'} border-solid border-1 border-rounded-md shadow-md overflow-hidden relative bg-slate-1`"
+    :class="`flex flex-col ${isOutOfStock && isStockOout && !resolved ? 'border-negative' : 'border-slate-3'} border-solid border-1 border-rounded-md shadow-md overflow-hidden relative bg-slate-1`"
   >
     <div class="flex justify-between gap-2 p-2 items-center">
       <div :class="`flex flex-col flex-1 ${resolved ? 'text-green' : ''}`">

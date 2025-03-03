@@ -3,7 +3,7 @@
     <q-btn-group
       spread
       unelevated
-      class="border-solid border-slate-4 border-[1px] mb-5 mt-10 max-w-md mx-auto md:mx-0"
+      class="border-solid border-slate-4 border-[1px] my-5 max-w-md mx-auto md:mx-0"
     >
       <q-btn
         color="primary"
