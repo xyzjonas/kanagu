@@ -1,8 +1,18 @@
 <template>
   <q-page padding class="flex flex-col gap-5">
     <section class="flex gap-2 h-[5rem]">
-      <q-btn unelevated color="primary" :to="{ name: 'ro-list' }" label="příjemky" class="flex-1" />
-      <q-btn unelevated color="primary" :to="{ name: 'po-list' }" label="výdejky" class="flex-1" />
+      <q-btn
+        unelevated
+        :to="{ name: 'ro-list' }"
+        label="příjemky"
+        class="flex-1 bg-stockin text-white"
+      />
+      <q-btn
+        unelevated
+        :to="{ name: 'po-list' }"
+        label="výdejky"
+        class="flex-1 bg-stockout text-white"
+      />
       <q-btn
         unelevated
         color="primary"

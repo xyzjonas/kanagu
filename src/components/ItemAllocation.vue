@@ -32,7 +32,7 @@
               @click="select(item.warehousePlaceCode)"
               :active="selectedSlot.place === item.warehousePlaceCode"
               class="border-rounded-md my-1"
-              active-class="text-white bg-green-4 font-bold"
+              active-class="text-white bg-primary font-bold"
             >
               <q-item-section>
                 <div class="flex justify-between">

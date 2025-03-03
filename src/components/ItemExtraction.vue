@@ -17,11 +17,12 @@
         :done="step > 1"
       >
         <div class="flex flex-col">
-          <div
+          <StockoutCountBadge :count="movement.value ?? 0" :wanted-count="movement.value ?? 0" />
+          <!-- <div
             class="font-400 uppercase mb-2 text-lg border-solid border-1 border-rounded-lg border-slate-4 w-fit py-1 px-3"
           >
             Výdej <span class="text-green font-bold">{{ movement.value }}&hairsp;MJ</span>
-          </div>
+          </div> -->
           <span class="text-gray-7 mt-2">{{ movement.stockProduct?.code ?? 'N/A' }}</span>
           <span class="text-lg">{{ movement.stockProduct?.name ?? 'N/A' }}</span>
           <span class="text-xs text-gray-7">MJ = 100ks</span>
@@ -35,7 +36,7 @@
               @click="select(item.warehousePlaceCode)"
               :active="selectedSlot.place === item.warehousePlaceCode"
               class="border-rounded-md my-1"
-              active-class="text-white bg-green-4 font-bold"
+              active-class="bg-primary text-white font-bold"
             >
               <q-item-section>
                 <div class="flex justify-between">
@@ -48,14 +49,7 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <div
-            v-else
-            class="my-5 py-10 flex items-start justify-center border-dashed border-gray-4 border-1 border-rounded vo"
-          >
-            <div class="flex flex-col gap-2">
-              <h2 class="uppercase font-400">Není skladem</h2>
-            </div>
-          </div>
+          <EmptyBox v-else title="Není skladem" />
         </div>
       </q-step>
 
@@ -69,11 +63,7 @@
         :error="step > 2 && !isConfirmed"
         :disable="stockItems.length === 0"
       >
-        <div
-          class="font-400 uppercase mb-2 text-lg border-solid border-1 border-rounded-lg border-slate-4 w-fit py-1 px-3"
-        >
-          Výdej <span class="text-green font-bold">{{ movement.value }}&hairsp;MJ</span>
-        </div>
+        <StockoutCountBadge :count="selectedSlot.value ?? 0" :wanted-count="movement.value ?? 0" />
         <div class="flex flex-col justify-center items-center mt-10">
           <span>VYBRÁNO</span>
           <span class="text-2xl"
@@ -110,11 +100,7 @@
         done-icon="done"
         :disable="stockItems.length === 0"
       >
-        <div
-          class="font-400 uppercase mb-2 text-lg border-solid border-1 border-rounded-lg border-slate-4 w-fit py-1 px-3"
-        >
-          Výdej <span class="text-green font-bold">{{ movement.value }}&hairsp;MJ</span>
-        </div>
+        <StockoutCountBadge :count="selectedSlot.value ?? 0" :wanted-count="movement.value ?? 0" />
         <div class="flex flex-col justify-center items-center mt-10 text-center">
           <span class="text-gray-7 mt-2">{{ movement.stockProduct?.code ?? 'N/A' }}</span>
           <span class="text-2xl font-bold">{{ movement.stockProduct?.name ?? 'N/A' }}</span>
@@ -155,6 +141,8 @@ import { useApi, type PostStockMovement } from '@/composables/useApi'
 import { rules } from '@/utils'
 import { QStepper, useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
+import EmptyBox from './EmptyBox.vue'
+import StockoutCountBadge from './StockoutCountBadge.vue'
 
 const props = defineProps<{
   stockDocumentId: string
@@ -171,7 +159,18 @@ function select(slot?: string | null) {
   if (!slot) {
     return
   }
+
+  const selectedPlace = props.movement.stockItems?.find((it) => it.warehousePlaceCode === slot)
+  if (!selectedPlace) {
+    return
+  }
+
   selectedSlot.value.place = slot
+
+  if (selectedSlot.value.value > (selectedPlace.value ?? 0)) {
+    selectedSlot.value.value = selectedPlace.value ?? 0
+  }
+
   setTimeout(() => (step.value = 2), 300)
 }
 
@@ -211,10 +210,12 @@ async function submitAllocation() {
 
   // todo: "vydej" amount corrected to reflect cell's max current amount?
   // todo: api call: negative value if items taken away?
-  // const wasPosted = await postStockMovement(props.stockDocumentId, [selectedSlot.value])
-  // if (!wasPosted) {
-  //   return
-  // }
+  const payload: PostStockMovement = JSON.parse(JSON.stringify(selectedSlot.value))
+  payload.value = 1 * payload.value
+  const wasPosted = await postStockMovement(props.stockDocumentId, [payload])
+  if (!wasPosted) {
+    return
+  }
 
   $q.notify({
     color: 'positive',

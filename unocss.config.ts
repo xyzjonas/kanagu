@@ -25,6 +25,10 @@ export default defineConfig({
     colors: {
       primary: "#3e608a",
       secondary: "#3e608a",
+      positive: "#4ea152",
+      negative: "#c01818",
+      stockout: "#7156A9",
+      stockin: "#3e608a",
     }
   },
 })

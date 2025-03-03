@@ -35,6 +35,14 @@ export interface StockDocumentArgs {
   searchString?: string
 }
 
+interface ErrorMessage {
+  type: string
+  title: string
+  status: number
+  detail: string
+  traceId: string
+}
+
 const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')
 
 watch(baseUrl, (baseUrl) => {
@@ -137,6 +145,16 @@ export const useApi = () => {
           stockDocumentNumber: id
         }
       })
+
+      if (res.response.status >= 400) {
+        const err = res.error as ErrorMessage
+        $q.notify({
+          type: 'negative',
+          message: 'Něco se pokazilo.',
+          caption: err.detail ?? err.title
+        })
+      }
+
       return res.data
     } catch (err: unknown) {
       relogin()
@@ -154,9 +172,11 @@ export const useApi = () => {
     if (res.response.status === 200) {
       return true
     }
+    const err = res.error as ErrorMessage
     $q.notify({
       type: 'negative',
-      message: 'Něco se vyj*balo :('
+      message: 'Něco se pokazilo.',
+      caption: err.detail ?? err.title ?? "fajlkdjlkad"
     })
 
     return false

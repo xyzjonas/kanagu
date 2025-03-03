@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`flex flex-col border-gray-3 border-solid border-1 border-rounded-md shadow-md overflow-hidden relative ${dynamicClasses}`"
+    :class="`flex flex-col border-slate-3 border-solid border-1 border-rounded-md bg-slate-1 shadow-md overflow-hidden relative ${dynamicClasses}`"
   >
     <div class="absolute-top pl-2 pt-1 opacity-[0.8]">
       <q-icon :name="isStockOut ? 'output' : 'exit_to_app'" size="1.2rem" />

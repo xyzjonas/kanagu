@@ -19,7 +19,7 @@
       />
     </q-btn-group>
 
-    <div class="flex flex-col gap-2 mt-5">
+    <div class="flex flex-col gap-2 mt-5" v-if="displayedMovements.length > 0">
       <StockDocumentMovement
         v-for="movement in displayedMovements"
         :key="movement.id"
@@ -30,6 +30,15 @@
         @clickPrint="() => clickPrint(movement)"
       />
     </div>
+    <EmptyBox v-else>
+      <div class="text-center min-h-xs sm:min-h-md flex flex-col items-center justify-center">
+        <q-icon size="3rem" name="assignment_turned_in" class="text-gray-7" />
+        <h2 class="text-gray-6 font-400">Žádné zbývající pohyby.</h2>
+      </div>
+    </EmptyBox>
+    <!-- <section v-else class="grid content-center justify-center h-sm">
+      
+    </section> -->
 
     <q-dialog v-model="dialogToggle" position="bottom">
       <q-card style="width: 350px">
@@ -79,6 +88,7 @@ import { isItemResolved, isMovementResolved } from '@/utils'
 import { useQuasar } from 'quasar'
 import { rules } from '@/utils'
 import { computed, inject, ref, type Ref } from 'vue'
+import EmptyBox from '@/components/EmptyBox.vue'
 
 const showResolved = ref(false)
 const stockDocument = inject<Ref<StockDocument>>('stockoutDocument')
