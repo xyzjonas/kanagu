@@ -4,6 +4,8 @@ import { watch } from 'vue'
 
 import { client } from '@/client/client.gen'
 import {
+  getApiCustomerApi,
+  getApiFastOrderApiPaymentTypes,
   getApiStockDocumentApi,
   getApiStockDocumentApiByStockDocumentNumber,
   getApiStockMovementApiById,
@@ -163,23 +165,52 @@ export const useApi = () => {
 
   // API call
   const postStockMovement = async (documentId: string, movements: PostStockMovement[]) => {
-    const res = await postApiStockMovementApi({
-      body: {
-        stockDocumentId: documentId,
-        stockMovements: movements
+    try {
+      const res = await postApiStockMovementApi({
+        body: {
+          stockDocumentId: documentId,
+          stockMovements: movements
+        }
+      })
+      if (res.response.status === 200) {
+        return true
       }
-    })
-    if (res.response.status === 200) {
-      return true
-    }
-    const err = res.error as ErrorMessage
-    $q.notify({
-      type: 'negative',
-      message: 'Něco se pokazilo.',
-      caption: err.detail ?? err.title ?? "fajlkdjlkad"
-    })
+      const err = res.error as ErrorMessage
+      $q.notify({
+        type: 'negative',
+        message: 'Něco se pokazilo.',
+        caption: err.detail ?? err.title ?? 'fajlkdjlkad'
+      })
 
-    return false
+      return false
+    } catch (err: unknown) {
+      relogin()
+    }
+  }
+
+  // API call
+  const searchCustomers = async (searchString: string) => {
+    try {
+      const response = await getApiCustomerApi({
+        query: { searchString }
+      })
+      return response.data || []
+    } catch (err: unknown) {
+      relogin()
+      return []
+    }
+  
+  }
+
+  // API call
+  const getPayments = async () => {
+    try {
+      const response = await getApiFastOrderApiPaymentTypes()
+      return response.data || []
+    } catch (err: unknown) {
+      relogin()
+      return []
+    }
   }
 
   return {
@@ -187,6 +218,8 @@ export const useApi = () => {
     getStockDocuments,
     getStockDocumentsWithPagination,
     getMovements,
+    getPayments,
+    searchCustomers,
     postStockMovement,
     testConnection,
     baseUrl

@@ -7,6 +7,248 @@ export type AccessTokenResponse = {
     refreshToken: string | null;
 };
 
+export type AccountInvite = {
+    id?: number;
+    guid?: string;
+    organizationId?: string | null;
+    organization?: Organization;
+    userId?: string | null;
+    user?: ApplicationUser;
+    email?: string | null;
+    isUsed?: boolean;
+    createdOn?: string;
+};
+
+export type ApplicationUser = {
+    organizationId?: string | null;
+    personId?: number | null;
+    person?: Person;
+    readonly readableName?: string | null;
+    readonly sortableName?: string | null;
+    email?: string | null;
+    emailConfirmed?: boolean;
+    passwordHash?: string | null;
+    securityStamp?: string | null;
+    phoneNumber?: string | null;
+    phoneNumberConfirmed?: boolean;
+    twoFactorEnabled?: boolean;
+    lockoutEnabled?: boolean;
+    accessFailedCount?: number;
+    id?: string;
+    userName?: string | null;
+    normalizedUserName?: string | null;
+    normalizedEmail?: string | null;
+    concurrencyStamp?: string | null;
+    lockoutEnd?: string | null;
+};
+
+export type AvaiableModule = {
+    id?: number;
+    organizationId?: string;
+    organization?: Organization;
+    moduleId?: number;
+    module?: Module;
+};
+
+export type BondAcquisitionType = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    organizationId?: string;
+    organization?: Organization;
+};
+
+export type BondProvisionSplit = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    company?: number;
+    broker?: number;
+    tipper?: number;
+    isDefault?: boolean;
+    organizationId?: string;
+    organization?: Organization;
+};
+
+export type BondState = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    organizationId?: string | null;
+};
+
+export type BondType = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    organizationId?: string | null;
+};
+
+export type Contract = {
+    id?: number;
+    name?: string | null;
+    number?: string | null;
+    customerId?: number;
+    customer?: Customer;
+    contractTypeId?: number | null;
+    contractType?: ContractType;
+    note?: string | null;
+    createdOn?: string;
+    files?: Array<File> | null;
+    ownerId?: string | null;
+    owner?: ApplicationUser;
+    tasks?: Array<Task> | null;
+    workplaces?: Array<Workplace> | null;
+    contractState?: ContractState;
+    contractStateId?: number | null;
+    contractItems?: Array<ContractItem> | null;
+    description?: string | null;
+    finishOn?: string | null;
+    scheduledFinishOn?: string | null;
+    startedOn?: string | null;
+    updatedOn?: string | null;
+    responsibleUserId?: string | null;
+    responsibleUser?: ApplicationUser;
+};
+
+export type ContractItem = {
+    id?: number;
+    name?: string | null;
+    contract?: Contract;
+    contractId?: number;
+    note?: string | null;
+    description?: string | null;
+    price?: number | null;
+    quantity?: number | null;
+    unitTypeId?: number | null;
+    unitType?: UnitType;
+    currencyId?: number | null;
+    currency?: Currency;
+    taxVatId?: number | null;
+    taxVat?: TaxVat;
+};
+
+export type ContractState = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    contracts?: Array<Contract> | null;
+    organizationId?: string | null;
+    organization?: Organization;
+};
+
+export type ContractType = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    contracts?: Array<Contract> | null;
+    organizationId?: string | null;
+    serieNumberId?: number | null;
+    serieNumber?: SerieNumber;
+    sharedContractTypeId?: number | null;
+    useMask?: boolean;
+    sharedContractType?: ContractType;
+    organization?: Organization;
+    sharedBy?: Array<ContractType> | null;
+};
+
+export type Currency = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    symbol?: string | null;
+};
+
+export type Customer = {
+    id?: number;
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    city?: string | null;
+    street?: string | null;
+    postalCode?: string | null;
+    taxIdentification?: string | null;
+    identification?: string | null;
+    guid?: string | null;
+    note?: string | null;
+    createdOn?: string;
+    isValid?: boolean;
+    ownerId?: string | null;
+    reponsibleUserId?: string | null;
+    people?: Array<Person> | null;
+    customerTypeId?: number | null;
+    customerType?: CustomerType;
+    dataCollectionAgreement?: boolean;
+    marketingDataUseAgreement?: boolean;
+    isDeleted?: boolean;
+    registerInformation?: string | null;
+    priceTypeCode?: string | null;
+    invoiceDueDays?: number | null;
+    blockAfterDueDays?: number | null;
+    state?: string | null;
+    code?: string | null;
+    customerGroupId?: number | null;
+    customerGroup?: CustomerGroup;
+};
+
+export type CustomerGroup = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    customers?: Array<Customer> | null;
+    organizationId?: string | null;
+    organization?: Organization;
+};
+
+export type CustomerType = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    customers?: Array<Customer> | null;
+    organizationId?: string | null;
+    organization?: Organization;
+};
+
+export type FastOrder = {
+    customerId?: number | null;
+    customerName?: string | null;
+    customerStreet?: string | null;
+    customerCity?: string | null;
+    customerPostalCode?: string | null;
+    customerState?: string | null;
+    fastOrderItems?: Array<FastOrderItem> | null;
+    note?: string | null;
+    customerCompanyIdentification?: string | null;
+    customerTaxIdentification?: string | null;
+    externalNumber?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    paymentTypeId?: number | null;
+};
+
+export type FastOrderItem = {
+    stockProductId?: number;
+    name?: string | null;
+    quantity?: number;
+    lineNumber?: number | null;
+    warehousePlaceCode?: string | null;
+};
+
+export type File = {
+    id?: number;
+    createdOn?: string;
+    name?: string | null;
+    extension?: string | null;
+    serverPath?: string | null;
+    contractId?: number | null;
+    customerId?: number | null;
+    organizationLogoId?: number | null;
+    organizationStampId?: number | null;
+    bondId?: number | null;
+    referenceId?: string | null;
+    referenceType?: string | null;
+};
+
 export type ForgotPasswordRequest = {
     email: string | null;
 };
@@ -43,11 +285,107 @@ export type LoginRequest = {
     twoFactorRecoveryCode?: string | null;
 };
 
+export type Module = {
+    id?: number;
+    name?: string | null;
+    code?: string | null;
+    description?: string | null;
+    controllerName?: string | null;
+    actionName?: string | null;
+    avaiableModules?: Array<AvaiableModule> | null;
+};
+
+export type Organization = {
+    id?: string;
+    name?: string | null;
+    applicationName?: string | null;
+    stampAndSignatureId?: number | null;
+    logo?: File;
+    stampAndSignature?: File;
+    logoId?: number | null;
+    accountNumber?: string | null;
+    note?: string | null;
+    printStatement?: string | null;
+    checkStatement?: string | null;
+    createdOn?: string;
+    vatPayerText?: string | null;
+    expirationDate?: string | null;
+    applicationUsers?: Array<ApplicationUser> | null;
+    workplaces?: Array<Workplace> | null;
+    contractTypes?: Array<ContractType> | null;
+    customerTypes?: Array<CustomerType> | null;
+    customerGroups?: Array<CustomerGroup> | null;
+    taskStates?: Array<TaskState> | null;
+    serieNumbers?: Array<SerieNumber> | null;
+    settings?: Array<OrganizationSetting> | null;
+    accountInvites?: Array<AccountInvite> | null;
+    bondStates?: Array<BondState> | null;
+    bondAcquisitionTypes?: Array<BondAcquisitionType> | null;
+    bondProvisionSplits?: Array<BondProvisionSplit> | null;
+    bondTypes?: Array<BondType> | null;
+    productTypes?: Array<ProductType> | null;
+    paymentCycles?: Array<PaymentCycle> | null;
+    paymentTypes?: Array<PaymentType> | null;
+    unitTypes?: Array<UnitType> | null;
+    avaiableModules?: Array<AvaiableModule> | null;
+    contractStates?: Array<ContractState> | null;
+    taxVats?: Array<TaxVat> | null;
+    vatPayer?: boolean;
+    currencies?: Array<Currency> | null;
+};
+
+export type OrganizationSetting = {
+    id?: number;
+    organizationId?: string;
+    organization?: Organization;
+    key?: string | null;
+    value?: string | null;
+    name?: string | null;
+    description?: string | null;
+    valueType?: string | null;
+};
+
 export type Pagination = {
     page?: number;
     pageSize?: number;
     totalPages?: number;
     totalItems?: number;
+};
+
+export type PaymentCycle = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    organizationId?: string | null;
+};
+
+export type PaymentType = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+};
+
+export type Person = {
+    id?: number;
+    titlePre?: string | null;
+    firstName?: string | null;
+    middleName?: string | null;
+    lastName?: string | null;
+    titlePost?: string | null;
+    customerId?: number | null;
+    createdOn?: string;
+    note?: string | null;
+    profilePictureId?: number | null;
+    profilePicture?: File;
+    email?: string | null;
+    phone?: string | null;
+    birthDate?: string | null;
+    city?: string | null;
+    street?: string | null;
+    postalCode?: string | null;
+    state?: string | null;
+    readableName?: string | null;
+    readonly sortableName?: string | null;
 };
 
 export type Product = {
@@ -148,6 +486,17 @@ export type ResetPasswordRequest = {
     email: string | null;
     resetCode: string | null;
     newPassword: string | null;
+};
+
+export type SerieNumber = {
+    id?: number;
+    organizationId?: string;
+    organization?: Organization;
+    createdOn?: string;
+    name?: string | null;
+    mask?: string | null;
+    nextNumber?: string | null;
+    contractTypes?: Array<ContractType> | null;
 };
 
 export type StockBarCode = {
@@ -289,6 +638,33 @@ export type StockProduct = {
     product?: Product;
 };
 
+export type Task = {
+    id?: number;
+    name: string;
+    contractId?: number | null;
+    contract?: Contract;
+    ownerId?: string;
+    owner?: ApplicationUser;
+    responsibleUserId?: string | null;
+    responsibleUser?: ApplicationUser;
+    taskStateId?: number;
+    taskState?: TaskState;
+    lenght?: number | null;
+    plannedLenght?: number | null;
+    finishedOn?: string | null;
+    scheduledFinishOn?: string | null;
+    createdOn?: string;
+};
+
+export type TaskState = {
+    id?: number;
+    name?: string | null;
+    code?: string | null;
+    tasks?: Array<Task> | null;
+    organizationId?: string;
+    organization?: Organization;
+};
+
 export type TaxVat = {
     id?: number;
     value?: number;
@@ -337,6 +713,84 @@ export type WarehousePlace = {
     warehouse?: Warehouse;
     stockDocumentId?: string | null;
 };
+
+export type Workplace = {
+    id?: number;
+    code?: string | null;
+    name?: string | null;
+    guid?: string | null;
+    organizationId: string;
+    organization?: Organization;
+    contracts?: Array<Contract> | null;
+};
+
+export type GetApiCustomerApiData = {
+    body?: never;
+    path?: never;
+    query?: {
+        searchString?: string;
+    };
+    url: '/api/CustomerApi';
+};
+
+export type GetApiCustomerApiResponses = {
+    /**
+     * OK
+     */
+    200: Array<Customer>;
+};
+
+export type GetApiCustomerApiResponse = GetApiCustomerApiResponses[keyof GetApiCustomerApiResponses];
+
+export type PostApiFastOrderApiData = {
+    body?: FastOrder;
+    path?: never;
+    query?: never;
+    url: '/api/FastOrderApi';
+};
+
+export type PostApiFastOrderApiResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type GetApiFastOrderApiPaymentTypesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        searchString?: string;
+    };
+    url: '/api/FastOrderApi/payment-types';
+};
+
+export type GetApiFastOrderApiPaymentTypesResponses = {
+    /**
+     * OK
+     */
+    200: Array<PaymentType>;
+};
+
+export type GetApiFastOrderApiPaymentTypesResponse = GetApiFastOrderApiPaymentTypesResponses[keyof GetApiFastOrderApiPaymentTypesResponses];
+
+export type GetApiFastOrderApiPaymentTypeByIdData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/FastOrderApi/payment-type/{id}';
+};
+
+export type GetApiFastOrderApiPaymentTypeByIdResponses = {
+    /**
+     * OK
+     */
+    200: PaymentType;
+};
+
+export type GetApiFastOrderApiPaymentTypeByIdResponse = GetApiFastOrderApiPaymentTypeByIdResponses[keyof GetApiFastOrderApiPaymentTypeByIdResponses];
 
 export type GetApiStockDocumentApiData = {
     body?: never;
@@ -446,6 +900,42 @@ export type PostApiStockMovementApiPrintExportLabelResponses = {
      */
     200: unknown;
 };
+
+export type GetApiStockProductApiData = {
+    body?: never;
+    path?: never;
+    query?: {
+        searchString?: string;
+    };
+    url: '/api/StockProductApi';
+};
+
+export type GetApiStockProductApiResponses = {
+    /**
+     * OK
+     */
+    200: Array<StockProduct>;
+};
+
+export type GetApiStockProductApiResponse = GetApiStockProductApiResponses[keyof GetApiStockProductApiResponses];
+
+export type GetApiStockProductApiByIdData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/StockProductApi/{id}';
+};
+
+export type GetApiStockProductApiByIdResponses = {
+    /**
+     * OK
+     */
+    200: StockProduct;
+};
+
+export type GetApiStockProductApiByIdResponse = GetApiStockProductApiByIdResponses[keyof GetApiStockProductApiByIdResponses];
 
 export type PostRegisterData = {
     body: RegisterRequest;

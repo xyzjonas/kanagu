@@ -2,12 +2,12 @@
   <q-page padding class="flex flex-col gap-5">
     <ConnectionSettings />
     <q-separator />
-    <!-- <section>
+    <section>
       <h1>
         Kopírovat token
         <q-btn flat round icon="content_copy" @click="copyToken" />
       </h1>
-    </section> -->
+    </section>
 
     <div class="mt-auto text-center m-2 text-gray-4">
       Verze aplikace <strong>{{ version }}</strong>

@@ -13,14 +13,7 @@
         label="výdejky"
         class="flex-1 bg-stockout text-white"
       />
-      <q-btn
-        unelevated
-        color="primary"
-        :to="{ name: 'quicksell' }"
-        label="prodej"
-        class="flex-1"
-        disable
-      />
+      <q-btn unelevated color="primary" :to="{ name: 'quicksell' }" label="prodej" class="flex-1" />
     </section>
     <q-separator />
     <section class="flex flex-col gap-5">
