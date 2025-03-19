@@ -1,7 +1,8 @@
 <template>
   <q-select
     outlined
-    label="Zákazník Podle Jména"
+    label="Položka"
+    hint="Vyhledat položku podle názvu nebo EAN kódu."
     v-model="modelValue"
     :options="options"
     option-label="name"
@@ -15,6 +16,15 @@
         <q-item-section class="text-grey"> Žádné Výsledky </q-item-section>
       </q-item>
     </template>
+    <template v-slot:selected-item :props="opt">
+      <q-item class="p-0">
+        <q-item-section>
+          <span>{{ modelValue?.name }}</span>
+          <br />
+          <small>{{ modelValue?.code }}</small>
+        </q-item-section>
+      </q-item>
+    </template>
   </q-select>
 </template>
 
@@ -25,7 +35,7 @@ import { ref } from 'vue'
 
 const MAX_LEN = 5
 
-const { searchCustomers } = useApi()
+const { searchItems } = useApi()
 
 const modelValue = defineModel<Customer>()
 
@@ -36,13 +46,13 @@ async function filterFn(val: string, update: any, abort: () => void) {
     return
   }
 
-  const customers = await searchCustomers(val)
-  if (customers.length > MAX_LEN) {
-    customers.length = MAX_LEN
+  const items = await searchItems(val)
+  if (items.length > MAX_LEN) {
+    items.length = MAX_LEN
   }
 
   update(() => {
-    options.value = customers
+    options.value = items
   })
 }
 

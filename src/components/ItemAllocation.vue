@@ -112,7 +112,7 @@
     </q-stepper>
 
     <q-dialog v-model="seamless" position="bottom">
-      <q-card style="width: 350px">
+      <q-card class="w-lg">
         <div class="p-4 flex flex-col">
           <div class="w-full flex justify-between items-center">
             <span class="text-2xl uppercase">Přidat buňku</span>

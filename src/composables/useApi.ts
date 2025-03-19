@@ -9,6 +9,8 @@ import {
   getApiStockDocumentApi,
   getApiStockDocumentApiByStockDocumentNumber,
   getApiStockMovementApiById,
+  getApiStockProductApi,
+  getApiWarehousePlaceApi,
   postApiStockMovementApi,
   postLogin,
   postRefresh,
@@ -199,7 +201,28 @@ export const useApi = () => {
       relogin()
       return []
     }
-  
+  }
+
+  // API call
+  const searchItems = async (searchString: string) => {
+    try {
+      const response = await getApiStockProductApi({ query: { searchString } })
+      return response.data || []
+    } catch (err: unknown) {
+      relogin()
+      return []
+    }
+  }
+
+  // API call
+  const searchWarehousePlaces = async (searchString: string) => {
+    try {
+      const response = await getApiWarehousePlaceApi({ query: { searchString, allowAll: true } })
+      return response.data || []
+    } catch (err: unknown) {
+      relogin()
+      return []
+    }
   }
 
   // API call
@@ -220,6 +243,8 @@ export const useApi = () => {
     getMovements,
     getPayments,
     searchCustomers,
+    searchItems,
+    searchWarehousePlaces,
     postStockMovement,
     testConnection,
     baseUrl

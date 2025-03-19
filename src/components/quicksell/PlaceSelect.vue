@@ -1,7 +1,8 @@
 <template>
   <q-select
     outlined
-    label="Zákazník Podle Jména"
+    label="Číslo Buňky"
+    hint="Skladové místo, kde se položka nachází."
     v-model="modelValue"
     :options="options"
     option-label="name"
@@ -25,7 +26,7 @@ import { ref } from 'vue'
 
 const MAX_LEN = 5
 
-const { searchCustomers } = useApi()
+const { searchWarehousePlaces } = useApi()
 
 const modelValue = defineModel<Customer>()
 
@@ -36,13 +37,13 @@ async function filterFn(val: string, update: any, abort: () => void) {
     return
   }
 
-  const customers = await searchCustomers(val)
-  if (customers.length > MAX_LEN) {
-    customers.length = MAX_LEN
+  const items = await searchWarehousePlaces(val)
+  if (items.length > MAX_LEN) {
+    items.length = MAX_LEN
   }
 
   update(() => {
-    options.value = customers
+    options.value = items
   })
 }
 
