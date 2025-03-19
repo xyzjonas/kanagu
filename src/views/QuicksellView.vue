@@ -5,7 +5,7 @@
         v-model="step"
         ref="stepper"
         animated
-        class="mt-5 shadow-none bg-transparent flex flex-col"
+        class="shadow-none bg-transparent flex flex-col"
         contracted
         header-nav
       >
@@ -61,12 +61,10 @@
         <transition name="slide-fade" mode="out-in">
           <div v-if="step === 1" class="flex h-[3rem]">
             <q-btn
-              color="primary"
-              outline
               icon-right="arrow_forward"
               label="dále"
               @click="step += 1"
-              class="flex-1"
+              class="flex-1 bg-slate-2"
             />
           </div>
           <div v-else class="flex h-[3rem] gap-2">
@@ -75,7 +73,6 @@
               @click="submitQuicksell"
               color="primary"
               label="uzavřít"
-              icon="check"
               class="mt-auto h-[3rem] flex-1"
             />
             <q-btn
@@ -95,12 +92,12 @@
 </template>
 
 <script setup lang="ts">
-import { type FastOrder, type Customer, type PaymentType } from '@/client'
+import { type Customer, type FastOrder, type PaymentType } from '@/client'
 import CustomerSelect from '@/components/quicksell/CustomerSelect.vue'
 import PaymentSelect from '@/components/quicksell/PaymentSelect.vue'
 import { useLocalStorage } from '@vueuse/core'
 import { QStepper, useQuasar } from 'quasar'
-import { onMounted, onUpdated, onActivated, ref, watch } from 'vue'
+import { onActivated, ref, watch } from 'vue'
 
 const step = ref(1)
 const stepper = ref<QStepper>()

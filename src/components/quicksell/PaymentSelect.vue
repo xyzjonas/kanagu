@@ -4,7 +4,7 @@
     label="Typ Platby"
     v-model="modelValue"
     :options="options"
-    option-label="name"
+    :option-label="(val) => getLabel(val)"
     clearable
     @filter="filterFn"
     @abort="abortFilterFn"
@@ -19,6 +19,15 @@ import { ref } from 'vue'
 const { getPayments } = useApi()
 
 const modelValue = defineModel<PaymentType>()
+
+const labelMap: Record<string, string> = {
+  locCash: 'Hotovost',
+  locCard: 'Kartou',
+  locTransfer: 'Převodem',
+  locCashOnDelivery: 'Při převzetí'
+}
+
+const getLabel = (value: PaymentType) => labelMap[value.name ?? ''] ?? value.name
 
 const options = ref<PaymentType[]>([])
 async function filterFn(val: string, update: any, abort: () => void) {
