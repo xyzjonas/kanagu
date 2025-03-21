@@ -16,6 +16,7 @@
           done-icon="description"
           title=""
           :done="step > 1"
+          class="overflow-hidden"
         >
           <div class="flex flex-col gap-3">
             <div class="flex justify-between items-center">
@@ -27,7 +28,7 @@
                 @click="clearForm"
                 flat
                 rounded
-                outline
+                dense
                 icon-right="refresh"
               ></q-btn>
             </div>
@@ -41,27 +42,55 @@
                 label="Externí Číslo"
                 inputmode="numeric"
               />
+              <q-input v-model="order.note" outlined label="Poznámka *" autogrow />
             </q-form>
           </div>
         </q-step>
 
         <q-step :name="2" title="" active-icon="list" icon="list" done-icon="list">
           <EmptyBox v-if="isEmpty" title="Žádné položky"></EmptyBox>
+          <div v-else>
+            <h2 class="uppercase">{{ orderItems.length }} {{ polozky }}</h2>
+            <div class="grid gap-1 md:grid-cols-2 lg:grid-cols-4">
+              <ItemCard
+                :item="item.item"
+                :place="item.place"
+                :quantity="item.quantity"
+                v-for="item in orderItems"
+                @delete="() => removeItem(item.item?.code ?? '')"
+              />
+            </div>
+          </div>
         </q-step>
 
         <q-step :name="3" title="" active-icon="check" icon="check" done-icon="check">
-          <EmptyBox v-if="isEmpty" title="Potvrzení"></EmptyBox>
+          <EmptyBox v-if="isEmpty" title="Žádné položky"></EmptyBox>
+          <div v-else>
+            <h2 class="uppercase">{{ orderItems.length }} {{ polozky }}</h2>
+            <div class="grid gap-1 md:grid-cols-2 lg:grid-cols-4">
+              <ItemCard
+                :item="item.item"
+                :place="item.place"
+                :quantity="item.quantity"
+                v-for="item in orderItems"
+                @delete="() => removeItem(item.item?.code ?? '')"
+                readonly
+              />
+            </div>
+          </div>
         </q-step>
       </q-stepper>
 
-      <div class="position-sticky bottom-2 mt-auto">
+      <div class="position-sticky mt-auto bg-slate-2">
         <transition name="slide-fade" mode="out-in">
           <div v-if="step === 1" class="flex h-[3rem]">
             <q-btn
               icon-right="arrow_forward"
               label="dále"
               @click="step += 1"
-              class="flex-1 bg-slate-2"
+              class="flex-1"
+              outline
+              color="primary"
             />
           </div>
           <div v-else-if="step == 2" class="flex h-[3rem] gap-2">
@@ -102,7 +131,7 @@
             <span class="text-2xl uppercase">Přidat položku</span>
             <q-btn flat round icon="close" v-close-popup />
           </div>
-          <q-form class="flex flex-col gap-2">
+          <q-form class="flex flex-col gap-2" @submit="addItem">
             <ItemSelectByName v-model="newItem" :rules="[rules.notEmpty]" />
             <PlaceSelect v-model="newPlace" :rules="[rules.notEmpty]" />
             <q-input
@@ -126,25 +155,26 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  FastOrderItem,
-  Customer,
-  FastOrder,
-  PaymentType,
-  WarehousePlace,
-  StockProduct
-} from '@/client'
+import type { Customer, FastOrder, PaymentType, StockProduct, WarehousePlace } from '@/client'
 import EmptyBox from '@/components/EmptyBox.vue'
 import CustomerSelect from '@/components/quicksell/CustomerSelect.vue'
-import ItemSelectByEan from '@/components/quicksell/ItemSelectByEan.vue'
+import ItemCard from '@/components/quicksell/QuiacksellItem.Card.vue'
 import ItemSelectByName from '@/components/quicksell/ItemSelectByName.vue'
 import PaymentSelect from '@/components/quicksell/PaymentSelect.vue'
 import PlaceSelect from '@/components/quicksell/PlaceSelect.vue'
+import { usePolozky } from '@/composables/usePolozky'
 import { rules } from '@/utils'
 import { useLocalStorage } from '@vueuse/core'
 import { QStepper, useQuasar } from 'quasar'
 import { computed, onActivated, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
+import { useApi } from '@/composables/useApi'
+
+interface OrderItem {
+  item: StockProduct
+  place: WarehousePlace
+  quantity: number
+}
 
 const step = ref(1)
 const stepper = ref<QStepper>()
@@ -154,9 +184,13 @@ const seamless = ref(false) // dialog control
 const $q = useQuasar()
 
 const order = useLocalStorage<FastOrder>('fast-order', {})
+const orderItems = useLocalStorage<OrderItem[]>('fast-order-items', [])
+
+const count = computed(() => orderItems.value.length)
+const { polozky } = usePolozky(count)
 
 const responsibleContact = ref('')
-const selectedPayment = ref<PaymentType>()
+const selectedPayment = useLocalStorage<PaymentType>('fast-order-payment', {})
 const selectedCustomer = ref<Customer>()
 
 const clearForm = () => {
@@ -165,6 +199,7 @@ const clearForm = () => {
   order.value = {
     fastOrderItems: []
   }
+  orderItems.value = []
 }
 
 watch(selectedCustomer, (customer) => {
@@ -179,7 +214,8 @@ watch(selectedCustomer, (customer) => {
       customerCompanyIdentification: customer.identification,
       customerTaxIdentification: customer.taxIdentification,
       phone: customer.phone,
-      email: customer.email
+      email: customer.email,
+      customerStreet: customer.street
     }
   } else {
     order.value = {
@@ -206,6 +242,21 @@ watch(selectedPayment, (payment) => {
   }
 })
 
+watch(orderItems, () => {
+  order.value.fastOrderItems = []
+
+  for (let i = 0; i < orderItems.value.length; i++) {
+    const item = orderItems.value[i]
+    order.value.fastOrderItems.push({
+      stockProductId: item.item.id,
+      name: item.item.name,
+      warehousePlaceCode: item.place.code,
+      quantity: item.quantity,
+      lineNumber: i
+    })
+  }
+})
+
 onActivated(() => {
   if (!order.value) {
     return
@@ -221,22 +272,52 @@ onActivated(() => {
       identification: order.value.customerCompanyIdentification,
       taxIdentification: order.value.customerTaxIdentification,
       phone: order.value.phone,
-      email: order.value.email
+      email: order.value.email,
+      street: order.value.customerStreet
     }
   }
 })
 
-const isEmpty = computed(
-  () => !order.value?.fastOrderItems || order.value.fastOrderItems.length === 0
-)
+const isEmpty = computed(() => orderItems.value.length === 0)
 
 const newItem = ref<StockProduct>()
 const newPlace = ref<WarehousePlace>()
 const newItemQuantity = ref(0)
 
+function addItem() {
+  if (!newItem.value || !newPlace.value) {
+    return
+  }
+
+  orderItems.value = [
+    ...orderItems.value,
+    {
+      item: newItem.value,
+      place: newPlace.value,
+      quantity: newItemQuantity.value
+    }
+  ]
+
+  seamless.value = false
+  setTimeout(() => {
+    newItem.value = undefined
+    newPlace.value = undefined
+    newItemQuantity.value = 0
+  }, 500)
+}
+
+function removeItem(code: string) {
+  orderItems.value = orderItems.value.filter((item) => item.item.code !== code)
+}
+
+const { postFastOrder } = useApi()
 const router = useRouter()
 async function submitQuicksell() {
-  // todo: post
+  const success = await postFastOrder(order.value)
+  if (!success) {
+    return
+  }
+
   $q.notify({
     color: 'positive',
     message: 'Prodej uzavřen.'
@@ -246,3 +327,4 @@ async function submitQuicksell() {
   router.push({ name: 'home' })
 }
 </script>
+<style lang="css"></style>

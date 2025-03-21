@@ -8,8 +8,10 @@
     option-label="name"
     use-input
     clearable
+    :multiple="false"
     @filter="filterFn"
     @abort="abortFilterFn"
+    autofocus
   >
     <template v-slot:no-option>
       <q-item>

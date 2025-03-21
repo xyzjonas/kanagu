@@ -4,7 +4,7 @@
       v-model="step"
       ref="stepper"
       animated
-      class="mt-5 shadow-none bg-transparent flex flex-col"
+      class="shadow-none bg-transparent flex flex-col"
       contracted
       header-nav
     >

@@ -11,9 +11,11 @@ import {
   getApiStockMovementApiById,
   getApiStockProductApi,
   getApiWarehousePlaceApi,
+  postApiFastOrderApi,
   postApiStockMovementApi,
   postLogin,
   postRefresh,
+  type FastOrder,
   type StockDocument,
   type StockDocumentPagedData
 } from '@/client'
@@ -181,7 +183,7 @@ export const useApi = () => {
       $q.notify({
         type: 'negative',
         message: 'Něco se pokazilo.',
-        caption: err.detail ?? err.title ?? 'fajlkdjlkad'
+        caption: err.detail ?? err.title ?? 'Nesrozumitelná chyba :('
       })
 
       return false
@@ -236,6 +238,35 @@ export const useApi = () => {
     }
   }
 
+  const postFastOrder = async (order: FastOrder) => {
+    try {
+      const res = await postApiFastOrderApi({ body: order })
+      if (res.response.status === 200) {
+        return true
+      }
+
+      if (typeof(res) === 'string') {
+        $q.notify({
+          type: 'negative',
+          message: 'Něco se pokazilo.',
+          caption: res
+        })
+        return false
+      }
+      
+      const err = res.error as ErrorMessage
+      $q.notify({
+        type: 'negative',
+        message: 'Něco se pokazilo.',
+        caption: err.detail ?? err.title ?? 'Nesrozumitelná chyba :('
+      })
+
+      return false
+    } catch (err: unknown) {
+      relogin()
+    }
+  }
+
   return {
     getStockDocument,
     getStockDocuments,
@@ -246,6 +277,7 @@ export const useApi = () => {
     searchItems,
     searchWarehousePlaces,
     postStockMovement,
+    postFastOrder,
     testConnection,
     baseUrl
   }

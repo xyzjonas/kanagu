@@ -204,4 +204,10 @@ const toggleRightDrawer = () => {
   transform: translateX(20px);
   opacity: 0;
 }
+
+/* QUASAR OVERRIDES */
+.q-stepper--horizontal .q-stepper__step-inner {
+  padding-inline: 0px !important;
+  padding-block: 8px !important;
+}
 </style>
