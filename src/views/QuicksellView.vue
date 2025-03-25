@@ -32,7 +32,7 @@
                 icon-right="refresh"
               ></q-btn>
             </div>
-            <q-form class="flex flex-col gap-2">
+            <q-form class="flex flex-col gap-2" ref="identificationForm">
               <CustomerSelect v-model="selectedCustomer" />
               <PaymentSelect v-model="selectedPayment" />
               <q-input v-model="responsibleContact" outlined label="Odpovědná Osoba" disable />
@@ -41,8 +41,15 @@
                 outlined
                 label="Externí Číslo"
                 inputmode="numeric"
+                :rules="[rules.notEmpty, rules.isNumber]"
               />
-              <q-input v-model="order.note" outlined label="Poznámka *" autogrow />
+              <q-input
+                v-model="order.note"
+                outlined
+                label="Poznámka *"
+                autogrow
+                :rules="[rules.notEmpty]"
+              />
             </q-form>
           </div>
         </q-step>
@@ -87,7 +94,7 @@
             <q-btn
               icon-right="arrow_forward"
               label="dále"
-              @click="step += 1"
+              @click="identificationNextStep"
               class="flex-1"
               outline
               color="primary"
@@ -100,6 +107,7 @@
               color="primary"
               label="uzavřít"
               class="mt-auto h-[3rem] flex-1"
+              :disable="orderItems.length === 0"
             />
             <q-btn
               unelevated
@@ -115,8 +123,9 @@
             <q-btn
               unelevated
               @click="submitQuicksell"
-              color="primary"
+              color="positive"
               label="uzavřít"
+              icon="check"
               class="mt-auto h-[3rem] flex-1"
             />
           </div>
@@ -124,57 +133,32 @@
       </div>
     </div>
 
-    <q-dialog v-model="seamless" position="bottom">
-      <q-card class="w-lg">
-        <div class="p-4 flex flex-col">
-          <div class="w-full flex justify-between items-center mb-3">
-            <span class="text-2xl uppercase">Přidat položku</span>
-            <q-btn flat round icon="close" v-close-popup />
-          </div>
-          <q-form class="flex flex-col gap-2" @submit="addItem">
-            <ItemSelectByName v-model="newItem" :rules="[rules.notEmpty]" />
-            <PlaceSelect v-model="newPlace" :rules="[rules.notEmpty]" />
-            <q-input
-              v-model.number="newItemQuantity"
-              outlined
-              :hint="
-                newItem?.product?.unitType?.code
-                  ? `1MJ = ${newItem?.product?.unitType?.code}`
-                  : 'N/A'
-              "
-              label="Počet Kusů (dle MJ)"
-              inputmode="numeric"
-              :rules="[rules.atLeastOne]"
-            />
-            <q-btn type="submit" unelevated color="primary" label="přidat" class="h-[3rem] mt-3" />
-          </q-form>
-        </div>
-      </q-card>
-    </q-dialog>
+    <AddItemDialog v-model="seamless" @submit="addItem" />
   </q-page>
 </template>
 
 <script setup lang="ts">
 import type { Customer, FastOrder, PaymentType, StockProduct, WarehousePlace } from '@/client'
 import EmptyBox from '@/components/EmptyBox.vue'
+import AddItemDialog from '@/components/quicksell/AddItemDialog.vue'
 import CustomerSelect from '@/components/quicksell/CustomerSelect.vue'
-import ItemCard from '@/components/quicksell/QuiacksellItem.Card.vue'
-import ItemSelectByName from '@/components/quicksell/ItemSelectByName.vue'
 import PaymentSelect from '@/components/quicksell/PaymentSelect.vue'
-import PlaceSelect from '@/components/quicksell/PlaceSelect.vue'
+import ItemCard from '@/components/quicksell/QuiacksellItem.Card.vue'
+import { useApi } from '@/composables/useApi'
 import { usePolozky } from '@/composables/usePolozky'
 import { rules } from '@/utils'
 import { useLocalStorage } from '@vueuse/core'
-import { QStepper, useQuasar } from 'quasar'
+import { QForm, QStepper, useQuasar } from 'quasar'
 import { computed, onActivated, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useApi } from '@/composables/useApi'
 
 interface OrderItem {
   item: StockProduct
   place: WarehousePlace
   quantity: number
 }
+
+const identificationForm = ref<QForm>()
 
 const step = ref(1)
 const stepper = ref<QStepper>()
@@ -190,7 +174,11 @@ const count = computed(() => orderItems.value.length)
 const { polozky } = usePolozky(count)
 
 const responsibleContact = ref('')
-const selectedPayment = useLocalStorage<PaymentType>('fast-order-payment', {})
+const selectedPayment = useLocalStorage<PaymentType>('fast-order-payment', {
+  id: 6,
+  code: 'CARD',
+  name: 'locCard'
+})
 const selectedCustomer = ref<Customer>()
 
 const clearForm = () => {
@@ -280,30 +268,25 @@ onActivated(() => {
 
 const isEmpty = computed(() => orderItems.value.length === 0)
 
-const newItem = ref<StockProduct>()
-const newPlace = ref<WarehousePlace>()
-const newItemQuantity = ref(0)
+// const newItem = ref<StockProduct>()
+// const newPlace = ref<WarehousePlace>()
+// const newItemQuantity = ref(0)
 
-function addItem() {
-  if (!newItem.value || !newPlace.value) {
-    return
+async function identificationNextStep() {
+  if (!identificationForm?.value) {
+    step.value += 1
   }
 
-  orderItems.value = [
-    ...orderItems.value,
-    {
-      item: newItem.value,
-      place: newPlace.value,
-      quantity: newItemQuantity.value
-    }
-  ]
+  const res = await identificationForm.value?.validate()
+  if (res) {
+    step.value += 1
+  }
+}
+
+function addItem(item: StockProduct, place: WarehousePlace, quantity: number) {
+  orderItems.value = [...orderItems.value, { item, place, quantity }]
 
   seamless.value = false
-  setTimeout(() => {
-    newItem.value = undefined
-    newPlace.value = undefined
-    newItemQuantity.value = 0
-  }, 500)
 }
 
 function removeItem(code: string) {

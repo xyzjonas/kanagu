@@ -27,8 +27,9 @@ export default defineConfig({
       secondary: "#3e608a",
       positive: "#4ea152",
       negative: "#c01818",
-      stockout: "#7156A9",
+      stockout: "#007074",
       stockin: "#3e608a",
+      quicksell: "#F38C79"
     }
   },
 })

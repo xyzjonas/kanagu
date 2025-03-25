@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Customer } from '@/client'
+import type { WarehousePlace } from '@/client'
 import { useApi } from '@/composables/useApi'
 import { ref } from 'vue'
 
@@ -28,9 +28,9 @@ const MAX_LEN = 5
 
 const { searchWarehousePlaces } = useApi()
 
-const modelValue = defineModel<Customer>()
+const modelValue = defineModel<WarehousePlace>()
 
-const options = ref<Customer[]>([])
+const options = ref<WarehousePlace[]>([])
 async function filterFn(val: string, update: any, abort: () => void) {
   if (!val) {
     update()

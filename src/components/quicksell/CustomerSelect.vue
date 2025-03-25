@@ -1,7 +1,8 @@
 <template>
   <q-select
     outlined
-    label="Zákazník Podle Jména"
+    label="Zákazník *"
+    hint="Vyberte zákazníka podle jména."
     v-model="modelValue"
     :options="options"
     option-label="name"
@@ -9,6 +10,7 @@
     clearable
     @filter="filterFn"
     @abort="abortFilterFn"
+    :rules="[rules.notEmpty]"
   >
     <template v-slot:no-option>
       <q-item>
@@ -21,6 +23,7 @@
 <script setup lang="ts">
 import type { Customer } from '@/client'
 import { useApi } from '@/composables/useApi'
+import { rules } from '@/utils'
 import { ref } from 'vue'
 
 const MAX_LEN = 5

@@ -1,19 +1,21 @@
 <template>
   <q-select
     outlined
-    label="Typ Platby"
+    label="Typ Platby *"
+    hint="Vyberte typ platby."
     v-model="modelValue"
     :options="options"
     :option-label="(val) => getLabel(val)"
-    clearable
     @filter="filterFn"
     @abort="abortFilterFn"
+    :rules="[rules.notEmpty]"
   />
 </template>
 
 <script setup lang="ts">
 import type { PaymentType } from '@/client'
 import { useApi } from '@/composables/useApi'
+import { rules } from '@/utils'
 import { ref } from 'vue'
 
 const { getPayments } = useApi()

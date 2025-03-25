@@ -14,6 +14,7 @@ import StockoutListView from '@/views/stockout/StockoutListView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuth } from '@/composables/useAuth'
+import { colorQuicksell, colorStockin, colorStockout } from '@/constants'
 
 const routes = [
   {
@@ -118,9 +119,11 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 
   if(to.path.includes("purchase")) {
-    document.body.style.setProperty('--q-primary', '#7156A9')
+    document.body.style.setProperty('--q-primary', colorStockout)
   } else if(to.path.includes("receive")) {
-    document.body.style.setProperty('--q-primary', '#3e608a')
+    document.body.style.setProperty('--q-primary', colorStockin)
+  } else if (to.path.includes('quicksell')) {
+    document.body.style.setProperty('--q-primary', colorQuicksell)
   } else {
     document.body.style.removeProperty('--q-primary')
   }
