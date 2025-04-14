@@ -1,5 +1,6 @@
 <template>
   <q-layout view="lHh LpR fFf" class="font-sans bg-slate-2">
+    <!-- <LoadingWindowBlocker /> -->
     <q-header class="bg-slate-2 text-dark">
       <q-toolbar class="app-page">
         <q-toolbar-title>
@@ -108,6 +109,7 @@ import { RouterView, useRouter } from 'vue-router'
 
 import { useQuasar, Notify, LoadingBar } from 'quasar'
 import { useAuth } from './composables/useAuth'
+import LoadingWindowBlocker from './components/LoadingWindowBlocker.vue'
 
 // import { useDark } from '@/composables/dark'
 // const { isDark, toggle } = useDark()
@@ -116,7 +118,8 @@ Notify.setDefaults({
   position: 'top',
   classes: 'w-full text-md font-bold',
   progress: true,
-  icon: 'chat_bubble'
+  icon: 'chat_bubble',
+  timeout: 3000
 })
 
 LoadingBar.setDefaults({

@@ -35,21 +35,19 @@
             <q-form class="flex flex-col gap-2" ref="identificationForm">
               <CustomerSelect v-model="selectedCustomer" />
               <PaymentSelect v-model="selectedPayment" />
-              <q-input v-model="responsibleContact" outlined label="Odpovědná Osoba" disable />
+              <!-- <q-input
+                v-model="responsibleContact"
+                outlined
+                label="Odpovědná Osoba"
+                :rules="[rules.notEmpty]"
+              /> -->
               <q-input
                 v-model="order.externalNumber"
                 outlined
-                label="Externí Číslo"
-                inputmode="numeric"
-                :rules="[rules.notEmpty, rules.isNumber]"
-              />
-              <q-input
-                v-model="order.note"
-                outlined
-                label="Poznámka *"
-                autogrow
+                label="Externí Číslo *"
                 :rules="[rules.notEmpty]"
               />
+              <q-input v-model="order.note" outlined label="Poznámka" autogrow />
             </q-form>
           </div>
         </q-step>
@@ -113,7 +111,7 @@
               unelevated
               color="primary"
               outline
-              label="přidat položku"
+              label="přidat"
               icon="add"
               class="flex-[2]"
               @click="seamless = true"
@@ -173,7 +171,7 @@ const orderItems = useLocalStorage<OrderItem[]>('fast-order-items', [])
 const count = computed(() => orderItems.value.length)
 const { polozky } = usePolozky(count)
 
-const responsibleContact = ref('')
+// const responsibleContact = ref('')
 const selectedPayment = useLocalStorage<PaymentType>('fast-order-payment', {
   id: 6,
   code: 'CARD',

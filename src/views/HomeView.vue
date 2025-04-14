@@ -20,6 +20,9 @@
         class="flex-1 bg-quicksell text-dark"
       />
     </section>
+
+    <WarehouseSelect />
+
     <q-separator />
     <section class="flex flex-col gap-5">
       <q-input
@@ -54,6 +57,7 @@
 <script setup lang="ts">
 import type { StockDocument } from '@/client'
 import StockDocumentList from '@/components/StockDocumentList.vue'
+import WarehouseSelect from '@/components/WarehouseSelect.vue'
 import { useApi } from '@/composables/useApi'
 import { ref, watch } from 'vue'
 

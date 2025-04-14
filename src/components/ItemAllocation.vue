@@ -27,7 +27,7 @@
             <q-item
               clickable
               v-ripple
-              v-for="(item, index) in stockItems"
+              v-for="(item, index) in warehousePlaces"
               :key="index"
               @click="select(item.warehousePlaceCode)"
               :active="selectedSlot.place === item.warehousePlaceCode"
@@ -60,7 +60,8 @@
         <div class="flex flex-col justify-center items-center min-h-xs">
           <span>VYBRÁNO</span>
           <span class="text-2xl"
-            ><span class="text-gray-5">BUŇKA</span> {{ selectedSlot?.place }}</span
+            ><span class="text-gray-5">BUŇKA</span>
+            {{ getWarehousePlace(selectedSlot?.place ?? '') }}</span
           >
           <q-input
             v-model="confirmation"
@@ -93,12 +94,13 @@
 
           <span class="mt-6">Zadat počet MJ k naskladnění</span>
           <span class="text-2xl mb-6">
-            <span class="text-gray-5">BUŇKA</span> {{ selectedSlot.place }}
+            <span class="text-gray-5">BUŇKA</span> {{ adjustedWarehousePlace }}
           </span>
           <q-form @submit="submitAllocation">
             <q-input
               v-model="selectedSlot.value"
-              label="Počet MJ"
+              :label="`Počet MJ [${movement.stockProduct?.product?.unitType?.code ?? 'jednotka chybí'}]`"
+              hint="Počet množstevních jednotek k naskladnění."
               autofocus
               no-error-icon
               input-class="text-center text-2xl"
@@ -174,6 +176,7 @@
 <script setup lang="ts">
 import type { StockDocumentItem, StockMovementItemApiModel } from '@/client'
 import { useApi, type PostStockMovement } from '@/composables/useApi'
+import { useWarehouse } from '@/composables/warehouse'
 import { rules } from '@/utils'
 import { QStepper, useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
@@ -184,10 +187,20 @@ const props = defineProps<{
   movement: StockMovementItemApiModel
 }>()
 
-const stockItems = ref(props.movement.stockItems ?? [])
+const { getWarehousePlace, stripWarehousePlace } = useWarehouse()
+
+const warehousePlaces = ref(props.movement.stockItems ?? [])
 
 const step = ref(1)
 const stepper = ref<QStepper>()
+
+const selectedSlot = ref<PostStockMovement>({
+  id: props.movement.id ?? 0,
+  lineNumber: props.movement.lineNumber ?? 1,
+  stockProductId: props.movement.stockProductId ?? 1,
+  place: (props.movement.stockItems ?? [])[0]?.warehousePlaceCode ?? undefined,
+  value: props.movement.value ?? 0
+})
 
 function select(slot?: string | null) {
   if (!slot) {
@@ -198,32 +211,27 @@ function select(slot?: string | null) {
 }
 
 const confirmation = ref('')
+
+const adjustedWarehousePlace = computed(() => getWarehousePlace(selectedSlot.value?.place ?? ''))
+
 watch(confirmation, () => {
-  if (confirmation.value === selectedSlot.value.place) {
+  if (confirmation.value === adjustedWarehousePlace.value) {
     setTimeout(() => (step.value += 1), 500)
   }
 })
 
-const isConfirmed = computed(() => confirmation.value === selectedSlot.value.place)
-
-const selectedSlot = ref<PostStockMovement>({
-  id: props.movement.id ?? 0,
-  lineNumber: props.movement.lineNumber ?? 1,
-  stockProductId: props.movement.stockProductId ?? 1,
-  place: (props.movement.stockItems ?? [])[0]?.warehousePlaceCode ?? undefined,
-  value: props.movement.value ?? 0
-})
+const isConfirmed = computed(() => confirmation.value === adjustedWarehousePlace.value)
 
 const seamless = ref(false) // dialog control
 const newSlot = ref('')
 async function addNewSlot() {
-  stockItems.value.push({
-    warehousePlaceCode: newSlot.value,
+  warehousePlaces.value.push({
+    warehousePlaceCode: stripWarehousePlace(newSlot.value),
     value: 0,
     id: 0,
     warehousePlaceId: 0
   })
-  selectedSlot.value.place = newSlot.value
+  selectedSlot.value.place = stripWarehousePlace(newSlot.value)
   newSlot.value = ''
   seamless.value = false
 }

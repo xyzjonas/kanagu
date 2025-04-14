@@ -32,6 +32,7 @@
             color="primary"
             class="w-full mt-5 h-[3rem]"
             label="Tisknout"
+            :loading="loading"
           ></q-btn>
         </q-form>
       </div>
@@ -48,6 +49,7 @@ const modelValue = defineModel<boolean>({ required: true })
 defineProps<{
   productCode?: string | null
   productName?: string | null
+  loading?: boolean
 }>()
 
 const printCount = ref(1)

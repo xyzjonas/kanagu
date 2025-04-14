@@ -7,8 +7,6 @@
         <span class="font-600">{{ item.name ?? 'N/A' }}</span>
         {{ item.code }}
         <span class="text-gray-5">MJ = {{ item?.product?.unitType?.code }}</span>
-        <hr />
-        <span class="text-gray-5">MJ = {{ item?.id }}</span>
       </div>
       <div
         class="px-3 py-2 flex flex-col items-center border-gray-3 border-solid border-1 border-rounded-md min-w-[4rem]"

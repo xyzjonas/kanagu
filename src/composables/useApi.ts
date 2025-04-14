@@ -13,6 +13,8 @@ import {
   getApiWarehousePlaceApi,
   postApiFastOrderApi,
   postApiStockMovementApi,
+  postApiStockMovementApiPrintExportLabel,
+  postApiStockMovementApiPrintImportLabel,
   postLogin,
   postRefresh,
   type FastOrder,
@@ -54,6 +56,28 @@ const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:
 watch(baseUrl, (baseUrl) => {
   client.setConfig({ baseUrl })
 })
+
+interface ErrorResponse {
+  error: ErrorMessage
+}
+
+function notifyError(res: unknown, $q: ReturnType<typeof useQuasar>) {
+  if (typeof res === 'string') {
+    $q.notify({
+      type: 'negative',
+      message: 'Něco se pokazilo.',
+      caption: res
+    })
+    return false
+  }
+
+  const err = (res as ErrorResponse).error
+  $q.notify({
+    type: 'negative',
+    message: 'Něco se pokazilo.',
+    caption: err.detail ?? err.title ?? 'Nesrozumitelná chyba :('
+  })
+}
 
 export const useApi = () => {
   const { currentRoute, push } = useRouter()
@@ -117,6 +141,7 @@ export const useApi = () => {
       })
       return res.data
     } catch (err: unknown) {
+      console.error(err)
       relogin()
     }
     return undefined
@@ -128,6 +153,7 @@ export const useApi = () => {
       const res = await getStockDocumentsWithPagination(args)
       return res?.data ?? []
     } catch (err: unknown) {
+      console.error(err)
       relogin()
     }
     return []
@@ -138,6 +164,7 @@ export const useApi = () => {
       const res = await getApiStockMovementApiById({ path: { id: documentUuid } })
       return res.data?.stockMovements ?? []
     } catch (err: unknown) {
+      console.error(err)
       relogin()
     }
     return []
@@ -163,6 +190,7 @@ export const useApi = () => {
 
       return res.data
     } catch (err: unknown) {
+      console.error(err)
       relogin()
     }
   }
@@ -188,6 +216,7 @@ export const useApi = () => {
 
       return false
     } catch (err: unknown) {
+      console.error(err)
       relogin()
     }
   }
@@ -200,6 +229,7 @@ export const useApi = () => {
       })
       return response.data || []
     } catch (err: unknown) {
+      console.error(err)
       relogin()
       return []
     }
@@ -211,6 +241,7 @@ export const useApi = () => {
       const response = await getApiStockProductApi({ query: { searchString } })
       return response.data || []
     } catch (err: unknown) {
+      console.error(err)
       relogin()
       return []
     }
@@ -222,6 +253,7 @@ export const useApi = () => {
       const response = await getApiWarehousePlaceApi({ query: { searchString, allowAll: true } })
       return response.data || []
     } catch (err: unknown) {
+      console.error(err)
       relogin()
       return []
     }
@@ -238,34 +270,64 @@ export const useApi = () => {
     }
   }
 
+  // API call
   const postFastOrder = async (order: FastOrder) => {
     try {
       const res = await postApiFastOrderApi({ body: order })
       if (res.response.status === 200) {
         return true
       }
-
-      if (typeof(res) === 'string') {
-        $q.notify({
-          type: 'negative',
-          message: 'Něco se pokazilo.',
-          caption: res
-        })
-        return false
-      }
-      
-      const err = res.error as ErrorMessage
-      $q.notify({
-        type: 'negative',
-        message: 'Něco se pokazilo.',
-        caption: err.detail ?? err.title ?? 'Nesrozumitelná chyba :('
-      })
+      notifyError(res, $q)
 
       return false
     } catch (err: unknown) {
+      console.error(err)
       relogin()
     }
   }
+
+  // API call
+  const printStockin = async (stockProductId: number, count: number) => {
+    try {
+      const res = await postApiStockMovementApiPrintImportLabel({
+        query: {
+          count,
+          id: stockProductId
+        }
+      })
+      if (res.response.status === 200) {
+        return true
+      }
+      notifyError(res, $q)
+
+      return false
+    } catch (err: unknown) {
+      console.error(err)
+      relogin()
+    }
+  }
+
+
+  const printStockout = async (stockProductId: number) => {
+    try {
+      const res = await postApiStockMovementApiPrintExportLabel({
+        query: {
+          quantity: 1,
+          id: stockProductId
+        }
+      })
+      if (res.response.status === 200) {
+        return true
+      }
+      notifyError(res, $q)
+
+      return false
+    } catch (err: unknown) {
+      console.error(err)
+      relogin()
+    }
+  }
+
 
   return {
     getStockDocument,
@@ -279,6 +341,8 @@ export const useApi = () => {
     postStockMovement,
     postFastOrder,
     testConnection,
+    printStockin,
+    printStockout,
     baseUrl
   }
 }

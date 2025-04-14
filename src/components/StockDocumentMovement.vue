@@ -9,35 +9,45 @@
         <span :class="`${resolved ? 'text-green' : 'text-primary'} text-lg font-500`">{{
           movement.stockProduct?.name
         }}</span>
-        <span class="text-gray-5">MJ = {{ movement.stockProduct?.product?.unitType?.name }}</span>
       </div>
-      <div
-        class="px-3 py-2 flex flex-col items-center border-gray-3 border-solid border-1 border-rounded-md"
-      >
-        <span v-if="toBeshippedAmount > 0" class="font-bold"
-          >{{ round(toBeshippedAmount, 3) }}
-          <span v-if="notEnoughInStock && isStockOout">
-            /
-            <span class="text-negative">{{ round(availableAmount, 3) }}</span>
+      <div class="flex flex-col gap-2 items-center">
+        <div
+          class="px-3 py-2 flex flex-col items-center border-gray-3 border-solid border-1 border-rounded-md"
+        >
+          <span v-if="toBeshippedAmount > 0" class="font-bold"
+            >{{ round(toBeshippedAmount, 3) }}
+            <span v-if="notEnoughInStock && isStockOout">
+              /
+              <span class="text-negative">{{ round(availableAmount, 3) }}</span>
+            </span>
           </span>
-        </span>
-        <span v-else class="font-bold"
-          >{{ round(movement.value ?? 0, 3) }}
-          <span v-if="notEnoughInStock && isStockOout">
-            /
-            <span class="text-negative">{{ round(availableAmount, 3) }}</span>
+          <span v-else class="font-bold"
+            >{{ round(movement.value ?? 0, 3) }}
+            <span v-if="notEnoughInStock && isStockOout">
+              /
+              <span class="text-negative">{{ round(availableAmount, 3) }}</span>
+            </span>
           </span>
-        </span>
+          <span class="text-xs text-gray-4">{{ resolved ? 'přesunuto' : 'zbývá' }} MJ</span>
+        </div>
         <span class="text-xs text-gray-4"
-          >{{ toBeshippedAmount > 0 ? 'zbývá' : 'přesunuto' }} MJ</span
+          >MJ = {{ movement.stockProduct?.product?.unitType?.name }}</span
         >
       </div>
     </div>
     <div class="flex mt-3 h-[3rem] border-t-solid border-1 border-slate-3">
-      <q-btn label="tisk" unelevated square flat class="flex-1" @click="$emit('clickPrint')" />
+      <q-btn
+        :label="isStockOout ? 'štítek' : 'tisk'"
+        unelevated
+        square
+        flat
+        class="flex-1"
+        @click="$emit('clickPrint')"
+        :loading="waitingForPrint"
+      />
       <q-btn
         v-if="resolved"
-        label="hotovo"
+        :label="`${movement.place}`"
         unelevated
         square
         class="flex-[2] bg-positive text-white"
@@ -62,7 +72,7 @@
       />
       <q-btn
         v-else
-        :label="resolved ? 'hotovo' : isStockOout ? 'vydat' : 'přijmout'"
+        :label="isStockOout ? 'vydat' : 'přijmout'"
         unelevated
         square
         color="primary"
@@ -79,20 +89,18 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { StockDocumentItem, StockMovementItemApiModel } from '@/client'
+import type { StockMovementItemApiModel } from '@/client'
 import { round } from '@/utils'
 
 const props = defineProps<{
   orderId: string
-  item: StockDocumentItem | undefined
   movement: StockMovementItemApiModel
   isStockOout?: boolean
+  waitingForPrint?: boolean
 }>()
 
-const resolved = computed(() => props.item?.quantity === props.item?.quantityMoved)
-const toBeshippedAmount = computed(
-  () => (props.item?.quantity ?? 0) - (props.item?.quantityMoved ?? 0)
-)
+const resolved = computed(() => !!props.movement?.place)
+const toBeshippedAmount = computed(() => props.movement.value ?? 0)
 
 const availableAmount = computed(
   () => props.movement.stockItems?.reduce((count, item) => count + (item.value ?? 0), 0) ?? 0

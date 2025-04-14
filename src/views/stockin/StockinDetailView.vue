@@ -24,7 +24,6 @@
         v-for="movement in displayedMovements"
         :key="movement.id"
         :movement="movement"
-        :item="stockDocumentItems.find((it) => it.lineNumber === movement.lineNumber)"
         :order-id="stockDocument.stockDocumentNumber"
         @clickPrint="() => clickPrint(movement)"
       />
@@ -41,6 +40,7 @@
       v-model="dialogToggle"
       :product-code="movementToBePrinted?.stockProduct?.code"
       :product-name="movementToBePrinted?.stockProduct?.name"
+      :loading="waitingForPrint"
     />
   </main>
 </template>
@@ -50,47 +50,45 @@ import { type StockDocument, type StockMovementItemApiModel } from '@/client'
 import PrintDialog from '@/components/dialogs/PrintDialog.vue'
 import EmptyBox from '@/components/EmptyBox.vue'
 import StockDocumentMovement from '@/components/StockDocumentMovement.vue'
+import { useApi } from '@/composables/useApi'
 import { isItemResolved, isMovementResolved } from '@/utils'
 import { useQuasar } from 'quasar'
 import { computed, inject, ref, type Ref } from 'vue'
 
 const stockDocument = inject<Ref<StockDocument>>('stockinDocument')
 const movements = inject<Ref<StockMovementItemApiModel[]>>('movements', ref([]))
-const showResolved = ref(
-  (stockDocument?.value.stockDocumentItems ?? []).filter((it) => !isItemResolved(it)).length === 0
-)
-
-const stockDocumentItems = computed(() => stockDocument?.value?.stockDocumentItems ?? [])
+const showResolved = ref(movements.value.filter((mov) => !mov.place).length === 0)
 
 // todo: inconsistent information, decide which one
 const resolvedMovements = computed(() => {
-  return movements.value.filter((mov) => {
-    const item = stockDocumentItems.value.find((it) => it.lineNumber === mov.lineNumber)
-    if (item) {
-      return !isItemResolved(item)
-    }
-
-    return !isMovementResolved(mov)
-  })
+  return movements.value.filter((mov) => !mov.place)
 })
 
+function sortById(movements: StockMovementItemApiModel[]) {
+  return movements.sort((a, b) => (b.id ?? 0) - (a.id ?? 0))
+}
+
 const displayedMovements = computed(() =>
-  showResolved.value ? movements.value : resolvedMovements.value
+  showResolved.value ? sortById(movements.value) : sortById(resolvedMovements.value)
 )
 
+const waitingForPrint = ref(false)
+const { printStockin } = useApi()
 const $q = useQuasar()
 const dialogToggle = ref(false)
 const movementToBePrinted = ref<StockMovementItemApiModel>()
 const clickPrint = (movement: StockMovementItemApiModel) => {
   ;(movementToBePrinted.value = movement), (dialogToggle.value = true)
 }
-const postPrint = (count: number) => {
+const postPrint = async (count: number) => {
+  waitingForPrint.value = true
+  await printStockin(movementToBePrinted.value?.stockProductId ?? -1, count)
   $q.notify({
     type: 'positive',
     message: `Odesláno na tisk - ${count}ks`
   })
 
-  // todo: API call
+  waitingForPrint.value = false
   dialogToggle.value = false
   movementToBePrinted.value = undefined
 }

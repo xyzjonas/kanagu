@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { type StockDocument, type StockMovementItemApiModel } from '@/client'
 import ItemAllocation from '@/components/ItemAllocation.vue'
-import ItemExtraction from '@/components/ItemExtraction.vue'
+import ItemExtraction from '@/components/extraction/ItemExtraction.vue'
 import NotFound from '@/components/NotFound.vue'
 import { inject, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'

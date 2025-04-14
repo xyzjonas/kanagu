@@ -7,7 +7,21 @@
           <q-btn flat round icon="close" v-close-popup />
         </div>
         <q-form class="flex flex-col gap-2" @submit="addItem">
-          <ItemSelectByName v-model="newItem" :rules="[rules.notEmpty]" />
+          <transition name="slide-fade" mode="out-in">
+            <div v-if="manualSearchItem">
+              <ItemSelectByName v-model="newItem" :rules="[rules.notEmpty]" />
+            </div>
+            <div v-else class="flex gap-2">
+              {{ manualSearchItemValue }}
+              <q-input
+                v-model="manualSearchItemValue"
+                outlined
+                :rules="[rules.notEmpty]"
+                class="flex-1"
+              />
+              <q-btn icon="search" outline @click="manualSearchItem = true" />
+            </div>
+          </transition>
           <PlaceSelect v-model="newPlace" :rules="[rules.notEmpty]" />
           <q-input
             v-model.number="newItemQuantity"
@@ -29,14 +43,33 @@
 <script setup lang="ts">
 import type { StockProduct, WarehousePlace } from '@/client'
 import { rules } from '@/utils'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import PlaceSelect from './PlaceSelect.vue'
 import ItemSelectByName from './ItemSelectByName.vue'
+import { useApi } from '@/composables/useApi'
 
 const modelValue = defineModel({ default: false })
 const newItem = ref<StockProduct>()
 const newPlace = ref<WarehousePlace>()
 const newItemQuantity = ref(0)
+
+const { searchItems } = useApi()
+const fetching = ref(false)
+const manualSearchItem = ref(false)
+const manualSearchItemValue = ref('')
+watch(manualSearchItemValue, async (value: string) => {
+  if (value) {
+    try {
+      fetching.value = true
+      const matches = await searchItems(value)
+      if (matches.length > 0) {
+        newItem.value = matches[0]
+      }
+    } finally {
+      fetching.value = false
+    }
+  }
+})
 
 const emit = defineEmits<{
   (e: 'submit', item: StockProduct, place: WarehousePlace, quantity: number): void
@@ -52,6 +85,8 @@ function addItem() {
     newItem.value = undefined
     newPlace.value = undefined
     newItemQuantity.value = 0
+    manualSearchItemValue.value = ''
+    manualSearchItem.value = false
   }, 500)
 }
 </script>

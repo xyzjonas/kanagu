@@ -3,10 +3,10 @@
     <ConnectionSettings />
     <q-separator />
     <section>
-      <h1>
-        Kopírovat token
-        <q-btn flat round icon="content_copy" @click="copyToken" />
-      </h1>
+      <h2 class="flex items-center gap-2">
+        <q-btn unelevated icon="content_copy" @click="copyToken" />
+        Kopírovat Token
+      </h2>
     </section>
 
     <div class="mt-auto text-center m-2 text-gray-4">

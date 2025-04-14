@@ -92,7 +92,8 @@ export const useAuth = () => {
 
       $q.notify({
         type: 'positive',
-        message: 'Přihlášení proběhlo úspěšně!'
+        message: 'Přihlášení proběhlo úspěšně!',
+        timeout: 500
       })
     } catch (err: unknown) {
       $q.notify({
