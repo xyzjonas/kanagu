@@ -1,11 +1,6 @@
 <template>
   <div class="flex flex-col">
     <StockoutCountBadge :count="count ?? 0" :wanted-count="count ?? 0" />
-    <!-- <div
-        class="font-400 uppercase mb-2 text-lg border-solid border-1 border-rounded-lg border-slate-4 w-fit py-1 px-3"
-        >
-        Výdej <span class="text-green font-bold">{{ movement.value }}&hairsp;MJ</span>
-    </div> -->
     <span class="text-gray-7 mt-2">{{ code ?? 'N/A' }}</span>
     <span class="text-lg">{{ name ?? 'N/A' }}</span>
     <span class="text-xs text-gray-7">MJ = 100ks</span>

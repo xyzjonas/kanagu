@@ -29,7 +29,7 @@ export default defineConfig({
       negative: "#c01818",
       stockout: "#007074",
       stockin: "#3e608a",
-      quicksell: "#F38C79"
+      quicksell: "#d05630"
     }
   },
 })

@@ -31,6 +31,7 @@ export interface PostStockMovement {
   place?: string
   value: number
   lineNumber: number
+  Values: string
 }
 
 export type DocumentFilter = 'FULFILLED' | 'UNFULFILLED'
@@ -62,16 +63,17 @@ interface ErrorResponse {
 }
 
 function notifyError(res: unknown, $q: ReturnType<typeof useQuasar>) {
-  if (typeof res === 'string') {
+  const err = (res as ErrorResponse).error
+  if (typeof err === 'string') {
     $q.notify({
       type: 'negative',
       message: 'Něco se pokazilo.',
-      caption: res
+      caption: err
     })
     return false
   }
 
-  const err = (res as ErrorResponse).error
+  // const err = (res as ErrorResponse).error
   $q.notify({
     type: 'negative',
     message: 'Něco se pokazilo.',
@@ -142,7 +144,7 @@ export const useApi = () => {
       return res.data
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
     }
     return undefined
   }
@@ -154,7 +156,7 @@ export const useApi = () => {
       return res?.data ?? []
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
     }
     return []
   }
@@ -165,7 +167,7 @@ export const useApi = () => {
       return res.data?.stockMovements ?? []
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
     }
     return []
   }
@@ -191,7 +193,7 @@ export const useApi = () => {
       return res.data
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
     }
   }
 
@@ -217,7 +219,7 @@ export const useApi = () => {
       return false
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
     }
   }
 
@@ -230,7 +232,7 @@ export const useApi = () => {
       return response.data || []
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
       return []
     }
   }
@@ -242,7 +244,7 @@ export const useApi = () => {
       return response.data || []
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
       return []
     }
   }
@@ -254,7 +256,7 @@ export const useApi = () => {
       return response.data || []
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
       return []
     }
   }
@@ -265,7 +267,7 @@ export const useApi = () => {
       const response = await getApiFastOrderApiPaymentTypes()
       return response.data || []
     } catch (err: unknown) {
-      relogin()
+      // relogin()
       return []
     }
   }
@@ -282,7 +284,7 @@ export const useApi = () => {
       return false
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
     }
   }
 
@@ -303,7 +305,7 @@ export const useApi = () => {
       return false
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
     }
   }
 
@@ -324,7 +326,7 @@ export const useApi = () => {
       return false
     } catch (err: unknown) {
       console.error(err)
-      relogin()
+      // relogin()
     }
   }
 

@@ -62,7 +62,7 @@
                 :place="item.place"
                 :quantity="item.quantity"
                 v-for="item in orderItems"
-                @delete="() => removeItem(item.item?.code ?? '')"
+                @delete="() => removeItem(item.item?.code ?? '', item.place?.name ?? '')"
               />
             </div>
           </div>
@@ -78,7 +78,6 @@
                 :place="item.place"
                 :quantity="item.quantity"
                 v-for="item in orderItems"
-                @delete="() => removeItem(item.item?.code ?? '')"
                 readonly
               />
             </div>
@@ -287,8 +286,10 @@ function addItem(item: StockProduct, place: WarehousePlace, quantity: number) {
   seamless.value = false
 }
 
-function removeItem(code: string) {
-  orderItems.value = orderItems.value.filter((item) => item.item.code !== code)
+function removeItem(code: string, place: string) {
+  orderItems.value = orderItems.value.filter(
+    (item) => item.item.code !== code || item.place.name !== place
+  )
 }
 
 const { postFastOrder } = useApi()

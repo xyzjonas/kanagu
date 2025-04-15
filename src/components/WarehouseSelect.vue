@@ -27,7 +27,6 @@ const { getWarehousePlace, warehouseIdentifier, warehouses } = useWarehouse()
 const options = computed(() => {
   return Object.entries(warehouses).map((kv, _) => {
     const [key, value] = kv
-    console.info(`${key}: ${value}`)
     return {
       label: value.toUpperCase(),
       value: key

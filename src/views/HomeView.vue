@@ -17,7 +17,7 @@
         unelevated
         :to="{ name: 'quicksell' }"
         label="prodej"
-        class="flex-1 bg-quicksell text-dark"
+        class="flex-1 bg-quicksell text-white"
       />
     </section>
 

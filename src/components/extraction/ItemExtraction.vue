@@ -77,6 +77,7 @@
       >
         <ItemExtractionStepFourth
           v-model="isItemValid"
+          :bar-codes="movement.stockProduct?.stockBarCodes?.map((code) => code.barCode) ?? []"
           :product-code="movement.stockProduct?.code"
           :product-name="movement.stockProduct?.name"
           :movement-wanted-count="movement.value"

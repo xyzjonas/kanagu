@@ -6,30 +6,39 @@
           <span class="text-2xl uppercase">Přidat položku</span>
           <q-btn flat round icon="close" v-close-popup />
         </div>
+        <q-btn-group spread unelevated class="border-solid border-slate-2 border-[1px] mb-3">
+          <q-btn
+            color="primary"
+            icon="qr_code_scanner"
+            :flat="manualSearchItem"
+            @click="manualSearchItem = false"
+          />
+          <q-btn
+            color="primary"
+            icon="manage_search"
+            :flat="!manualSearchItem"
+            @click="manualSearchItem = true"
+          />
+        </q-btn-group>
         <q-form class="flex flex-col gap-2" @submit="addItem">
           <transition name="slide-fade" mode="out-in">
-            <div v-if="manualSearchItem">
-              <ItemSelectByName v-model="newItem" :rules="[rules.notEmpty]" />
-            </div>
-            <div v-else class="flex gap-2">
-              {{ manualSearchItemValue }}
-              <q-input
-                v-model="manualSearchItemValue"
-                outlined
-                :rules="[rules.notEmpty]"
-                class="flex-1"
-              />
-              <q-btn icon="search" outline @click="manualSearchItem = true" />
-            </div>
+            <ItemSelectByName
+              v-if="manualSearchItem"
+              v-model="newItem"
+              :rules="[rules.notEmpty]"
+              class="flex-1"
+            />
+            <ItemScanByScanner v-else v-model="newItem" class="flex-1" />
           </transition>
-          <PlaceSelect v-model="newPlace" :rules="[rules.notEmpty]" />
+          <transition name="slide-fade" mode="out-in">
+            <PlaceSelect v-if="manualSearchItem" v-model="newPlace" :rules="[rules.notEmpty]" />
+            <PlaceScanByScanner v-else v-model="newPlace" />
+          </transition>
           <q-input
             v-model.number="newItemQuantity"
             outlined
-            :hint="
-              newItem?.product?.unitType?.code ? `1MJ = ${newItem?.product?.unitType?.code}` : 'N/A'
-            "
-            label="Počet Kusů (dle MJ)"
+            :label="countLabel"
+            hint="Počet Kusů (dle MJ)"
             inputmode="numeric"
             :rules="[rules.atLeastOne]"
           />
@@ -43,10 +52,12 @@
 <script setup lang="ts">
 import type { StockProduct, WarehousePlace } from '@/client'
 import { rules } from '@/utils'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import PlaceSelect from './PlaceSelect.vue'
 import ItemSelectByName from './ItemSelectByName.vue'
 import { useApi } from '@/composables/useApi'
+import ItemScanByScanner from './ItemScanByScanner.vue'
+import PlaceScanByScanner from './PlaceScanByScanner.vue'
 
 const modelValue = defineModel({ default: false })
 const newItem = ref<StockProduct>()
@@ -89,5 +100,13 @@ function addItem() {
     manualSearchItem.value = false
   }, 500)
 }
+
+const countLabel = computed(() => {
+  let unitCode = newItem.value?.product?.unitType?.code
+  if (!unitCode) {
+    unitCode = 'jednotka chybí'
+  }
+  return `Počet MJ [${unitCode}]`
+})
 </script>
 <style lang="css" scoped></style>

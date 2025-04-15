@@ -5,11 +5,11 @@
       <span class="text-gray-5 mt-5">z buňky</span>
       <span class="text-xl">{{ correctedPlaceName }}</span>
       <span class="text-2xl font-bold">{{ productName ?? 'N/A' }}</span>
-      <span class="text-gray-7 mt-2">{{ productCode ?? 'N/A' }}</span>
+      <span class="text-gray-7 mt-2">{{ printedBarcodes }}</span>
       <q-input
         v-model="finalConfirmation"
         autofocus
-        :rules="[(val) => val === productCode]"
+        :rules="[(val) => validateCode(val)]"
         no-error-icon
         input-class="text-center"
         inputmode="none"
@@ -20,13 +20,7 @@
       >
       <div class="h-[3rem]">
         <transition mode="out-in" name="slide-fade">
-          <q-btn
-            v-if="finalConfirmation.length >= 1 && finalConfirmation !== productCode"
-            label="reset"
-            @click="finalConfirmation = ''"
-            flat
-            class="mt-5"
-          />
+          <q-btn v-if="showReset" label="reset" @click="finalConfirmation = ''" flat class="mt-5" />
         </transition>
       </div>
     </div>
@@ -45,11 +39,11 @@ import { useQuasar } from 'quasar'
 const { getWarehousePlace } = useWarehouse()
 
 const props = defineProps<{
-  productCode?: string | null
   productName?: string | null
   placeCode?: string | null
   selectedCount: number
   movementWantedCount?: number | null
+  barCodes: string[] | null
 }>()
 
 const correctedPlaceName = computed(() => getWarehousePlace(props.placeCode ?? 'N/A'))
@@ -58,19 +52,35 @@ const emit = defineEmits(['submit'])
 const finalConfirmation = ref('')
 const isValid = defineModel<boolean>({ required: true })
 
-isValid.value = finalConfirmation.value === props.productCode
+const barCodes = computed(() => props.barCodes ?? [])
+const printedBarcodes = computed(() => {
+  if (barCodes.value.length === 0) {
+    return 'Položka nemá EAN'
+  }
+  return barCodes.value.join(', ')
+})
+
+function validateCode(val: string) {
+  return barCodes.value.includes(val)
+}
+
+const showReset = computed(
+  () => finalConfirmation.value.length >= 1 && validateCode(finalConfirmation.value)
+)
+
+isValid.value = validateCode(finalConfirmation.value)
 
 const $q = useQuasar()
 
 watch(finalConfirmation, (val) => {
-  if (val === props.productCode) {
+  if (validateCode(val)) {
     isValid.value = true
     emit('submit')
   } else {
     isValid.value = false
     $q.notify({
       type: 'negative',
-      message: `Kód neodpovídá zvolené položce: ${props.productCode}`,
+      message: `Kód neodpovídá zvolené položce: ${printedBarcodes.value}`,
       timeout: 2000
     })
   }
