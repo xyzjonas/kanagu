@@ -1,5 +1,6 @@
 <template>
   <q-select
+    ref="itemSelect"
     outlined
     label="Položka"
     hint="Vyhledat položku podle názvu nebo EAN kódu."
@@ -12,6 +13,7 @@
     @filter="filterFn"
     @abort="abortFilterFn"
     autofocus
+    @update:model-value="onSelectChange"
   >
     <template v-slot:no-option>
       <q-item>
@@ -33,7 +35,8 @@
 <script setup lang="ts">
 import type { StockProduct } from '@/client'
 import { useApi } from '@/composables/useApi'
-import { ref } from 'vue'
+import type { QSelect } from 'quasar'
+import { nextTick, ref } from 'vue'
 
 const MAX_LEN = 5
 
@@ -60,6 +63,17 @@ async function filterFn(val: string, update: any, abort: () => void) {
 
 function abortFilterFn() {
   // console.log('delayed filter aborted')
+}
+
+const itemSelect = ref<QSelect | null>(null)
+function onSelectChange() {
+  // Blur the select after selection
+  nextTick(() => {
+    // Defensive: make sure the ref exists
+    if (itemSelect.value?.blur) {
+      itemSelect.value.blur()
+    }
+  })
 }
 </script>
 

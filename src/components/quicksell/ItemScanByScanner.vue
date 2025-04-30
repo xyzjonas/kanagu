@@ -1,15 +1,15 @@
 <template>
-  <div>
-    <q-input
-      v-model="scanInput"
-      :label="modelValue ? (modelValue?.name ?? 'N/A') : 'Kód Položky'"
-      hint="Naskenujte kód položky."
-      outlined
-      inputmode="none"
-      :error="!!errorMessage"
-      :error-message="errorMessage"
-    />
-  </div>
+  <q-input
+    v-model="scanInput"
+    :label="modelValue ? (modelValue?.name ?? 'N/A') : 'Kód Položky'"
+    hint="Naskenujte kód položky."
+    outlined
+    inputmode="none"
+    :error="!!errorMessage"
+    :error-message="errorMessage"
+    clearable
+    :rules="[rules.notEmpty]"
+  />
 </template>
 
 <script setup lang="ts">

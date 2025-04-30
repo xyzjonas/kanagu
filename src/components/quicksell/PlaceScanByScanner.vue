@@ -1,20 +1,20 @@
 <template>
-  <div>
-    <q-input
-      v-model="scanInput"
-      label="Kód Místa"
-      hint="Naskenujte kód skladového místa."
-      outlined
-      inputmode="none"
-      :debounce="100"
-      :error="!!errorMessage"
-      :error-message="errorMessage"
-    />
-  </div>
+  <q-input
+    v-model="scanInput"
+    label="Kód Místa"
+    hint="Naskenujte kód skladového místa."
+    outlined
+    inputmode="none"
+    :debounce="100"
+    :error="!!errorMessage"
+    :error-message="errorMessage"
+    :rules="[rules.notEmpty]"
+    clearable
+  />
 </template>
 
 <script setup lang="ts">
-import type { StockProduct, WarehousePlace } from '@/client'
+import type { WarehousePlace } from '@/client'
 import { useApi } from '@/composables/useApi'
 import { useWarehouse } from '@/composables/warehouse'
 import { rules } from '@/utils'

@@ -1,5 +1,6 @@
 <template>
   <q-select
+    ref="customerSelect"
     outlined
     label="Zákazník *"
     hint="Vyberte zákazníka podle jména."
@@ -11,6 +12,7 @@
     @filter="filterFn"
     @abort="abortFilterFn"
     :rules="[rules.notEmpty]"
+    @update:model-value="onSelectChange"
   >
     <template v-slot:no-option>
       <q-item>
@@ -24,7 +26,8 @@
 import type { Customer } from '@/client'
 import { useApi } from '@/composables/useApi'
 import { rules } from '@/utils'
-import { ref } from 'vue'
+import type { QSelect } from 'quasar'
+import { nextTick, ref } from 'vue'
 
 const MAX_LEN = 5
 
@@ -46,6 +49,17 @@ async function filterFn(val: string, update: any, abort: () => void) {
 
   update(() => {
     options.value = customers
+  })
+}
+
+const customerSelect = ref<QSelect | null>(null)
+function onSelectChange() {
+  // Blur the select after selection
+  nextTick(() => {
+    // Defensive: make sure the ref exists
+    if (customerSelect.value?.blur) {
+      customerSelect.value.blur()
+    }
   })
 }
 

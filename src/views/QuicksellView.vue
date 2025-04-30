@@ -63,6 +63,8 @@
                 :quantity="item.quantity"
                 v-for="item in orderItems"
                 @delete="() => removeItem(item.item?.code ?? '', item.place?.name ?? '')"
+                :loading="waitingForPrint"
+                @click-print="() => postPrint(item.item)"
               />
             </div>
           </div>
@@ -292,7 +294,7 @@ function removeItem(code: string, place: string) {
   )
 }
 
-const { postFastOrder } = useApi()
+const { postFastOrder, printStockout } = useApi()
 const router = useRouter()
 async function submitQuicksell() {
   const success = await postFastOrder(order.value)
@@ -307,6 +309,24 @@ async function submitQuicksell() {
   step.value = 1
   clearForm()
   router.push({ name: 'home' })
+}
+
+const waitingForPrint = ref(false)
+const postPrint = async (product: StockProduct) => {
+  waitingForPrint.value = true
+  const printCount = 1
+  if (product.productId) {
+    const res = await printStockout(product.productId)
+    waitingForPrint.value = false
+    if (res === true) {
+      $q.notify({
+        type: 'positive',
+        message: `Odesláno na tisk - ${printCount} štítek`
+      })
+    }
+  } else {
+    throw new Error('Product ID is missing!')
+  }
 }
 </script>
 <style lang="css"></style>

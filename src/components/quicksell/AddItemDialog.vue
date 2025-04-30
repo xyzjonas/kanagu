@@ -20,20 +20,22 @@
             @click="manualSearchItem = true"
           />
         </q-btn-group>
-        <q-form class="flex flex-col gap-2" @submit="addItem">
-          <transition name="slide-fade" mode="out-in">
-            <ItemSelectByName
-              v-if="manualSearchItem"
-              v-model="newItem"
-              :rules="[rules.notEmpty]"
-              class="flex-1"
-            />
-            <ItemScanByScanner v-else v-model="newItem" class="flex-1" />
-          </transition>
-          <transition name="slide-fade" mode="out-in">
-            <PlaceSelect v-if="manualSearchItem" v-model="newPlace" :rules="[rules.notEmpty]" />
-            <PlaceScanByScanner v-else v-model="newPlace" />
-          </transition>
+        <q-form v-if="manualSearchItem" class="flex flex-col gap-2" @submit="addItem">
+          <ItemSelectByName v-model="newItem" :rules="[rules.notEmpty]" class="flex-1" />
+          <PlaceSelect v-show="manualSearchItem" v-model="newPlace" :rules="[rules.notEmpty]" />
+          <q-input
+            v-model.number="newItemQuantity"
+            outlined
+            :label="countLabel"
+            hint="Počet Kusů (dle MJ)"
+            inputmode="numeric"
+            :rules="[rules.atLeastOne]"
+          />
+          <q-btn type="submit" unelevated color="primary" label="přidat" class="h-[3rem] mt-3" />
+        </q-form>
+        <q-form v-else class="flex flex-col gap-2" @submit="addItem">
+          <ItemScanByScanner v-model="newItem" class="flex-1" />
+          <PlaceScanByScanner v-model="newPlace" />
           <q-input
             v-model.number="newItemQuantity"
             outlined

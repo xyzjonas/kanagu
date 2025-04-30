@@ -3,11 +3,15 @@
     <!-- <LoadingWindowBlocker /> -->
     <q-header class="bg-slate-2 text-dark">
       <q-toolbar class="app-page">
-        <q-toolbar-title @click="$router.push({ name: 'home' })">
+        <q-toolbar-title>
           <!-- <q-avatar class="mr-2">
             <img alt="Vue logo" class="logo bg-primary p-2" src="/logo.svg" />
           </q-avatar> -->
-          <span class="text-primary font-bold ml-1 uppercase cursor-pointer">{{ title }}</span>
+          <span
+            @click="$router.push({ name: 'home' })"
+            class="text-primary font-bold ml-1 uppercase cursor-pointer"
+            >{{ title }}</span
+          >
         </q-toolbar-title>
 
         <!-- <q-btn

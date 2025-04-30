@@ -55,7 +55,7 @@ interface ErrorMessage {
 const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')
 
 watch(baseUrl, (baseUrl) => {
-  client.setConfig({ baseUrl })
+  client.setConfig({ baseUrl,  })
 })
 
 interface ErrorResponse {
