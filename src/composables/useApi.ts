@@ -1,6 +1,6 @@
 import { useLocalStorage } from '@vueuse/core'
 import { useQuasar } from 'quasar'
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import { client } from '@/client/client.gen'
 import {
@@ -52,11 +52,17 @@ interface ErrorMessage {
   traceId: string
 }
 
-const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')
 
-watch(baseUrl, (baseUrl) => {
-  client.setConfig({ baseUrl,  })
-})
+const baseUrl = import.meta.env.VITE_BASE_URL
+client.setConfig({ baseUrl })
+
+// const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')
+// const baseUrl = ref('http://10.0.0.244')
+
+// client.setConfig({ baseUrl: 'http://10.0.0.244' })
+// watch(baseUrl, (baseUrl) => {
+//   client.setConfig({ baseUrl })
+// })
 
 interface ErrorResponse {
   error: ErrorMessage
@@ -310,11 +316,11 @@ export const useApi = () => {
   }
 
 
-  const printStockout = async (stockProductId: number) => {
+  const printStockout = async (stockProductId: number, quantity?: number) => {
     try {
       const res = await postApiStockMovementApiPrintExportLabel({
         query: {
-          quantity: 1,
+          quantity: quantity ?? 1,
           id: stockProductId
         }
       })
@@ -345,6 +351,6 @@ export const useApi = () => {
     testConnection,
     printStockin,
     printStockout,
-    baseUrl
+    // baseUrl
   }
 }

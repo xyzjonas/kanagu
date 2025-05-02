@@ -23,7 +23,6 @@
         </h2>
       </transition>
     </div>
-
     <StockDocumentList
       :receive-orders="receiveOrders"
       :loading="current === 1 && loading"
@@ -31,7 +30,15 @@
       class="mb-5"
     />
     <div v-if="!thatsIt" class="flex items-center justify-center mt-auto">
-      <q-btn icon="add" dense flat color="primary" label="načíst další" :loading="loading" @click="next" />
+      <q-btn
+        icon="add"
+        dense
+        flat
+        color="primary"
+        label="načíst další"
+        :loading="loading"
+        @click="next"
+      />
     </div>
 
     <BackToTopFab />
@@ -45,11 +52,12 @@ import { usePaginatedDocuments } from '@/composables/pagination'
 import { usePolozky } from '@/composables/usePolozky'
 import { onActivated, onMounted } from 'vue'
 
-const { receiveOrders, next, reset, thatsIt, current, filter, loading, totalItems } = usePaginatedDocuments({
-  localStorageFilterId: 'stockout-filter',
-  localStoragePageId: 'stockout-pagenum',
-  type: 'STOCKOUT'
-})
+const { receiveOrders, next, reset, thatsIt, current, filter, loading, totalItems } =
+  usePaginatedDocuments({
+    localStorageFilterId: 'stockout-filter',
+    localStoragePageId: 'stockout-pagenum',
+    type: 'STOCKOUT'
+  })
 
 const { polozky } = usePolozky(totalItems)
 

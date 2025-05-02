@@ -64,7 +64,7 @@
                 v-for="item in orderItems"
                 @delete="() => removeItem(item.item?.code ?? '', item.place?.name ?? '')"
                 :loading="waitingForPrint"
-                @click-print="() => postPrint(item.item)"
+                @click-print="() => postPrint(item.item, item.quantity)"
               />
             </div>
           </div>
@@ -312,11 +312,11 @@ async function submitQuicksell() {
 }
 
 const waitingForPrint = ref(false)
-const postPrint = async (product: StockProduct) => {
+const postPrint = async (product: StockProduct, count?: number) => {
   waitingForPrint.value = true
   const printCount = 1
   if (product.productId) {
-    const res = await printStockout(product.productId)
+    const res = await printStockout(product.productId, count)
     waitingForPrint.value = false
     if (res === true) {
       $q.notify({

@@ -1,7 +1,10 @@
 import { defineConfig } from '@hey-api/openapi-ts'
 
+const BASE_URL = process.env.BASE_URL ?? 'http://10.0.0.244'
+
+
 export default defineConfig({
-  input: 'http://138.199.147.236:8080/swagger/v1/swagger.json',
+  input: `${BASE_URL}/swagger/v1/swagger.json`,
   output: 'src/client',
   plugins: [
     {

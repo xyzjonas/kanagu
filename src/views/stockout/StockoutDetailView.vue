@@ -28,7 +28,7 @@
           :item="stockDocumentItems.find((it) => it.lineNumber === movement.lineNumber)"
           :order-id="stockDocument.stockDocumentNumber"
           is-stock-oout
-          @clickPrint="() => postPrint(movement)"
+          @clickPrint="() => postPrint(movement, movement.value)"
           :waiting-for-print="waitingForPrint"
         />
       </TransitionGroup>
@@ -63,7 +63,7 @@ const stockDocumentItems = computed(() => stockDocument?.value?.stockDocumentIte
 const resolvedMovements = computed(() => movements.value.filter((mov) => !mov.place))
 
 function sortById(movements: StockMovementItemApiModel[]) {
-  return movements.sort((a, b) => (b.id ?? 0) - (a.id ?? 0))
+  return movements.sort((a, b) => (a.lineNumber ?? 0) - (b.lineNumber ?? 0))
 }
 
 const displayedMovements = computed(() =>
@@ -73,10 +73,10 @@ const displayedMovements = computed(() =>
 const waitingForPrint = ref(false)
 const $q = useQuasar()
 const { printStockout } = useApi()
-const postPrint = async (movement: StockMovementItemApiModel) => {
+const postPrint = async (movement: StockMovementItemApiModel, count?: number | null) => {
   waitingForPrint.value = true
   const printCount = 1
-  await printStockout(movement.stockProductId ?? -1)
+  await printStockout(movement.stockProductId ?? -1, count ?? 1)
   $q.notify({
     type: 'positive',
     message: `Odesláno na tisk - ${printCount} štítek`

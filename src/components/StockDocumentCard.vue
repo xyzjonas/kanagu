@@ -1,6 +1,7 @@
 <template>
   <div
-    :class="`flex flex-col border-slate-3 border-solid border-1 border-rounded-md bg-slate-1 shadow-md overflow-hidden relative ${dynamicClasses}`"
+    :class="`flex flex-col border-slate-3 border-solid border-1 border-rounded-md bg-slate-1 shadow-md overflow-hidden relative ${dynamicClasses} hover:cursor-pointer hover:border-slate-4`"
+    @click="onClick"
   >
     <div class="absolute-top pl-2 pt-1 opacity-[0.8]">
       <q-icon
@@ -34,10 +35,6 @@
       unelevated
       class="h-[3rem]"
       color="primary"
-      :to="{
-        name: isStockOut ? 'po-detail' : 'ro-detail',
-        params: { id: order.stockDocumentNumber }
-      }"
     />
     <q-btn
       v-else-if="cancelled"
@@ -55,21 +52,16 @@
       unelevated
       color="positive"
       :class="`${isDone ? 'opacity-[0.8]' : ''} h-[3rem]`"
-      :to="{
-        name: isStockOut ? 'po-detail' : 'ro-detail',
-        params: { id: order.stockDocumentNumber }
-      }"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 // import type { ReceiveOrder } from '@/composables/useApi'
-import Card from './Card.vue'
-import { computed } from 'vue'
 import type { StockDocument } from '@/client'
 import { getDocumentStatus } from '@/utils'
-import { colorStockin, colorStockout } from '@/constants'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{ order: StockDocument; isStockOut?: boolean }>()
 
@@ -102,4 +94,12 @@ const dynamicClasses = computed(() => {
 })
 
 const cancelled = computed(() => !!props.order.cancelledOn)
+
+const router = useRouter()
+const onClick = () => {
+  router.push({
+    name: props.isStockOut ? 'po-detail' : 'ro-detail',
+    params: { id: props.order.stockDocumentNumber }
+  })
+}
 </script>

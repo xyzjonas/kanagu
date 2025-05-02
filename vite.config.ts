@@ -8,9 +8,8 @@ import UnoCSS from 'unocss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: process.env.BASE_URL,
   server: {
-    port: process.env.PORT ? parseInt(process.env.PORT as string) : undefined
+    port: process.env.DEV_PORT ? parseInt(process.env.DEV_PORT as string) : undefined
   },
   plugins: [
     vue({
@@ -59,6 +58,9 @@ export default defineConfig({
       }
     })
   ],
+  define: {
+    '__APP_VERSION__': JSON.stringify(process.env.npm_package_version),
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

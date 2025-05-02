@@ -5,6 +5,8 @@ deploy:
 dev:
     npm run dev
 
+gen:
+    npm run openapi-ts
 
 docker-build:
     docker build -t scotch3840/kanagu .

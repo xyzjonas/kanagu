@@ -65,7 +65,7 @@
             <q-item-section> Výdejky </q-item-section>
           </q-item>
 
-          <q-item :to="{ name: 'quicksell' }" clickable v-ripple>
+          <q-item :to="{ name: 'quicksell' }" clickable v-ripple :disable="!isLoggedIn">
             <q-item-section avatar>
               <q-icon name="paid" />
             </q-item-section>
@@ -73,14 +73,20 @@
             <q-item-section> Prodej </q-item-section>
           </q-item>
 
-          <q-item :to="{ name: 'settings' }" clickable v-ripple>
+          <!-- <q-item :to="{ name: 'settings' }" clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="settings" />
             </q-item-section>
 
             <q-item-section> Nastavení </q-item-section>
-          </q-item>
+          </q-item> -->
         </q-list>
+        <span
+          class="absolute bottom-[.5rem] left-[.5rem] text-xs text-gray-4 flex items-center gap-1"
+        >
+          <q-icon name="build" size="0.6rem" />
+          <span>{{ version }}</span>
+        </span>
       </q-scroll-area>
     </q-drawer>
 
@@ -111,12 +117,12 @@
 import { computed, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 
-import { useQuasar, Notify, LoadingBar } from 'quasar'
+import { LoadingBar, Notify, useQuasar } from 'quasar'
 import { useAuth } from './composables/useAuth'
-import LoadingWindowBlocker from './components/LoadingWindowBlocker.vue'
 
-// import { useDark } from '@/composables/dark'
-// const { isDark, toggle } = useDark()
+const version = __APP_VERSION__
+
+const $q = useQuasar()
 
 Notify.setDefaults({
   position: 'top',

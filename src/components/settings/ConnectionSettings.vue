@@ -9,6 +9,7 @@
       label="otestovat připojení"
       @click="test"
       :loading="testingConnection"
+      disable
     />
   </section>
 </template>

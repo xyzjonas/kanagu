@@ -9,7 +9,7 @@
       <q-item
         clickable
         v-ripple
-        v-for="(item, index) in stockItems"
+        v-for="(item, index) in displayedStockItems"
         :key="index"
         @click="select(item.warehousePlaceCode)"
         :active="movement.place === item.warehousePlaceCode"
@@ -36,6 +36,7 @@ import type { StockItemApiModel } from '@/client'
 import type { PostStockMovement } from '@/composables/useApi'
 import StockoutCountBadge from '../StockoutCountBadge.vue'
 import EmptyBox from '../EmptyBox.vue'
+import { computed } from 'vue'
 
 const props = defineProps<{
   count?: number | null
@@ -47,6 +48,12 @@ const props = defineProps<{
 const emit = defineEmits(['next'])
 
 const movement = defineModel<PostStockMovement>({ required: true })
+
+const displayedStockItems = computed(() => {
+  return props.stockItems
+    ?.filter((it) => !it.warehousePlaceCode?.startsWith('V'))
+    .filter((it) => !it.warehousePlaceCode?.startsWith('P'))
+})
 
 function select(slot?: string | null) {
   if (!slot) {

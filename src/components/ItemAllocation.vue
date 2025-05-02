@@ -27,7 +27,7 @@
             <q-item
               clickable
               v-ripple
-              v-for="(item, index) in warehousePlaces"
+              v-for="(item, index) in displayedWarehousePlaces"
               :key="index"
               @click="select(item.warehousePlaceCode)"
               :active="selectedSlot.place === item.warehousePlaceCode"
@@ -189,7 +189,16 @@ const props = defineProps<{
 
 const { getWarehousePlace, stripWarehousePlace } = useWarehouse()
 
-const warehousePlaces = ref(props.movement.stockItems ?? [])
+const warehousePlaces = ref(
+  props.movement.stockItems
+    ?.filter((place) => !place.warehousePlaceCode?.startsWith('V'))
+    .filter((place) => !place.warehousePlaceCode?.startsWith('P')) ?? []
+)
+const displayedWarehousePlaces = computed(() => {
+  return warehousePlaces.value
+    ?.filter((place) => !place.warehousePlaceCode?.startsWith('V'))
+    .filter((place) => !place.warehousePlaceCode?.startsWith('P'))
+})
 
 const step = ref(1)
 const stepper = ref<QStepper>()
@@ -198,7 +207,7 @@ const selectedSlot = ref<PostStockMovement>({
   id: props.movement.id ?? 0,
   lineNumber: props.movement.lineNumber ?? 1,
   stockProductId: props.movement.stockProductId ?? 1,
-  place: (props.movement.stockItems ?? [])[0]?.warehousePlaceCode ?? undefined,
+  place: (warehousePlaces.value ?? [])[0]?.warehousePlaceCode ?? undefined,
   value: props.movement.value ?? 0
 })
 
