@@ -18,12 +18,12 @@
 <script setup lang="ts">
 import ConnectionSettings from '@/components/settings/ConnectionSettings.vue'
 import { useAuth } from '@/composables/useAuth'
-import { version } from '@/version'
 import { useClipboard } from '@vueuse/core'
 import { useQuasar } from 'quasar'
 
-const $q = useQuasar()
+const version = __APP_VERSION__
 
+const $q = useQuasar()
 const { copy } = useClipboard()
 
 const { token } = useAuth()

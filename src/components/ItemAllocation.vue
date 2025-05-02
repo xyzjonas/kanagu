@@ -165,6 +165,7 @@
         v-else-if="step === 3"
         unelevated
         @click="submitAllocation"
+        :loading="loading"
         color="primary"
         label="uložit"
         class="mt-auto h-[3rem]"
@@ -250,6 +251,7 @@ const $q = useQuasar()
 const emit = defineEmits<{
   (e: 'allocated', movement: PostStockMovement): void
 }>()
+const loading = ref(false)
 async function submitAllocation() {
   if (!isConfirmed.value) {
     $q.notify({
@@ -261,7 +263,9 @@ async function submitAllocation() {
     return
   }
 
+  loading.value = true
   const wasPosted = await postStockMovement(props.stockDocumentId, [selectedSlot.value])
+  loading.value = false
   if (!wasPosted) {
     return
   }

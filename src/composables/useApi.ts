@@ -1,8 +1,5 @@
-import { useLocalStorage } from '@vueuse/core'
 import { useQuasar } from 'quasar'
-import { ref, watch } from 'vue'
 
-import { client } from '@/client/client.gen'
 import {
   getApiCustomerApi,
   getApiFastOrderApiPaymentTypes,
@@ -16,13 +13,13 @@ import {
   postApiStockMovementApiPrintExportLabel,
   postApiStockMovementApiPrintImportLabel,
   postLogin,
-  postRefresh,
   type FastOrder,
   type StockDocument,
   type StockDocumentPagedData
 } from '@/client'
-import { useAuth } from './useAuth'
+import { client } from '@/client/client.gen'
 import { useRouter } from 'vue-router'
+import { useAuth } from './useAuth'
 
 export interface PostStockMovement {
   // fake interface for post movement body
@@ -54,15 +51,8 @@ interface ErrorMessage {
 
 
 const baseUrl = import.meta.env.VITE_BASE_URL
+console.info(`Server base URL: ${import.meta.env.VITE_BASE_URL}`)
 client.setConfig({ baseUrl })
-
-// const baseUrl = useLocalStorage<string>('base-api-url', 'http://138.199.147.236:8080')
-// const baseUrl = ref('http://10.0.0.244')
-
-// client.setConfig({ baseUrl: 'http://10.0.0.244' })
-// watch(baseUrl, (baseUrl) => {
-//   client.setConfig({ baseUrl })
-// })
 
 interface ErrorResponse {
   error: ErrorMessage

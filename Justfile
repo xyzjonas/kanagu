@@ -5,6 +5,10 @@ deploy:
 dev:
     npm run dev
 
+preview:
+    npm run build-only
+    npm run preview
+
 gen:
     npm run openapi-ts
 

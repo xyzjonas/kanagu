@@ -83,6 +83,7 @@
           :movement-wanted-count="movement.value"
           :place-code="selectedSlot.place"
           :selected-count="selectedSlot.value"
+          :loading="loading"
           @submit="submitAllocation"
         />
       </q-step>
@@ -136,6 +137,7 @@ const selectedSlot = ref<PostStockMovement>({
   value: props.movement.value ?? 0
 })
 
+const loading = ref(false)
 const { postStockMovement } = useApi()
 const $q = useQuasar()
 const emit = defineEmits<{
@@ -179,8 +181,10 @@ async function submitAllocation() {
   // todo: api call: negative value if items taken away?
   const payload: PostStockMovement = JSON.parse(JSON.stringify(selectedSlot.value))
   payload.value = 1 * payload.value
+  loading.value = true
   const wasPosted = await postStockMovement(props.stockDocumentId, [payload])
   if (!wasPosted) {
+    loading.value = false
     return
   }
 
@@ -189,7 +193,10 @@ async function submitAllocation() {
     message: `${selectedSlot.value.value} MJ vyskladněno z ${selectedSlot.value.place}`
   })
 
-  setTimeout(() => emit('extracted', selectedSlot.value), 300)
+  setTimeout(() => {
+    emit('extracted', selectedSlot.value)
+    loading.value = false
+  }, 300)
 }
 
 const finalConfirmation = ref('')

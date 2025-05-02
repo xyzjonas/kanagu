@@ -6,22 +6,34 @@
       <span class="text-xl">{{ correctedPlaceName }}</span>
       <span class="text-2xl font-bold">{{ productName ?? 'N/A' }}</span>
       <span class="text-gray-7 mt-2">{{ printedBarcodes }}</span>
-      <q-input
-        v-model="finalConfirmation"
-        autofocus
-        :rules="[(val) => validateCode(val)]"
-        no-error-icon
-        input-class="text-center"
-        inputmode="none"
-      />
-      <span class="text-center"
-        >POTVRDIT POLOŽKU SCANNEREM <br />
-        PRO ODESLÁNÍ</span
-      >
-      <div class="h-[3rem]">
-        <transition mode="out-in" name="slide-fade">
-          <q-btn v-if="showReset" label="reset" @click="finalConfirmation = ''" flat class="mt-5" />
-        </transition>
+      <div v-if="loading" class="flex flex-col gap-3 mt-5 items-center">
+        <q-spinner color="primary" size="4rem" :thickness="3"></q-spinner>
+        <span class="uppercase text-primary">odesílám</span>
+      </div>
+      <div v-else>
+        <q-input
+          v-model="finalConfirmation"
+          autofocus
+          :rules="[(val) => validateCode(val)]"
+          no-error-icon
+          input-class="text-center"
+          inputmode="none"
+        />
+        <span class="text-center"
+          >POTVRDIT POLOŽKU SCANNEREM <br />
+          PRO ODESLÁNÍ</span
+        >
+        <div class="h-[3rem]">
+          <transition mode="out-in" name="slide-fade">
+            <q-btn
+              v-if="showReset"
+              label="reset"
+              @click="finalConfirmation = ''"
+              flat
+              class="mt-5"
+            />
+          </transition>
+        </div>
       </div>
     </div>
   </div>
@@ -44,6 +56,7 @@ const props = defineProps<{
   selectedCount: number
   movementWantedCount?: number | null
   barCodes: string[] | null
+  loading?: boolean
 }>()
 
 const correctedPlaceName = computed(() => getWarehousePlace(props.placeCode ?? 'N/A'))
