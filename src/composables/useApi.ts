@@ -50,7 +50,7 @@ interface ErrorMessage {
 }
 
 
-const baseUrl = import.meta.env.VITE_BASE_URL
+export const baseUrl = import.meta.env.VITE_BASE_URL
 console.info(`Server base URL: ${import.meta.env.VITE_BASE_URL}`)
 client.setConfig({ baseUrl })
 

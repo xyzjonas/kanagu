@@ -29,6 +29,7 @@
           :loading="loading"
           >Přihlásit</q-btn
         >
+        <span class="text-xs text-gray-4 mt-3">{{ baseUrl }}</span>
       </div>
     </q-form>
   </q-page>
@@ -36,6 +37,7 @@
 
 <script setup lang="ts">
 import { useAuth } from '@/composables/useAuth'
+import { baseUrl } from '@/composables/useApi'
 import { rules } from '@/utils'
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
