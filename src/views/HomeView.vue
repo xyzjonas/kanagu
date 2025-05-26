@@ -19,6 +19,12 @@
         label="prodej"
         class="flex-1 bg-quicksell text-white"
       />
+      <q-btn
+        unelevated
+        :to="{ name: 'transfer' }"
+        label="přesun"
+        class="flex-1 bg-gray text-dark"
+      />
     </section>
 
     <WarehouseSelect />

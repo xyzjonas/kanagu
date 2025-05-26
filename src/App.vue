@@ -73,6 +73,14 @@
             <q-item-section> Prodej </q-item-section>
           </q-item>
 
+          <q-item :to="{ name: 'transfer' }" clickable v-ripple :disable="!isLoggedIn">
+            <q-item-section avatar>
+              <q-icon name="swap_horiz" />
+            </q-item-section>
+
+            <q-item-section> Přesun </q-item-section>
+          </q-item>
+
           <!-- <q-item :to="{ name: 'settings' }" clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="settings" />
@@ -188,6 +196,10 @@ const title = computed(() => {
 
   if (currentRoute.value.name == 'quicksell') {
     return 'Prodej'
+  }
+
+  if (currentRoute.value.name == 'transfer') {
+    return 'Přesun'
   }
 
   return 'Sklad'

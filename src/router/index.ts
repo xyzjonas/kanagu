@@ -15,6 +15,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuth } from '@/composables/useAuth'
 import { colorQuicksell, colorStockin, colorStockout } from '@/constants'
+import TransferView from '@/views/TransferView.vue'
 
 const routes = [
   {
@@ -96,10 +97,16 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/transfer',
+    name: 'transfer',
+    component: TransferView,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/login',
     name: 'login',
     component: LoginView
-  }
+  },
   // {
   //   path: '/about',
   //   name: 'about',
