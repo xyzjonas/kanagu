@@ -40,13 +40,10 @@
 </template>
 
 <script setup lang="ts">
-import type { PostStockMovement } from '@/composables/useApi'
 import { useWarehouse } from '@/composables/warehouse'
+import { useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
 import StockoutCountBadge from '../StockoutCountBadge.vue'
-import type { StockItemApiModel } from '@/client'
-import { rules } from '@/utils'
-import { useQuasar } from 'quasar'
 
 const { getWarehousePlace } = useWarehouse()
 
@@ -78,7 +75,7 @@ function validateCode(val: string) {
 }
 
 const showReset = computed(
-  () => finalConfirmation.value.length >= 1 && validateCode(finalConfirmation.value)
+  () => finalConfirmation.value.length >= 1 && !validateCode(finalConfirmation.value)
 )
 
 isValid.value = validateCode(finalConfirmation.value)

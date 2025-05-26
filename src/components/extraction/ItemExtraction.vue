@@ -143,6 +143,7 @@ const $q = useQuasar()
 const emit = defineEmits<{
   (e: 'extracted', movement: PostStockMovement): void
 }>()
+
 async function submitAllocation() {
   if (!isPlaceConfirmed.value) {
     $q.notify({
@@ -181,8 +182,10 @@ async function submitAllocation() {
   // todo: api call: negative value if items taken away?
   const payload: PostStockMovement = JSON.parse(JSON.stringify(selectedSlot.value))
   payload.value = 1 * payload.value
+  $q.loading.show()
   loading.value = true
   const wasPosted = await postStockMovement(props.stockDocumentId, [payload])
+  $q.loading.hide()
   if (!wasPosted) {
     loading.value = false
     return

@@ -59,6 +59,7 @@ import type { StockDocument } from '@/client'
 import StockDocumentList from '@/components/StockDocumentList.vue'
 import WarehouseSelect from '@/components/WarehouseSelect.vue'
 import { useApi } from '@/composables/useApi'
+import router from '@/router'
 import { ref, watch } from 'vue'
 
 const { getStockDocuments } = useApi()
@@ -85,6 +86,21 @@ watch(search, async () => {
       searchString: search.value,
       type: 'STOCKOUT'
     })
+
+    // if only a single result - route to the detail
+    if (stockDocumentsIn.value.length + stockDocumentsOut.value.length === 1) {
+      const incoming = stockDocumentsIn.value[0]
+      if (incoming) {
+        router.push({ name: 'ro-detail', params: { id: incoming.stockDocumentNumber } })
+        return
+      }
+
+      const outgoing = stockDocumentsOut.value[0]
+      if (outgoing) {
+        router.push({ name: 'po-detail', params: { id: outgoing.stockDocumentNumber } })
+        return
+      }
+    }
   } finally {
     setTimeout(() => (loading.value = false), 100)
   }

@@ -7,6 +7,7 @@ import {
   getApiStockDocumentApiByStockDocumentNumber,
   getApiStockMovementApiById,
   getApiStockProductApi,
+  getApiStockProductApiById,
   getApiWarehousePlaceApi,
   postApiFastOrderApi,
   postApiStockMovementApi,
@@ -28,7 +29,6 @@ export interface PostStockMovement {
   place?: string
   value: number
   lineNumber: number
-  Values: string
 }
 
 export type DocumentFilter = 'FULFILLED' | 'UNFULFILLED'
@@ -48,7 +48,6 @@ interface ErrorMessage {
   detail: string
   traceId: string
 }
-
 
 export const baseUrl = import.meta.env.VITE_BASE_URL
 console.info(`Server base URL: ${import.meta.env.VITE_BASE_URL}`)
@@ -269,6 +268,25 @@ export const useApi = () => {
   }
 
   // API call
+  const getProduct = async (productId: number) => {
+    try {
+      const res = await getApiStockProductApiById({ path: { id: productId } })
+      if (res.response.status >= 400) {
+        const err = res.error as ErrorMessage
+        $q.notify({
+          type: 'negative',
+          message: 'Něco se pokazilo.',
+          caption: err.detail ?? err.title
+        })
+      }
+      return res.data
+    } catch (err: unknown) {
+      console.error(err)
+      // relogin()
+    }
+  }
+
+  // API call
   const postFastOrder = async (order: FastOrder) => {
     try {
       const res = await postApiFastOrderApi({ body: order })
@@ -280,6 +298,7 @@ export const useApi = () => {
       return false
     } catch (err: unknown) {
       console.error(err)
+      return false
       // relogin()
     }
   }
@@ -305,7 +324,6 @@ export const useApi = () => {
     }
   }
 
-
   const printStockout = async (stockProductId: number, quantity?: number) => {
     try {
       const res = await postApiStockMovementApiPrintExportLabel({
@@ -326,13 +344,13 @@ export const useApi = () => {
     }
   }
 
-
   return {
     getStockDocument,
     getStockDocuments,
     getStockDocumentsWithPagination,
     getMovements,
     getPayments,
+    getProduct,
     searchCustomers,
     searchItems,
     searchWarehousePlaces,
@@ -340,7 +358,7 @@ export const useApi = () => {
     postFastOrder,
     testConnection,
     printStockin,
-    printStockout,
+    printStockout
     // baseUrl
   }
 }

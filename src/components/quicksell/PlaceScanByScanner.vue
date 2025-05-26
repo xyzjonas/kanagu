@@ -54,6 +54,12 @@ watch(modelValue, () => {
     scanInput.value = modelValue.value?.name ?? ''
   }
 })
+
+if (modelValue.value?.code) {
+  scanInput.value = modelValue.value.code
+} else {
+  scanInput.value = ''
+}
 </script>
 
 <style lang="css" scoped></style>

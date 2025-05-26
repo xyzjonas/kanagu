@@ -17,8 +17,8 @@ export const useWarehouse = () => {
     return place.replace(`${warehouseIdentifier.value}-`, '')
   }
 
-  function areEqual(place1: string, place2: string) {
-    return stripWarehousePlace(place1) === stripWarehousePlace(place2)
+  function areEqual(place1?: string, place2?: string) {
+    return stripWarehousePlace(place1 ?? 'A') === stripWarehousePlace(place2 ?? 'B')
   }
 
   return {

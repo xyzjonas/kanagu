@@ -2,6 +2,7 @@
   <div
     :class="`flex flex-col border-solid border-1 border-rounded-md border-slate-3 shadow-md overflow-hidden relative bg-slate-1`"
   >
+    <span class="text-gray-5 text-xs pl-2 pt-2"><small>Bráno z </small>{{ place.code }}</span>
     <div class="flex justify-between gap-2 p-2 items-center mb-2">
       <div class="flex flex-col flex-1">
         <span class="font-600">{{ item.name ?? 'N/A' }}</span>

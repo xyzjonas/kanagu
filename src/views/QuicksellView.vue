@@ -62,7 +62,7 @@
                 :place="item.place"
                 :quantity="item.quantity"
                 v-for="item in orderItems"
-                @delete="() => removeItem(item.item?.code ?? '', item.place?.name ?? '')"
+                @delete="() => removeItem(item.uniqueId)"
                 :loading="waitingForPrint"
                 @click-print="() => postPrint(item.item, item.quantity)"
               />
@@ -132,7 +132,8 @@
       </div>
     </div>
 
-    <AddItemDialog v-model="seamless" @submit="addItem" />
+    <!-- <AddItemDialog v-model="seamless" @submit="addItem" /> -->
+    <AddItemDialogStepper v-model="seamless" @submit="addItem" />
   </q-page>
 </template>
 
@@ -140,6 +141,7 @@
 import type { Customer, FastOrder, PaymentType, StockProduct, WarehousePlace } from '@/client'
 import EmptyBox from '@/components/EmptyBox.vue'
 import AddItemDialog from '@/components/quicksell/AddItemDialog.vue'
+import AddItemDialogStepper from '@/components/quicksell/AddItemDialogStepper.vue'
 import CustomerSelect from '@/components/quicksell/CustomerSelect.vue'
 import PaymentSelect from '@/components/quicksell/PaymentSelect.vue'
 import ItemCard from '@/components/quicksell/QuiacksellItem.Card.vue'
@@ -152,6 +154,7 @@ import { computed, onActivated, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 interface OrderItem {
+  uniqueId: string
   item: StockProduct
   place: WarehousePlace
   quantity: number
@@ -282,22 +285,27 @@ async function identificationNextStep() {
   }
 }
 
+function generateRandomId() {
+  return `${Math.random()}`.replace('.', '').slice(1)
+}
+
 function addItem(item: StockProduct, place: WarehousePlace, quantity: number) {
-  orderItems.value = [...orderItems.value, { item, place, quantity }]
+  orderItems.value = [...orderItems.value, { item, place, quantity, uniqueId: generateRandomId() }]
 
   seamless.value = false
 }
 
-function removeItem(code: string, place: string) {
-  orderItems.value = orderItems.value.filter(
-    (item) => item.item.code !== code || item.place.name !== place
-  )
+function removeItem(uniqueId: string) {
+  orderItems.value = orderItems.value.filter((item) => item.uniqueId && item.uniqueId !== uniqueId)
 }
 
 const { postFastOrder, printStockout } = useApi()
 const router = useRouter()
 async function submitQuicksell() {
+  $q.loading.show({ delay: 100 })
   const success = await postFastOrder(order.value)
+  $q.loading.hide()
+
   if (!success) {
     return
   }
@@ -321,7 +329,7 @@ const postPrint = async (product: StockProduct, count?: number) => {
     if (res === true) {
       $q.notify({
         type: 'positive',
-        message: `Odesláno na tisk - ${printCount} štítek`
+        message: `Odesláno na tisk - ${printCount}MJ`
       })
     }
   } else {

@@ -209,7 +209,7 @@ const selectedSlot = ref<PostStockMovement>({
   lineNumber: props.movement.lineNumber ?? 1,
   stockProductId: props.movement.stockProductId ?? 1,
   place: (warehousePlaces.value ?? [])[0]?.warehousePlaceCode ?? undefined,
-  value: props.movement.value ?? 0
+  value: props.movement.value ?? 0,
 })
 
 function select(slot?: string | null) {

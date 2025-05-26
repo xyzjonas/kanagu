@@ -9,7 +9,7 @@ preview:
     npm run build-only
     npm run preview
 
-gen:
+openapi-gen:
     npm run openapi-ts
 
 docker-build:

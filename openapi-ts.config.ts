@@ -1,6 +1,6 @@
 import { defineConfig } from '@hey-api/openapi-ts'
 
-const BASE_URL = process.env.BASE_URL ?? 'http://10.0.0.244'
+const BASE_URL = process.env.OPENAPI_BASE_URL ?? 'http://10.0.0.244'
 
 
 export default defineConfig({

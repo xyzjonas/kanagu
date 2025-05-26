@@ -23,12 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import type { PostStockMovement } from '@/composables/useApi'
-import { useWarehouse } from '@/composables/warehouse'
-import { computed, ref, watch } from 'vue'
-import StockoutCountBadge from '../StockoutCountBadge.vue'
 import type { StockItemApiModel } from '@/client'
+import { useWarehouse } from '@/composables/warehouse'
 import { rules } from '@/utils'
+import { computed, watch } from 'vue'
+import StockoutCountBadge from '../StockoutCountBadge.vue'
 
 const { getWarehousePlace } = useWarehouse()
 

@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 
-import { Quasar, Notify, LoadingBar } from 'quasar'
+import { Quasar, Notify, LoadingBar, Loading } from 'quasar'
 
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
@@ -18,7 +18,8 @@ const app = createApp(App)
 app.use(Quasar, {
   plugins: {
     Notify,
-    LoadingBar
+    LoadingBar,
+    Loading,
   }, // import Quasar plugins and add here
 })
 
