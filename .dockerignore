@@ -1,0 +1,10 @@
+justfile
+node_modules
+dist
+docs
+ansible
+.ansible
+.github
+.vscode
+.env
+.env.development
