@@ -18,6 +18,7 @@
           no-error-icon
           input-class="text-center"
           inputmode="none"
+          :readonly="loading"
         />
         <span class="text-center"
           >POTVRDIT POLOŽKU SCANNEREM <br />
