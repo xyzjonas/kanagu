@@ -8,6 +8,7 @@ import UnoCSS from 'unocss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: process.env.BASE_URL ?? undefined,
   server: {
     port: process.env.DEV_PORT ? parseInt(process.env.DEV_PORT as string) : undefined
   },

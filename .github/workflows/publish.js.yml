@@ -5,6 +5,8 @@ name: Node.js CI
 
 env:
   BASE_URL: /kanagu
+  VITE_SENTRY_DSN: https://db1154facb4989c9985ca03bb533f984@o4507746689024000.ingest.de.sentry.io/4509467998879824
+  VITE_SENTRY_ENV: production
 
 on:
   push:
