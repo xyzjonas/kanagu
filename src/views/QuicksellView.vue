@@ -58,10 +58,11 @@
             <h2 class="uppercase">{{ orderItems.length }} {{ polozky }}</h2>
             <div class="grid gap-1 md:grid-cols-2 lg:grid-cols-4">
               <ItemCard
+                v-for="item in orderItems"
+                :key="item.uniqueId"
                 :item="item.item"
                 :place="item.place"
                 :quantity="item.quantity"
-                v-for="item in orderItems"
                 @delete="() => removeItem(item.uniqueId)"
                 :loading="waitingForPrint"
                 @click-print="() => postPrint(item.item, item.quantity)"
@@ -76,10 +77,11 @@
             <h2 class="uppercase">{{ orderItems.length }} {{ polozky }}</h2>
             <div class="grid gap-1 md:grid-cols-2 lg:grid-cols-4">
               <ItemCard
+                v-for="item in orderItems"
+                :key="item.uniqueId"
                 :item="item.item"
                 :place="item.place"
                 :quantity="item.quantity"
-                v-for="item in orderItems"
                 readonly
               />
             </div>
@@ -133,14 +135,17 @@
     </div>
 
     <!-- <AddItemDialog v-model="seamless" @submit="addItem" /> -->
-    <AddItemDialogStepper v-model="seamless" @submit="addItem" />
+     <q-dialog v-model="seamless" position="bottom">
+      <q-card class="w-lg">
+       <AddItemDialogStepper @submit="addItem" />
+       </q-card>
+      </q-dialog>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import type { Customer, FastOrder, PaymentType, StockProduct, WarehousePlace } from '@/client'
 import EmptyBox from '@/components/EmptyBox.vue'
-import AddItemDialog from '@/components/quicksell/AddItemDialog.vue'
 import AddItemDialogStepper from '@/components/quicksell/AddItemDialogStepper.vue'
 import CustomerSelect from '@/components/quicksell/CustomerSelect.vue'
 import PaymentSelect from '@/components/quicksell/PaymentSelect.vue'

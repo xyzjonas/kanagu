@@ -1,23 +1,29 @@
 <template>
   <q-page padding class="flex flex-col gap-5">
-    <section class="flex gap-2 h-[5rem]">
+    <section class="grid gap-2  grid-cols-2 lg:grid-cols-4">
       <q-btn
         unelevated
         :to="{ name: 'ro-list' }"
         label="příjemky"
-        class="flex-1 bg-stockin text-white"
+        class="flex-1 bg-stockin text-white h-[5rem]"
       />
       <q-btn
         unelevated
         :to="{ name: 'po-list' }"
         label="výdejky"
-        class="flex-1 bg-stockout text-white"
+        class="flex-1 bg-stockout text-white h-[5rem]"
       />
       <q-btn
         unelevated
         :to="{ name: 'quicksell' }"
         label="prodej"
-        class="flex-1 bg-quicksell text-white"
+        class="flex-1 bg-quicksell text-white h-[5rem]"
+      />
+      <q-btn
+        unelevated
+        :to="{ name: 'move' }"
+        label="přesuny"
+        class="flex-1 bg-gray-6 text-white h-[5rem]"
       />
     </section>
 

@@ -10,6 +10,7 @@
     :error-message="errorMessage"
     :rules="[rules.notEmpty]"
     clearable
+    :autofocus="autofocus"
   />
 </template>
 
@@ -24,6 +25,7 @@ const { stripWarehousePlace, areEqual } = useWarehouse()
 const { searchWarehousePlaces } = useApi()
 
 const modelValue = defineModel<WarehousePlace>()
+defineProps<{ autofocus?: boolean }>()
 
 const errorMessage = ref('')
 const scanInput = ref('')

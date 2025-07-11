@@ -1,3 +1,6 @@
+default:
+    npm run dev
+
 [working-directory: 'ansible']
 deploy:
     VITE_SENTRY_ENV=production ansible-playbook deploy-playbook.yml -i inventory

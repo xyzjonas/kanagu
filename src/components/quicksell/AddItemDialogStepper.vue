@@ -1,87 +1,74 @@
 <template>
-  <q-dialog v-model="modelValue" position="bottom">
-    <q-card class="w-lg">
-      <div class="p-4 flex flex-col">
-        <div class="w-full flex justify-between items-center mb-3">
-          <span class="text-2xl uppercase">Přidat položku</span>
-          <q-btn flat round icon="close" v-close-popup />
-        </div>
-        <q-form class="flex flex-col gap-2" @submit="addItem" ref="$form">
-          <ItemScanByScanner v-model="newItem" class="flex-1" />
-          <q-expansion-item v-model="isExpanded" header-class="hidden">
-            <q-card>
-              <q-card-section>
-                <q-inner-loading :showing="isExpanded && isLoading">
-                  <q-spinner size="50px" color="primary" />
-                </q-inner-loading>
-                <div v-if="selectedPlace" class="flex flex-col items-center justify-center">
-                  <q-btn
-                    flat
-                    dense
-                    icon="swap_vert"
-                    label="vybrat jinou buňku"
-                    @click="resetPlace"
-                  />
-                  <ConfirmWarehousePlace
-                    v-model="isPlaceConfirmed"
-                    :selected-place="selectedPlace.warehousePlace?.code"
-                  />
-                </div>
-                <q-list v-else>
-                  <q-item
-                    clickable
-                    v-ripple
-                    v-for="(item, index) in availableStockItems"
-                    :key="index"
-                    :active="selectedPlaceCode === item"
-                    class="border-rounded-md my-1"
-                    active-class="text-white bg-primary font-bold"
-                    @click="selectedPlace = item"
-                  >
-                    <q-item-section>
-                      <div class="flex justify-between">
-                        <div>
-                          <span class="mr-3">BUŇKA</span>
-                          <span class="font-bold">{{ item.warehousePlace?.name }}</span>
-                        </div>
-                        <span>{{ item.value }}MJ</span>
-                      </div>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
+  <div class="p-4 flex flex-col">
+    <div class="w-full flex justify-between items-center mb-3">
+      <span class="text-2xl uppercase">{{ title ?? 'Přidat položku' }}</span>
+      <q-btn flat round icon="close" v-close-popup />
+    </div>
+    <q-form class="flex flex-col gap-2" @submit="addItem" ref="formRef">
+      <ItemScanByScanner v-model="newItem" class="flex-1" />
+      <q-expansion-item v-model="isExpanded" header-class="hidden">
+        <q-card class="bg-transparent">
+          <q-card-section>
+            <q-inner-loading :showing="isExpanded && isLoading">
+              <q-spinner size="50px" color="primary" />
+            </q-inner-loading>
+            <div v-if="selectedStockItem" class="flex flex-col items-center justify-center">
+              <q-btn flat dense icon="swap_vert" label="vybrat jinou buňku" @click="resetPlace" />
+              <ConfirmWarehousePlace
+                v-model="isPlaceConfirmed"
+                :selected-place="selectedStockItem.warehousePlace?.code"
+              />
+            </div>
+            <q-list v-else>
+              <q-item
+                clickable
+                v-ripple
+                v-for="(item, index) in availableStockItems"
+                :key="index"
+                :active="newItem === item.warehousePlace?.code"
+                class="border-rounded-md my-1"
+                active-class="text-white bg-primary font-bold"
+                @click="selectedStockItem = item"
+              >
+                <q-item-section>
+                  <div class="flex justify-between">
+                    <div>
+                      <span class="mr-3">BUŇKA</span>
+                      <span class="font-bold">{{ item.warehousePlace?.name }}</span>
+                    </div>
+                    <span>{{ item.value }}MJ</span>
+                  </div>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
 
-          <PlaceScanByScanner
-            v-if="selectedPlace && newPlace && isPlaceConfirmed"
-            v-model="newPlace"
-          />
+      <PlaceScanByScanner v-if="selectedStockItem && newPlace && isPlaceConfirmed" v-model="newPlace" />
 
-          <q-input
-            v-model.number="newItemQuantity"
-            outlined
-            :label="countLabel"
-            :hint="`Počet Kusů dle MJ ${maxLabel}`"
-            inputmode="numeric"
-            :rules="[
-              rules.atLeastOne,
-              (val) => parseInt(val) < maxCount || `Neplatný počet${maxLabel}`
-            ]"
-          />
-          <q-btn
-            type="submit"
-            :disable="!isAllFilledout"
-            unelevated
-            color="primary"
-            label="přidat"
-            class="h-[3rem] mt-3"
-            @click="addItem"
-          />
-        </q-form>
-      </div>
-    </q-card>
-  </q-dialog>
+      <q-input
+        v-model.number="newItemQuantity"
+        outlined
+        :label="countLabel"
+        :hint="`Počet Kusů dle MJ ${maxLabel}`"
+        inputmode="numeric"
+        :rules="[
+          rules.atLeastOne,
+          (val) => parseFloat(val) <= maxCount || `Neplatný počet${maxLabel}`
+        ]"
+      />
+      <q-btn
+        type="submit"
+        :disable="!isAllFilledout"
+        unelevated
+        color="primary"
+        :label="submitLabel ?? 'přidat'"
+        class="h-[3rem] mt-3"
+        @click="addItem"
+      />
+    </q-form>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -95,6 +82,8 @@ import ConfirmWarehousePlace from '../ConfirmWarehousePlace.vue'
 import ItemScanByScanner from './ItemScanByScanner.vue'
 import PlaceScanByScanner from './PlaceScanByScanner.vue'
 
+const props = defineProps<{ title?: string; submitLabel?: string; noResetOnSubmit?: boolean }>()
+
 const $q = useQuasar()
 const { getProduct } = useApi()
 const emit = defineEmits<{
@@ -103,19 +92,36 @@ const emit = defineEmits<{
 
 // Form and UI state
 const formRef = ref<QForm | null>(null)
-const isPlaceConfirmed = ref(false)
 const isExpanded = ref(false)
 const isLoading = ref(false)
 
 // Main form values
-const modelValue = defineModel({ default: false })
-const newItem = ref<StockProduct>()
-const newPlace = ref<WarehousePlace>()
-const newItemQuantity = ref(0)
+// const modelValue = defineModel<MoveItem>()
+
+const newItem = defineModel<StockProduct>("product", { required: false } )
+const newPlace = defineModel<WarehousePlace>("place", { required: false } )
+const newItemQuantity = defineModel<number>("quantity", { required: false, default: 0 } )
+const isPlaceConfirmed = defineModel<boolean>("isConfirmed", { required: false, default: false })
+
+// const newItem = ref<StockProduct>()
+// const newPlace = ref<WarehousePlace>()
+// const newItemQuantity = ref(0)
+
+// watch([newItem, newPlace, newItemQuantity], () => {
+//   if (newItem.value && newPlace.value) {
+//     modelValue.value = {
+//       item: newItem.value,
+//       place: newPlace.value,
+//       quantity: newItemQuantity.value
+//     }
+//   } else {
+//     modelValue.value = undefined
+//   }
+// })
 
 // Selection state
 const availableStockItems = ref<StockItem[]>([])
-const selectedPlace = ref<StockItem>()
+const selectedStockItem = ref<StockItem>()
 const selectedPlaceCode = ref('')
 
 // Constants
@@ -127,7 +133,7 @@ const countLabel = computed(() => {
   return `Počet MJ [${unit}]`
 })
 
-const maxCount = computed(() => selectedPlace.value?.value ?? MAX)
+const maxCount = computed(() => selectedStockItem.value?.value ?? MAX)
 
 const maxLabel = computed(() => (maxCount.value === MAX ? '' : ` (maximálně ${maxCount.value} MJ)`))
 
@@ -156,13 +162,17 @@ watch(newItem, async (item) => {
 })
 
 watch(isPlaceConfirmed, (confirmed) => {
-  if (confirmed && selectedPlace.value?.warehousePlace) {
-    newPlace.value = selectedPlace.value.warehousePlace
+  if (confirmed && selectedStockItem.value?.warehousePlace) {
+    newPlace.value = selectedStockItem.value.warehousePlace
     isExpanded.value = false
   } else {
     resetPlace()
   }
 })
+
+if (newPlace.value) {
+  // selectedStockItem.value = newPlace
+}
 
 watch(newPlace, (place) => {
   if (!place) {
@@ -177,7 +187,6 @@ const isAllFilledout = computed(
 
 // Action handlers
 async function addItem() {
-  console.info('ADD')
   if (!newItem.value || !newPlace.value) {
     console.error('no form or item ir place')
     console.error(`itemc code: ${newItem.value?.code}, place code: ${newPlace.value?.code}`)
@@ -197,7 +206,9 @@ async function addItem() {
   if (!isValid) return
 
   emit('submit', newItem.value, newPlace.value, newItemQuantity.value)
-  resetForm()
+  if (!props.noResetOnSubmit) {
+    resetForm()
+  }
 }
 
 // Utility functions
@@ -209,7 +220,7 @@ function resetItem() {
 function resetPlace() {
   newPlace.value = undefined
   isPlaceConfirmed.value = false
-  selectedPlace.value = undefined
+  selectedStockItem.value = undefined
   selectedPlaceCode.value = ''
 }
 

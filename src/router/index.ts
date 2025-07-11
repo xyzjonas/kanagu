@@ -15,6 +15,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuth } from '@/composables/useAuth'
 import { colorQuicksell, colorStockin, colorStockout } from '@/constants'
+import MoveView from '@/views/MoveView.vue'
 
 const routes = [
   {
@@ -99,6 +100,12 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView
+  },
+  {
+    path: '/move',
+    name: 'move',
+    component: MoveView,
+    meta: { requiresAuth: true }, 
   }
   // {
   //   path: '/about',

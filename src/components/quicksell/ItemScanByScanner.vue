@@ -9,6 +9,7 @@
     :error-message="errorMessage"
     clearable
     :rules="[rules.notEmpty]"
+    autofocus
   />
 </template>
 

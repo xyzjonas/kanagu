@@ -67,10 +67,18 @@
 
           <q-item :to="{ name: 'quicksell' }" clickable v-ripple :disable="!isLoggedIn">
             <q-item-section avatar>
-              <q-icon name="paid" />
+              <q-icon name="euro" />
             </q-item-section>
 
             <q-item-section> Prodej </q-item-section>
+          </q-item>
+
+          <q-item :to="{ name: 'move' }" clickable v-ripple :disable="!isLoggedIn">
+            <q-item-section avatar>
+              <q-icon name="swap_horiz" />
+            </q-item-section>
+
+            <q-item-section> Přesun </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple @click="fooo()">

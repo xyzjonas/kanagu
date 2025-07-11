@@ -4,7 +4,8 @@ import { defineConfig, presetUno, presetIcons, presetWebFonts } from 'unocss'
 export default defineConfig({
   rules: [],
   shortcuts: {
-    "app-page": "max-w-7xl mx-auto font-sans"
+    "app-page": "max-w-7xl mx-auto font-sans",
+    "card-shadow": "border-solid border-1 border-rounded-md border-slate-3 shadow-md bg-slate-1"
   },
   presets: [
     // https://icones.js.org/collection/hugeicons
