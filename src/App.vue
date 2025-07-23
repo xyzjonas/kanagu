@@ -81,21 +81,6 @@
             <q-item-section> Přesun </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple @click="fooo()">
-            <q-item-section avatar>
-              <q-icon name="warning" />
-            </q-item-section>
-
-            <q-item-section> Neklikat! </q-item-section>
-          </q-item>
-
-          <!-- <q-item :to="{ name: 'settings' }" clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="settings" />
-            </q-item-section>
-
-            <q-item-section> Nastavení </q-item-section>
-          </q-item> -->
         </q-list>
         <span
           class="absolute bottom-[.5rem] left-[.5rem] text-xs text-gray-4 flex items-center gap-1"
