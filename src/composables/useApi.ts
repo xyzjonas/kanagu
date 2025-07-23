@@ -11,6 +11,7 @@ import {
   getApiWarehousePlaceApi,
   postApiFastOrderApi,
   postApiStockMovementApi,
+  postApiStockMovementApiMove,
   postApiStockMovementApiPrintExportLabel,
   postApiStockMovementApiPrintImportLabel,
   postLogin,
@@ -324,6 +325,29 @@ export const useApi = () => {
     }
   }
 
+  // API call
+  const postMove = async (sourceId: number, destId: number, prodId: number, amount: number) => {
+    try {
+      const res = await postApiStockMovementApiMove({
+        body: {
+          sourceWarehousePlaceId: sourceId,
+          destinationWarehousePlaceId: destId,
+          stockProductId: prodId,
+          value: amount
+        }
+      })
+      if (res.response.status === 200) {
+        return true
+      }
+      notifyError(res, $q)
+      
+      return false
+    } catch (err: unknown) {
+      console.error(err)
+      // relogin()
+    }
+  }
+
   const printStockout = async (stockProductId: number, quantity?: number) => {
     try {
       const res = await postApiStockMovementApiPrintExportLabel({
@@ -358,7 +382,8 @@ export const useApi = () => {
     postFastOrder,
     testConnection,
     printStockin,
-    printStockout
+    printStockout,
+    postMove
     // baseUrl
   }
 }

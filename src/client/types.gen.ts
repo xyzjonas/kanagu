@@ -538,6 +538,16 @@ export type StockDocument = {
     warehousePlaces?: Array<WarehousePlace> | null;
     stockDocumentType?: StockDocumentType;
     stockDocumentTypeId?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    deliveryType?: string | null;
+    deliveryStreet?: string | null;
+    deliveryState?: string | null;
+    deliveryCity?: string | null;
+    deliveryName?: string | null;
+    deliveryPostalCode?: string | null;
+    deliveryPhone?: string | null;
+    deliveryEmail?: string | null;
 };
 
 export type StockDocumentItem = {
@@ -587,6 +597,13 @@ export type StockItemApiModel = {
     warehousePlaceCode?: string | null;
     warehousePlaceId?: number;
     value?: number | null;
+};
+
+export type StockMove = {
+    sourceWarehousePlaceId?: number;
+    destinationWarehousePlaceId?: number;
+    stockProductId?: number;
+    value?: number;
 };
 
 export type StockMovement = {
@@ -865,6 +882,20 @@ export type PostApiStockMovementApiResponses = {
 };
 
 export type PostApiStockMovementApiResponse = PostApiStockMovementApiResponses[keyof PostApiStockMovementApiResponses];
+
+export type PostApiStockMovementApiMoveData = {
+    body?: StockMove;
+    path?: never;
+    query?: never;
+    url: '/api/StockMovementApi/Move';
+};
+
+export type PostApiStockMovementApiMoveResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
 
 export type PostApiStockMovementApiPrintImportLabelData = {
     body?: never;

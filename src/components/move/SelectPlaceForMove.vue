@@ -71,7 +71,8 @@ const props = defineProps<{
 const $q = useQuasar()
 
 const emit = defineEmits<{
-  (e: 'submit', place: WarehousePlace, quantity: number, wasSent: boolean): void
+  (e: 'submitLater', place: WarehousePlace, quantity: number): void,
+  (e: 'submit', place: WarehousePlace, quantity: number): void,
 }>()
 
 const isConfirmed = ref(false)
@@ -98,11 +99,6 @@ const isAllFilledout = computed<boolean>(
   () => (newPlace.value !== undefined) && isConfirmed.value && (newItemQuantity.value > 0)
 )
 
-// todo:
-// -- post move / loading and emit
-// -- emit (post later)
-
-
 // Action handlers
 async function addMovement(justEmit?: boolean) {
   console.info('ADD')
@@ -123,15 +119,14 @@ async function addMovement(justEmit?: boolean) {
 
   if (!isValid) return
 
-  let wasSent = false
-  if (!justEmit) {
-    console.info("POST HERE!!!")
-    wasSent = true
+  if (justEmit) {
+    emit('submitLater', newPlace.value, newItemQuantity.value)
+  } else {
+    emit('submit', newPlace.value, newItemQuantity.value)
   }
 
-  emit('submit', newPlace.value, newItemQuantity.value, wasSent)
   if (!props.noResetOnSubmit) {
-    resetForm()
+    setTimeout(() => resetForm(), 1000)
   }
 }
 

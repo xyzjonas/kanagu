@@ -2,7 +2,7 @@
   <div class="p-4 flex flex-col">
     <div class="w-full flex justify-between items-center mb-3">
       <span class="text-2xl uppercase">{{ title ?? 'Přidat položku' }}</span>
-      <q-btn flat round icon="close" v-close-popup />
+      <q-btn v-if="!hideClose" flat round icon="close" v-close-popup />
     </div>
     <q-form class="flex flex-col gap-2" @submit="addItem" ref="formRef">
       <ItemScanByScanner v-model="newItem" class="flex-1" />
@@ -82,7 +82,7 @@ import ConfirmWarehousePlace from '../ConfirmWarehousePlace.vue'
 import ItemScanByScanner from './ItemScanByScanner.vue'
 import PlaceScanByScanner from './PlaceScanByScanner.vue'
 
-const props = defineProps<{ title?: string; submitLabel?: string; noResetOnSubmit?: boolean }>()
+const props = defineProps<{ title?: string; submitLabel?: string; noResetOnSubmit?: boolean; hideClose?: boolean }>()
 
 const $q = useQuasar()
 const { getProduct } = useApi()

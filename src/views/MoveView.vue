@@ -42,9 +42,11 @@
                 label="uložit"
                 class="card-shadow"
                 stack
+                :disable="loading"
+                :loading="loading"
               />
             </div>
-            <q-btn v-if="remainingQuantity > 0" @click="seamless = true" icon="add" flat label="přidat" class="mt-5" />
+            <q-btn v-if="remainingQuantity > 0" @click="seamless = true" icon="add" flat label="přidat" class="mt-5" :disable="loading" />
           </div>
         </div>
       </div>
@@ -58,6 +60,7 @@
         submit-label="Potvrdit"
         @submit="addItem"
         no-reset-on-submit
+        hide-close
       />
     </div>
     <q-dialog v-model="seamless" position="bottom">
@@ -66,7 +69,8 @@
           title="Umístit položku"
           :stockProduct="movedProduct"
           :custom-max-count="remainingQuantity"
-          @submit="addMovement"
+          @submit="addMovementAndSubmit"
+          @submit-later="addMovement"
         />
       </q-card>
     </q-dialog>
@@ -80,6 +84,7 @@ import MoveCard from '@/components/move/MoveCard.vue'
 import SelectPlaceForMove from '@/components/move/SelectPlaceForMove.vue'
 import AddItemDialogStepper from '@/components/quicksell/AddItemDialogStepper.vue'
 import QuiacksellItemCard from '@/components/quicksell/QuiacksellItem.Card.vue'
+import { useApi } from '@/composables/useApi'
 import type { WarehouseTransferLocal } from '@/types/helpers'
 import { useLocalStorage } from '@vueuse/core'
 import { useQuasar } from 'quasar'
@@ -115,8 +120,15 @@ function addItem() {
   isMoveStarted.value = true
 }
 
-function addMovement(place: WarehousePlace, quantity: number, sent: boolean) {
-  moveDestinations.value.push({ place, quantity, sent })
+function addMovement(place: WarehousePlace, quantity: number) {
+  moveDestinations.value.push({ place, quantity, sent: false })
+  seamless.value = false
+}
+
+async function addMovementAndSubmit(place: WarehousePlace, quantity: number) {
+  const move = { place, quantity, sent: false }
+  moveDestinations.value.push(move)
+  await submitMove(move)
   seamless.value = false
 }
 
@@ -125,23 +137,30 @@ function removeMovement(place: WarehousePlace) {
 }
 
 const $q = useQuasar()
-// const { postFastOrder, printStockout } = useApi()
+const { postMove } = useApi()
 // const router = useRouter()
+const loading = ref(false)
 async function submitMove(move: WarehouseTransferLocal) {
-  console.info('POST HERE!!!')
-  //   $q.loading.show({ delay: 100 })
-  //   const success = await postFastOrder(order.value)
-  //   $q.loading.hide()
-  //   if (!success) {
-  //     return
-  //   }
-  //   $q.notify({
-  //     color: 'positive',
-  //     message: 'Prodej uzavřen.'
-  //   })
-  //   step.value = 1
-  //   clearForm()
-  //   router.push({ name: 'home' })
+  if (!movedFrom.value?.id) {
+    $q.notify({
+      type: 'negative',
+      message: 'Není zvolená výchozí buňka, zkuste pohyb zopakovat'
+    })
+    return
+  }
+
+  if (!move.place?.id || !movedProduct.value?.id) {
+    $q.notify({
+      type: 'negative',
+      message: 'Chybně zvolená destinace, zkuste akci zopakovat'
+    })
+    return
+  }
+
+  loading.value = true
+  await postMove(movedFrom.value.id, move.place.id, movedProduct.value.id, move.quantity)
+  loading.value = false
+  
   moveDestinations.value.forEach(dest => {
     if (dest.place.code === move.place.code && dest.quantity === move.quantity) {
       dest.sent = true
