@@ -31,13 +31,16 @@ import { computed, ref, watch } from 'vue'
 const { getWarehousePlace } = useWarehouse()
 
 const props = defineProps<{
-  selectedPlace?: string | undefined | null
+  selectedPlaceCode?: string
 }>()
+
+console.info(`SETUP!!! ${props.selectedPlaceCode}`)
+watch(props.selectedPlaceCode, () => console.info(props.selectedPlaceCode))
 
 const confirmation = ref('')
 const modelValue = defineModel({ required: true })
 
-const correctedPlaceName = computed(() => getWarehousePlace(props.selectedPlace ?? 'N/A'))
+const correctedPlaceName = computed(() => getWarehousePlace(props.selectedPlaceCode ?? 'N/A'))
 
 watch(confirmation, () => {
   if (confirmation.value === correctedPlaceName.value) {

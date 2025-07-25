@@ -16,7 +16,7 @@
               <q-btn flat dense icon="swap_vert" label="vybrat jinou buňku" @click="resetPlace" />
               <ConfirmWarehousePlace
                 v-model="isPlaceConfirmed"
-                :selected-place="selectedStockItem.warehousePlace?.code"
+                :selectedPlaceCode="selectedStockItem.warehousePlace?.code"
               />
             </div>
             <q-list v-else>
@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import type { StockItem, StockProduct, WarehousePlace } from '@/client'
 import { useApi } from '@/composables/useApi'
-import { rules } from '@/utils'
+import { filterOutPlacesOnly, rules } from '@/utils'
 import { QForm, useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
 
@@ -102,22 +102,6 @@ const newItem = defineModel<StockProduct>("product", { required: false } )
 const newPlace = defineModel<WarehousePlace>("place", { required: false } )
 const newItemQuantity = defineModel<number>("quantity", { required: false, default: 0 } )
 const isPlaceConfirmed = defineModel<boolean>("isConfirmed", { required: false, default: false })
-
-// const newItem = ref<StockProduct>()
-// const newPlace = ref<WarehousePlace>()
-// const newItemQuantity = ref(0)
-
-// watch([newItem, newPlace, newItemQuantity], () => {
-//   if (newItem.value && newPlace.value) {
-//     modelValue.value = {
-//       item: newItem.value,
-//       place: newPlace.value,
-//       quantity: newItemQuantity.value
-//     }
-//   } else {
-//     modelValue.value = undefined
-//   }
-// })
 
 // Selection state
 const availableStockItems = ref<StockItem[]>([])
@@ -155,10 +139,7 @@ watch(newItem, async (item) => {
     return
   }
 
-  availableStockItems.value = (product.stockItems ?? []).filter(
-    (item) =>
-      !item?.warehousePlace?.name?.startsWith('P') && !item?.warehousePlace?.name?.startsWith('V')
-  )
+  availableStockItems.value = filterOutPlacesOnly(product.stockItems ?? [])
 })
 
 watch(isPlaceConfirmed, (confirmed) => {

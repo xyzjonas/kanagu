@@ -178,7 +178,7 @@
 import type { StockDocumentItem, StockMovementItemApiModel } from '@/client'
 import { useApi, type PostStockMovement } from '@/composables/useApi'
 import { useWarehouse } from '@/composables/warehouse'
-import { rules } from '@/utils'
+import { filterOutPlacesOnly, rules } from '@/utils'
 import { QStepper, useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
 
@@ -190,16 +190,8 @@ const props = defineProps<{
 
 const { getWarehousePlace, stripWarehousePlace } = useWarehouse()
 
-const warehousePlaces = ref(
-  props.movement.stockItems
-    ?.filter((place) => !place.warehousePlaceCode?.startsWith('V'))
-    .filter((place) => !place.warehousePlaceCode?.startsWith('P')) ?? []
-)
-const displayedWarehousePlaces = computed(() => {
-  return warehousePlaces.value
-    ?.filter((place) => !place.warehousePlaceCode?.startsWith('V'))
-    .filter((place) => !place.warehousePlaceCode?.startsWith('P'))
-})
+const warehousePlaces = ref(filterOutPlacesOnly(props.movement.stockItems ?? []))
+const displayedWarehousePlaces = computed(() => filterOutPlacesOnly(warehousePlaces.value))
 
 const step = ref(1)
 const stepper = ref<QStepper>()

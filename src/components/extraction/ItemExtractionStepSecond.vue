@@ -1,7 +1,7 @@
 <template>
   <div>
     <StockoutCountBadge :count="selectedSlot?.value ?? 0" :wanted-count="wantedCount ?? 0" />
-    <ConfirmWarehousePlace v-model="isConfirmed" :selected-place="props.selectedSlot?.place" />
+    <ConfirmWarehousePlace v-model="isConfirmed" :selectedPlaceCode="props.selectedSlot?.place" />
   </div>
 </template>
 

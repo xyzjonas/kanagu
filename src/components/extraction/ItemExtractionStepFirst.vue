@@ -37,6 +37,7 @@ import type { PostStockMovement } from '@/composables/useApi'
 import StockoutCountBadge from '../StockoutCountBadge.vue'
 import EmptyBox from '../EmptyBox.vue'
 import { computed } from 'vue'
+import { filterOutPlacesOnly } from '@/utils'
 
 const props = defineProps<{
   count?: number | null
@@ -49,11 +50,7 @@ const emit = defineEmits(['next'])
 
 const movement = defineModel<PostStockMovement>({ required: true })
 
-const displayedStockItems = computed(() => {
-  return props.stockItems
-    ?.filter((it) => !it.warehousePlaceCode?.startsWith('V'))
-    .filter((it) => !it.warehousePlaceCode?.startsWith('P'))
-})
+const displayedStockItems = computed(() => filterOutPlacesOnly(props.stockItems))
 
 function select(slot?: string | null) {
   if (!slot) {

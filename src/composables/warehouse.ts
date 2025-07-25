@@ -10,8 +10,10 @@ const warehouses = {
 
 export const useWarehouse = () => {
   function getWarehousePlace(place: string) {
-    if (place.startsWith(`${warehouseIdentifier.value}-`)) {
-      return place
+    for (const ID of Object.keys(warehouses)) {
+      if (place.startsWith(`${ID}-`)) {
+        return place
+      }
     }
     return `${warehouseIdentifier.value}-${place}`
   }

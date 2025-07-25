@@ -7,11 +7,10 @@
     <q-form class="flex flex-col gap-2" @submit="addMovement()" ref="formRef">
       <PlaceScanByScanner v-model="newPlace" autofocus />
       <ConfirmWarehousePlace
-        v-if="newPlace && !isConfirmed"
-        :selectedPlace="newPlace.code"
+        v-if="newPlace && newPlace.code !== undefined && !isConfirmed"
+        :selectedPlaceCode="newPlace.code"
         v-model="isConfirmed"
       />
-      {{ newPlace?.code }} // {{ isConfirmed }} // {{ isAllFilledout }} // {{ newItemQuantity }}
       <q-input
         v-model.number="newItemQuantity"
         outlined

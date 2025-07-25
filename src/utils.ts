@@ -1,4 +1,4 @@
-import type { StockDocument, StockDocumentItem, StockMovementItemApiModel } from './client'
+import type { StockDocument, StockDocumentItem, StockItem, StockItemApiModel, StockMovementItemApiModel, StockProduct } from './client'
 
 export const rules = {
   notEmpty: (val: any) => !!val || 'Pole nesmí být prazdné',
@@ -38,4 +38,18 @@ export const isMovementNotResolved = (movement: StockMovementItemApiModel) =>
 export function round(value: number, precision: number) {
   var multiplier = Math.pow(10, precision || 0)
   return Math.round(value * multiplier) / multiplier
+}
+
+export function filterOutPlacesOnly(items: (StockItem | StockItemApiModel)[]) {
+  return items
+    .filter((place) => !place.warehousePlace?.code?.startsWith("INVENTURA"))
+    .filter((place) => {
+      const pattern = RegExp(/^[PV]\d/i);
+      return !pattern.test(place?.warehousePlace?.code ?? "");
+    })
+    .filter((place) => !place?.warehousePlaceCode?.startsWith("INVENTURA"))
+    .filter((place) => {
+      const pattern = RegExp(/^[PV]\d/i);
+      return !pattern.test(place?.warehousePlaceCode ?? "");
+    })
 }
