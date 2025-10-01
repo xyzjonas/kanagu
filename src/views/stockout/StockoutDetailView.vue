@@ -30,6 +30,7 @@
           is-stock-oout
           @clickPrint="() => postPrint(movement, movement.value)"
           :waiting-for-print="waitingForPrint"
+          :is-printed="!!db.find(item => item.stockId === `${movement.stockProductId}` && item.movementId === `${movement.id}`)"
         />
       </TransitionGroup>
     </div>
@@ -46,6 +47,7 @@
 import { type StockDocument, type StockMovementItemApiModel } from '@/client'
 import EmptyBox from '@/components/EmptyBox.vue'
 import StockDocumentMovement from '@/components/StockDocumentMovement.vue'
+import { useAlreadyPrintedDb } from '@/composables/alreaduPrintedDb'
 import { useApi } from '@/composables/useApi'
 import { isItemResolved } from '@/utils'
 import { useQuasar } from 'quasar'
@@ -72,6 +74,8 @@ const displayedMovements = computed(() =>
 
 const waitingForPrint = ref(false)
 const $q = useQuasar()
+
+const { db } = useAlreadyPrintedDb()
 const { printStockout } = useApi()
 const postPrint = async (movement: StockMovementItemApiModel, count?: number | null) => {
   waitingForPrint.value = true
@@ -81,6 +85,12 @@ const postPrint = async (movement: StockMovementItemApiModel, count?: number | n
     type: 'positive',
     message: `Odesláno na tisk - ${printCount} štítek`
   })
+  if (movement.id && movement.stockProductId) {
+    db.value.push({
+      stockId: `${movement.stockProductId}`,
+      movementId: `${movement.id}`,
+    })
+  }
   waitingForPrint.value = false
 }
 </script>

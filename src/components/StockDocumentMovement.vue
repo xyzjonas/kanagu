@@ -41,7 +41,7 @@
         unelevated
         square
         flat
-        class="flex-1"
+        :class="{'flex-1': true, 'bg-positive': isPrinted, 'text-white': isPrinted, 'opacity-[0.7]': isPrinted }"
         @click="$emit('clickPrint')"
         :loading="waitingForPrint"
       />
@@ -97,6 +97,7 @@ const props = defineProps<{
   movement: StockMovementItemApiModel
   isStockOout?: boolean
   waitingForPrint?: boolean
+  isPrinted?: boolean
 }>()
 
 const resolved = computed(() => !!props.movement?.place)

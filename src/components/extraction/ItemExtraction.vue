@@ -113,6 +113,7 @@ import ItemExtractionStepFirst from './ItemExtractionStepFirst.vue'
 import ItemExtractionStepFourth from './ItemExtractionStepFourth.vue'
 import ItemExtractionStepSecond from './ItemExtractionStepSecond.vue'
 import ItemExtractionStepThird from './ItemExtractionStepThird.vue'
+import { useAlreadyPrintedDb } from '@/composables/alreaduPrintedDb'
 
 const props = defineProps<{
   stockDocumentId: string
@@ -144,6 +145,7 @@ const emit = defineEmits<{
   (e: 'extracted', movement: PostStockMovement): void
 }>()
 
+const { db } = useAlreadyPrintedDb()
 async function submitAllocation() {
   if (!isPlaceConfirmed.value) {
     $q.notify({
@@ -195,6 +197,9 @@ async function submitAllocation() {
     color: 'positive',
     message: `${selectedSlot.value.value} MJ vyskladněno z ${selectedSlot.value.place}`
   })
+
+  // clear the order already-printed db entries
+  db.value = db.value.filter(item => item.stockId !== `${props.movement.stockProductId}`)
 
   setTimeout(() => {
     emit('extracted', selectedSlot.value)

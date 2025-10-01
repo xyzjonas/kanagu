@@ -8,6 +8,7 @@
     :options="options"
     option-label="name"
     use-input
+    :input-debounce="100"
     clearable
     @filter="filterFn"
     @abort="abortFilterFn"
