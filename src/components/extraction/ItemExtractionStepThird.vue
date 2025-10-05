@@ -1,85 +1,96 @@
 <template>
   <div>
-    <StockoutCountBadge :count="selectedCount" :wanted-count="maxAvailable ?? 0" />
+    <StockoutCountBadge :count="selectedCount" :wanted-count="movementWantedCount ?? 0" />
     <div class="flex flex-col justify-center items-center mt-10 text-center">
-      <span class="text-gray-7 mt-2">{{ productCode ?? 'N/A' }}</span>
+      <span class="text-gray-5 mt-5">z buňky</span>
+      <span class="text-xl">{{ correctedPlaceName }}</span>
       <span class="text-2xl font-bold">{{ productName ?? 'N/A' }}</span>
-      <!-- <span class="text-gray-5 mt-5">z buňky</span>
-      <span class="text-xl">{{ correctedPlaceName }}</span> -->
-      <q-input
-        v-model.number="selectedCount"
-        type="number"
-        :label="`Počet MJ [${unitType ?? 'jednotka chybí'}]`"
-        hint="Počet množstevních jednotek k vyskladnění."
-        autofocus
-        no-error-icon
-        input-class="text-center text-3xl"
-        :rules="[rules.notEmpty, rules.atLeastOne, isAvailable]"
-        inputmode="numeric"
-      />
-      <!-- TODO: add "MJ =" indicator -->
+      <span class="text-gray-7 mt-2">{{ printedBarcodes }}</span>
+      <div v-if="loading" class="flex flex-col gap-3 mt-5 items-center">
+        <q-spinner color="primary" size="4rem" :thickness="3"></q-spinner>
+        <span class="uppercase text-primary">odesílám</span>
+      </div>
+      <div v-else>
+        <q-input
+          v-model="finalConfirmation"
+          autofocus
+          :rules="[(val) => validateCode(val)]"
+          no-error-icon
+          input-class="text-center"
+          inputmode="none"
+          :readonly="loading"
+        />
+        <span class="text-center">POTVRDIT POLOŽKU SCANNEREM</span>
+        <div class="h-[3rem]">
+          <transition mode="out-in" name="slide-fade">
+            <q-btn
+              v-if="showReset"
+              label="reset"
+              @click="finalConfirmation = ''"
+              flat
+              class="mt-5"
+            />
+          </transition>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { StockItemApiModel } from '@/client'
 import { useWarehouse } from '@/composables/warehouse'
-import { rules } from '@/utils'
-import { computed, watch } from 'vue'
+import { useQuasar } from 'quasar'
+import { computed, ref, watch } from 'vue'
 import StockoutCountBadge from '../StockoutCountBadge.vue'
 
 const { getWarehousePlace } = useWarehouse()
 
 const props = defineProps<{
-  productCode?: string | null
   productName?: string | null
-  unitType?: string | null
   placeCode?: string | null
-  stockItems: StockItemApiModel[]
+  selectedCount: number
   movementWantedCount?: number | null
+  barCodes: string[] | null
+  loading?: boolean
 }>()
 
 const correctedPlaceName = computed(() => getWarehousePlace(props.placeCode ?? 'N/A'))
-const emit = defineEmits(['next'])
+const emit = defineEmits(['validated'])
 
-const selectedCount = defineModel<number>({ required: true, default: 0 })
-const isValid = defineModel<boolean>('isValid')
+const finalConfirmation = ref('')
+const isValid = defineModel<boolean>({ required: true })
 
-const originalPlace = computed(() =>
-  props.stockItems?.find((it) => it.warehousePlaceCode === props.placeCode)
-)
-const maxAvailable = computed(() => {
-  if ((props.movementWantedCount ?? 0) > (originalPlace.value?.value ?? 0)) {
-    return originalPlace.value?.value ?? 0
+const barCodes = computed(() => props.barCodes ?? [])
+const printedBarcodes = computed(() => {
+  if (barCodes.value.length === 0) {
+    return 'Položka nemá EAN'
   }
-  return props.movementWantedCount ?? 0
+  return barCodes.value.join(', ')
 })
 
-function isAvailable(val: any) {
-  const value = parseFloat(val)
-  if (value > (originalPlace.value?.value ?? 0)) {
-    return `Maximální počet MJ na skladovém místě je ${originalPlace.value?.value ?? 0}`
-  }
-
-  return true
+function validateCode(val: string) {
+  return barCodes.value.includes(val)
 }
 
-function updateValid(val: any) {
-  if (isAvailable(val) === true) {
+const showReset = computed(
+  () => finalConfirmation.value.length >= 1 && !validateCode(finalConfirmation.value)
+)
+
+isValid.value = validateCode(finalConfirmation.value)
+
+const $q = useQuasar()
+
+watch(finalConfirmation, (val) => {
+  if (validateCode(val)) {
     isValid.value = true
+    emit('validated')
   } else {
     isValid.value = false
-  }
-}
-
-updateValid(selectedCount.value)
-
-watch(selectedCount, (val) => {
-  if (isAvailable(val) === true) {
-    isValid.value = true
-  } else {
-    isValid.value = false
+    $q.notify({
+      type: 'negative',
+      message: `Kód neodpovídá zvolené položce: ${printedBarcodes.value}`,
+      timeout: 2000
+    })
   }
 })
 </script>

@@ -47,35 +47,14 @@
       <q-step
         :name="3"
         title=""
-        active-icon="123"
-        icon="123"
-        done-icon="123"
-        :done="step > 2 && isCountValid"
-        :error="step > 2 && !isCountValid"
+        active-icon="qr_code"
+        icon="qr_code"
+        done-icon="qr_code"
+        :done="step > 2 && isItemValid"
+        :error="step > 2 && !isItemValid"
         :disable="stockItems.length === 0"
       >
         <ItemExtractionStepThird
-          v-model="selectedSlot.value"
-          v-model:is-valid="isCountValid"
-          :stock-items="stockItems"
-          :place-code="selectedSlot.place"
-          :product-code="movement.stockProduct?.code"
-          :product-name="movement.stockProduct?.name"
-          :movement-wanted-count="movement.value"
-          :unit-type="movement.stockProduct?.product?.unitType?.code"
-        />
-      </q-step>
-
-      <q-step
-        :name="4"
-        title=""
-        active-icon="download_done"
-        icon="download_done"
-        done-icon="download_done"
-        :disable="stockItems.length === 0"
-        :error="step > 3 && !isItemValid"
-      >
-        <ItemExtractionStepFourth
           v-model="isItemValid"
           :bar-codes="movement.stockProduct?.stockBarCodes?.map((code) => code.barCode) ?? []"
           :product-code="movement.stockProduct?.code"
@@ -84,6 +63,28 @@
           :place-code="selectedSlot.place"
           :selected-count="selectedSlot.value"
           :loading="loading"
+          @validated="step = step + 1"
+        />
+      </q-step>
+
+      <q-step
+        :name="4"
+        title=""
+        active-icon="functions"
+        icon="functions"
+        done-icon="functions"
+        :disable="stockItems.length === 0"
+        :error="step > 3 && !isItemValid"
+      >
+        <ItemExtractionStepFourth
+          v-model="selectedSlot.value"
+          v-model:is-valid="isCountValid"
+          :stock-items="stockItems"
+          :place-code="selectedSlot.place"
+          :product-code="movement.stockProduct?.code"
+          :product-name="movement.stockProduct?.name"
+          :movement-wanted-count="movement.value"
+          :unit-type="movement.stockProduct?.product?.unitType?.code"
           @submit="submitAllocation"
         />
       </q-step>
@@ -99,6 +100,16 @@
         label="dále"
         @click="step += 1"
         class="flex-1"
+      />
+    </div>
+    <div v-else-if="step === 4" class="flex h-[3rem] gap-2 mt-auto">
+      <q-btn
+        unelevated
+        color="primary"
+        label="odeslat"
+        class="flex-1"
+        :disable="!isCountValid"
+        @click="submitAllocation"
       />
     </div>
   </transition>
@@ -199,7 +210,7 @@ async function submitAllocation() {
   })
 
   // clear the order already-printed db entries
-  db.value = db.value.filter(item => item.stockId !== `${props.movement.stockProductId}`)
+  db.value = db.value.filter((item) => item.stockId !== `${props.movement.stockProductId}`)
 
   setTimeout(() => {
     emit('extracted', selectedSlot.value)
