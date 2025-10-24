@@ -104,7 +104,7 @@
               autofocus
               no-error-icon
               input-class="text-center text-2xl"
-              :rules="[rules.notEmpty, rules.atLeastOne]"
+              :rules="[rules.notEmpty, rules.atLeastOne, rules.max99]"
               inputmode="numeric"
             />
             <div class="flex justify-end mt-auto py-5 gap-1"></div>
@@ -201,7 +201,7 @@ const selectedSlot = ref<PostStockMovement>({
   lineNumber: props.movement.lineNumber ?? 1,
   stockProductId: props.movement.stockProductId ?? 1,
   place: (warehousePlaces.value ?? [])[0]?.warehousePlaceCode ?? undefined,
-  value: props.movement.value ?? 0,
+  value: props.movement.value ?? 0
 })
 
 function select(slot?: string | null) {

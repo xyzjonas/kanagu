@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "1.2.7-2025-10-05",
+  "version": "1.2.8-2025-10-24",
   "private": true,
   "type": "module",
   "scripts": {

@@ -19,6 +19,7 @@
         inputmode="numeric"
         :rules="[
           rules.atLeastOne,
+          rules.max99,
           (val) =>
             parseFloat(val) <= customMaxCount ||
             `Neplatný počet (maximálně ${props.customMaxCount} MJ)`
@@ -34,9 +35,9 @@
         @click="addMovement()"
       />
       <div class="row items-center justify-center gap-3 my-1">
-        <q-separator class="flex-1"/>
+        <q-separator class="flex-1" />
         <span class="text-gray-5">nebo</span>
-        <q-separator class="flex-1"/>
+        <q-separator class="flex-1" />
       </div>
       <q-btn
         type="submit"
@@ -70,8 +71,8 @@ const props = defineProps<{
 const $q = useQuasar()
 
 const emit = defineEmits<{
-  (e: 'submitLater', place: WarehousePlace, quantity: number): void,
-  (e: 'submit', place: WarehousePlace, quantity: number): void,
+  (e: 'submitLater', place: WarehousePlace, quantity: number): void
+  (e: 'submit', place: WarehousePlace, quantity: number): void
 }>()
 
 const isConfirmed = ref(false)
@@ -95,7 +96,7 @@ watch(newPlace, (place) => {
 })
 
 const isAllFilledout = computed<boolean>(
-  () => (newPlace.value !== undefined) && isConfirmed.value && (newItemQuantity.value > 0)
+  () => newPlace.value !== undefined && isConfirmed.value && newItemQuantity.value > 0
 )
 
 // Action handlers

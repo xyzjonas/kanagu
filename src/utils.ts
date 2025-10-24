@@ -1,9 +1,17 @@
-import type { StockDocument, StockDocumentItem, StockItem, StockItemApiModel, StockMovementItemApiModel, StockProduct } from './client'
+import type {
+  StockDocument,
+  StockDocumentItem,
+  StockItem,
+  StockItemApiModel,
+  StockMovementItemApiModel,
+  StockProduct
+} from './client'
 
 export const rules = {
   notEmpty: (val: any) => !!val || 'Pole nesmí být prazdné',
   isNumber: (val: any) => !isNaN(val) || 'Pole musí být číslo',
-  atLeastOne: (val: any) => val > 0 || 'Pole musí být číslo větší než 0'
+  atLeastOne: (val: any) => val > 0 || 'Pole musí být číslo větší než 0',
+  max99: (val: any) => val < 99 || 'Pole nesmí být číslo větší než 99'
 }
 
 export interface StockDocumentStatus {
@@ -42,14 +50,14 @@ export function round(value: number, precision: number) {
 
 export function filterOutPlacesOnly(items: (StockItem | StockItemApiModel)[]) {
   return items
-    .filter((place) => !place.warehousePlace?.code?.startsWith("INVENTURA"))
+    .filter((place) => !place.warehousePlace?.code?.startsWith('INVENTURA'))
     .filter((place) => {
-      const pattern = RegExp(/^[PV]\d/i);
-      return !pattern.test(place?.warehousePlace?.code ?? "");
+      const pattern = RegExp(/^[PV]\d/i)
+      return !pattern.test(place?.warehousePlace?.code ?? '')
     })
-    .filter((place) => !place?.warehousePlaceCode?.startsWith("INVENTURA"))
+    .filter((place) => !place?.warehousePlaceCode?.startsWith('INVENTURA'))
     .filter((place) => {
-      const pattern = RegExp(/^[PV]\d/i);
-      return !pattern.test(place?.warehousePlaceCode ?? "");
+      const pattern = RegExp(/^[PV]\d/i)
+      return !pattern.test(place?.warehousePlaceCode ?? '')
     })
 }

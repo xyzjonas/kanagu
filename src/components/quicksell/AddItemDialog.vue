@@ -29,7 +29,7 @@
             :label="countLabel"
             hint="Počet Kusů (dle MJ)"
             inputmode="numeric"
-            :rules="[rules.atLeastOne]"
+            :rules="[rules.atLeastOne, rules.max99]"
           />
           <q-btn type="submit" unelevated color="primary" label="přidat" class="h-[3rem] mt-3" />
         </q-form>
