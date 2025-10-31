@@ -104,7 +104,7 @@
               autofocus
               no-error-icon
               input-class="text-center text-2xl"
-              :rules="[rules.notEmpty, rules.atLeastOne, rules.max99]"
+              :rules="[rules.notEmpty, rules.atLeastOne, rules.max9999]"
               inputmode="numeric"
             />
             <div class="flex justify-end mt-auto py-5 gap-1"></div>

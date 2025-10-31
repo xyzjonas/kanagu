@@ -13,7 +13,7 @@
           autofocus
           no-error-icon
           input-class="text-center text-3xl"
-          :rules="[rules.notEmpty, rules.atLeastOne, rules.max99, isAvailable]"
+          :rules="[rules.notEmpty, rules.atLeastOne, rules.max9999, isAvailable]"
           inputmode="numeric"
         />
       </q-form>

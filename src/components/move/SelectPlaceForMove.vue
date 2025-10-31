@@ -19,7 +19,7 @@
         inputmode="numeric"
         :rules="[
           rules.atLeastOne,
-          rules.max99,
+          rules.max9999,
           (val) =>
             parseFloat(val) <= customMaxCount ||
             `Neplatný počet (maximálně ${props.customMaxCount} MJ)`

@@ -11,7 +11,7 @@ export const rules = {
   notEmpty: (val: any) => !!val || 'Pole nesmí být prazdné',
   isNumber: (val: any) => !isNaN(val) || 'Pole musí být číslo',
   atLeastOne: (val: any) => val > 0 || 'Pole musí být číslo větší než 0',
-  max99: (val: any) => val < 99 || 'Pole nesmí být číslo větší než 99'
+  max9999: (val: any) => val < 9999 || 'Pole nesmí být číslo větší než 9999'
 }
 
 export interface StockDocumentStatus {
